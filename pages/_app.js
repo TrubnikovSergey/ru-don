@@ -1,5 +1,14 @@
-import '@/styles/globals.css'
+import Layout from "@/components/Layout";
+import "@/styles/globals.scss";
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />
-}
+const App = ({ Component, pageProps }) => {
+  return (
+    <div className="wrapper">
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </div>
+  );
+};
+
+export default App;

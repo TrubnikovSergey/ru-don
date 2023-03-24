@@ -1,0 +1,17 @@
+.header, .footer{
+    
+    padding: 20px 0px;
+}
+
+.container{
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .root {
+    min-height: 100vh;
+    display: grid;
+    grid-auto-rows: auto 1fr auto;
+    margin: 0px 25px;
+  }
+  

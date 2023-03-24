@@ -1,0 +1,22 @@
+.map{
+    max-width: 100%;
+    height: 250px;
+
+    background: tomato;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 36px;
+    color: #fff;
+
+    margin-bottom: 25px;
+}
+
+.shops,.stocks,.points{
+    margin-bottom: 20px;
+}
+
+.shops__list,.stocks__list,.points__list{
+    list-style-type: none;
+}
