@@ -1,17 +1,16 @@
 import http from "./http.service";
 
-const goodsService = {
+const categoriesService = {
   fetchAll: async () => {
     try {
       const { data } = await http.get(
-        `${process.env.API_HOST}/goods?action=fetchAll`
+        `${process.env.API_HOST}/categories?action=fetchAll`
       );
       return data;
     } catch (error) {
       return null;
     }
   },
-  getGoodById: () => {},
 };
 
-export default goodsService;
+export default categoriesService;

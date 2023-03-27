@@ -1,0 +1,27 @@
+.auth{
+    display: flex;
+    justify-content: center;
+    overflow: auto;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 100px 50px 0px;
+    width: 400px;
+}
+
+.submit-auth__button{
+    padding: 10px 0px;
+    text-align: center;
+    background-color: tomato;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.input{
+    height: 40px;
+    padding: 5px;
+    font-size: 24px;
+}

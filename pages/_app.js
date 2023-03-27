@@ -1,12 +1,16 @@
 import Layout from "@/components/Layout";
 import "@/styles/globals.scss";
+import { Provider } from "react-redux";
+import store from "../store";
 
 const App = ({ Component, pageProps }) => {
   return (
     <div className="wrapper">
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <Provider store={store}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </Provider>
     </div>
   );
 };

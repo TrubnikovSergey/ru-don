@@ -1,8 +1,8 @@
+import newsService from "../services/news.service";
 import style from "../styles/index.module.scss";
 
 export const getStaticProps = async () => {
-  const respons = await fetch(`${process.env.API_HOST}/news`);
-  const data = await respons.json();
+  const data = await newsService.fetchAll();
 
   if (!data) {
     return { notFound: true };
@@ -25,7 +25,7 @@ const Index = ({ news }) => {
           <ul className={style.news__list}>
             {news &&
               news.map((item) => (
-                <li className={style.news__item} key={item.id}>
+                <li className={style.news__item} key={item._id}>
                   <div dangerouslySetInnerHTML={{ __html: item.news }} />
                 </li>
               ))}

@@ -1,6 +1,7 @@
 .header__login{
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 
 .header__login-link{
@@ -8,4 +9,9 @@
     justify-content: center;
     align-items: center;
     text-decoration: none;
+    gap:5px;
+}
+
+.log-img, .setings-img{
+    width: 20px;
 }
