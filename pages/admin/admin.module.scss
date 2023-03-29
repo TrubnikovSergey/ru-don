@@ -1,3 +1,19 @@
-.wrapper{
-   
+
+.container{
+    display: flex;
+    height: 100%;
+    gap: 15px;
+}
+.left-panel{
+    background-color: tomato;
+    flex: 1;
+}
+.right-panel{
+    border: 1px solid;
+    flex: 3;
+}
+
+.left-panel__title{
+    text-align: center;
+    margin-top: 20px;
 }

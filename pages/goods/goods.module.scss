@@ -1,26 +1,35 @@
 .main{
     display: flex;
     justify-content: space-between;
-    height: fit-content;
-    margin-top: 30px;
+    height: 100%;
+    gap: 20px;
 }
 
 .categories{
-    flex-grow: 1;
-    margin-right: 30px;
+    flex: 1;
+    // margin-right: 30px;
+    height: 100%;
     background: tomato;
+    // padding: 20px;
+    // padding-right: 30px;
+    // width: 500px;
+}
+
+.container{
     padding: 20px;
-    padding-right: 30px;
-    height: fit-content;
-    width: 500px;
 }
 
 .categories__title{
+    text-align: center;
     margin-bottom: 20px;
 }
 
 .categories__list{
     list-style-type: none;
+}
+
+.categories__item{
+    
 }
 
 .categories__link{
@@ -35,8 +44,6 @@
 }
 
 .goods__item{
-    /* width: 150px;
-    height: 200px; */
     border: 1px solid #CCC;
     margin: 10px 20px;
 }
@@ -75,9 +82,8 @@
 }
 
 .goods{
-    flex-grow: 8;  
-    height: fit-content;
-  
+    flex: 3;  
+    height: fit-content;  
 }
 
 .search{

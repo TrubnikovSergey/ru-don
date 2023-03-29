@@ -22,17 +22,19 @@ const GoodsList = ({ goods, categories }) => {
   return (
     <main className={style.main}>
       <section className={style.categories}>
-        <h1 className={style.categories__title}>Категории</h1>
-        <ul className={style.categories__list}>
-          {categories &&
-            categories.map((item) => (
-              <li className={style.categories__item}>
-                <a className={style.categories__link} href="#">
-                  {item.title}
-                </a>
-              </li>
-            ))}
-        </ul>
+        <div className={style.container}>
+          <h1 className={style.categories__title}>Категории</h1>
+          <ul className={style.categories__list}>
+            {categories &&
+              categories.map((item) => (
+                <li className={style.categories__item}>
+                  <a className={style.categories__link} href="#">
+                    {item.title}
+                  </a>
+                </li>
+              ))}
+          </ul>
+        </div>
       </section>
       <section className={style.goods}>
         <div className={style.search}>
