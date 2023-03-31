@@ -1,0 +1,30 @@
+.section-title{
+    text-align: center;
+    margin: 20px 0px;
+}
+
+.list{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 50px;
+}
+
+.section-content{
+    overflow-y: auto;
+    height: calc(100vh - 242px);
+}
+
+.section-content::-webkit-scrollbar {
+    width: 15px;
+}
+
+.section-content::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: tomato;
+    border-radius: 20px;
+  }
+
+  .hr{
+    margin-top: 10px ;
+  }

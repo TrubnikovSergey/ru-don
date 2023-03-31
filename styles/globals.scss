@@ -1,6 +1,14 @@
 @font-face {
+  font-family: 'Roboto Bold';
+  src: url('../public/fonts/Roboto-Bold.ttf') format('truetype');
+}
+  @font-face {
   font-family: 'Roboto';
   src: url('../public/fonts/Roboto-Regular.ttf') format('truetype');
+}
+  @font-face {
+  font-family: 'Roboto Medium';
+  src: url('../public/fonts/Roboto-Medium.ttf') format('truetype');
 }
 
 *{
@@ -10,5 +18,11 @@
 }
 
 body{
-  font-family: 'Roboto';
+  font-family: 'Roboto Bold';
+  color: rgb(46, 46, 46);
+}
+
+a{
+  color: rgb(46, 46, 46);
+  text-decoration: none;
 }
