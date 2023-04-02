@@ -9,7 +9,7 @@ const Admin = () => {
   let renderContent = null;
 
   if (section === "categories") {
-    renderContent = <SectionCategories title="Категории товаров" />;
+    renderContent = <SectionCategories />;
   }
 
   return (

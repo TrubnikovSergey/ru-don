@@ -43,13 +43,11 @@ const categoriesService = {
     }
   },
   saveCategory: async (category) => {
-    console.log("----category", category);
     try {
-      const data = await http.post(`${process.env.API_HOST || configJSON.API_HOST}/categories?action=saveCategory`, { category });
+      const { config } = await http.post(`${process.env.API_HOST || configJSON.API_HOST}/categories?action=saveCategory`, { category });
+      const respdata = JSON.parse(config.data);
 
-      console.log("----data", JSON.parse(data.config.data));
-
-      return data;
+      return respdata.category;
     } catch (error) {
       return null;
     }

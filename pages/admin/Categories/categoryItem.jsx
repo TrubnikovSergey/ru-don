@@ -5,9 +5,7 @@ import { useState } from "react";
 import BlockEdit from "./blockEdit";
 
 const CategoryItem = ({ item }) => {
-  const [data, setData] = useState(item);
   const [isEdit, setIsEdit] = useState(false);
-  const [isDelete, setIsDelete] = useState(false);
   const { title, _id } = item;
 
   const handlerEdit = (id) => {
@@ -18,9 +16,9 @@ const CategoryItem = ({ item }) => {
 
   return (
     <>
-      <div className={style.item} key={_id}>
+      <div className={style.item}>
         {title}
-        <div className={style["item-button"]}>
+        <div className={style["item-buttons"]}>
           <button className={style["button-edit"]} onClick={() => handlerEdit(_id)}>
             Edit
           </button>

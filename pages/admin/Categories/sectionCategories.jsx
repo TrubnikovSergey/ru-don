@@ -1,21 +1,18 @@
-import categoriesService from "@/services/categories.service";
 import style from "./sectionCategories.module.scss";
 import { useEffect } from "react";
-import { useState } from "react";
 import Loading from "../../../components/loading";
 import CategoryItem from "./categoryItem";
+import { useDispatch, useSelector } from "react-redux";
+import { fatchAllCategories, getCategories, getIsLoading } from "../../../store/categoriesSlice";
 
-const SectionCategories = ({ title }) => {
-  const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  console.log('++++categories',categories);
+const SectionCategories = () => {
+  const dispatch = useDispatch();
+  const categories = useSelector(getCategories());
+  const isLoading = useSelector(getIsLoading());
+  const title = "Категории товаров";
 
   useEffect(() => {
-    categoriesService.fetchAll().then((data) => {
-      setCategories(data);
-      setIsLoading(false);
-    });
+    dispatch(fatchAllCategories());
   }, []);
 
   let renderSection = null;

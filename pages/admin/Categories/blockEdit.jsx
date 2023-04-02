@@ -4,9 +4,12 @@ import PropTypes from "prop-types";
 import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
+import { useDispatch } from "react-redux";
+import { updateCategory } from "@/store/categoriesSlice";
 
 const BlockEdit = ({ item }) => {
   const [data, setData] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {
@@ -47,7 +50,7 @@ const BlockEdit = ({ item }) => {
     delete newData.listCategories;
     newData.children = data.children.map((item) => item._id);
 
-    categoriesService.saveCategory(newData);
+    dispatch(updateCategory(newData));
   };
 
   return data ? (
