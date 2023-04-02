@@ -6,16 +6,14 @@ import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
 
 const BlockEdit = ({ item }) => {
-  //   const [childrenCategories, setChildrenCategories] = useState(null);
-  //   const [allCategories, setAllCategories] = useState(null);
   const [data, setData] = useState(null);
-
-  console.log("----data", data);
 
   useEffect(() => {
     categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {
       let newData = {
         title: item.title,
+        _id: item._id,
+        parent: item.parent,
       };
 
       if (item.children.length > 0) {
@@ -24,40 +22,70 @@ const BlockEdit = ({ item }) => {
         newData.children = [];
       }
 
-      if (item.parent) {
-        newData.parent = response.find((el) => {
-          return el._id == item.parent;
-        });
-      } else {
-        newData.parent = null;
-      }
+      newData.listCategories = response;
 
       setData(newData);
-      //   setAllCategories(data);
     });
-    // if(item.children.length > 0){
-    //     categoriesService.fetchByArrayId(item.children).then(data=>setChildrenCategories(data))
-    // }
   }, []);
+
+  const handlerSave = () => {};
+
+  const handlerChange = ({ target }) => {
+    setData((prev) => {
+      const { name } = target;
+      const value = target.name === "parent" && target.value === "" ? null : target.value;
+
+      return { ...prev, [name]: value };
+    });
+  };
+
+  const handlerSubmit = (e) => {
+    e.preventDefault();
+
+    const newData = { ...data };
+
+    delete newData.listCategories;
+    newData.children = data.children.map((item) => item._id);
+
+    categoriesService.saveCategory(newData);
+  };
 
   return data ? (
     <div className={style["block-edit"]}>
-      <div className={style["block-edit-content"]}>
-        <div>
-          <p>Наименование</p>
-          <input type="text" />
+      <form onSubmit={handlerSubmit}>
+        <div className={style["block-edit-content"]}>
+          <div>
+            <p>Наименование</p>
+            <input className={style.input} type="text" name="title" required={true} onChange={handlerChange} value={data.title} />
+          </div>
+          <div>
+            <p>Родительская категория</p>
+            <select className={style.input} name="parent" onChange={handlerChange} defaultValue={data.parent ? data.parent : ""}>
+              <option value=""></option>
+              {data.listCategories.map((item) => {
+                return (
+                  item._id !== data._id && (
+                    <option key={item._id} value={item._id}>
+                      {item.title}
+                    </option>
+                  )
+                );
+              })}
+            </select>
+          </div>
+          <div>
+            <p>Подкатегории</p>
+            <div className={style.listChildren}>
+              {data.children.length > 0 ? data.children.map((item, idx) => <i key={item._id}>{idx === 0 ? item.title : `, ${item.title}`}</i>) : <i>отсутствуют</i>}
+            </div>
+          </div>
         </div>
-        <div>
-          <p>Родительская категория</p>
-          <input type="text" />
+        <div className={style.save}>
+          <button className={style["button-save"]} type="submit" onClick={handlerSave}>
+            save
+          </button>
         </div>
-        <div>
-          <p>Подкатегории</p>
-          {data.children.map((item) => (
-            <i key={item._id}>{item.title}</i>
-          ))}
-        </div>
-      </div>
+      </form>
     </div>
   ) : (
     <Loading />

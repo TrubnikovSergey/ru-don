@@ -42,6 +42,18 @@ const categoriesService = {
       return null;
     }
   },
+  saveCategory: async (category) => {
+    console.log("----category", category);
+    try {
+      const data = await http.post(`${process.env.API_HOST || configJSON.API_HOST}/categories?action=saveCategory`, { category });
+
+      console.log("----data", JSON.parse(data.config.data));
+
+      return data;
+    } catch (error) {
+      return null;
+    }
+  },
 };
 
 export default categoriesService;

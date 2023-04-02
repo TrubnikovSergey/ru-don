@@ -10,4 +10,20 @@
     margin: 15px;
     font-family: 'Roboto';
     font-size: 14px;
+    width: 50%;
+}
+
+.listChildren{
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.input{
+  padding: 5px;
+  width: 100%;
+}
+
+.save{
+display: flex;
+justify-content: flex-end;
 }

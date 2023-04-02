@@ -37,8 +37,25 @@ handler.post(async (req, res) => {
       res.status(200).json([]);
     }
   }
+  if (action === "saveCategory") {
+    const { category } = req.body;
+
+    let data = null;
+    if (category._id) {
+      const { _id } = category;
+      const dataUpdate = { ...category };
+      delete dataUpdate._id;
+
+      data = await req.db.collection("categories").updateOne({ _id: new ObjectId(_id) }, { $set: dataUpdate });
+    } else {
+      data = await req.db.collection("categories").insertOne(category);
+    }
+
+    res.status(200).json(data);
+  }
   if (action === "getCategoryById") {
-    const data = await req.db.collection("categories").find(ObjectId("4ecc05e55dd98a436ddcc47c"));
+    const { categoryId } = req.body;
+    const data = await req.db.collection("categories").find(ObjectId(categoryId));
 
     res.status(200).json(data);
   }

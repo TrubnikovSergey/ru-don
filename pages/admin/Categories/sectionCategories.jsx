@@ -9,6 +9,8 @@ const SectionCategories = ({ title }) => {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log('++++categories',categories);
+
   useEffect(() => {
     categoriesService.fetchAll().then((data) => {
       setCategories(data);
