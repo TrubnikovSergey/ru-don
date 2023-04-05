@@ -1,9 +1,26 @@
 .item{
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .item-buttons{
     display: flex;
-    gap: 5px;
+    gap: 10px;
+}
+
+.button-img{
+    width: 25px;
+}
+
+.button{
+    display: flex;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.button-img:hover{
+    width: 30px;
 }

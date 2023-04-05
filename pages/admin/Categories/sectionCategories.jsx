@@ -3,23 +3,37 @@ import { useEffect } from "react";
 import Loading from "../../../components/loading";
 import CategoryItem from "./categoryItem";
 import { useDispatch, useSelector } from "react-redux";
-import { fatchAllCategories, getCategories, getIsLoading } from "../../../store/categoriesSlice";
+import { createCategory, fatchAllCategories, getCategories, getIsLoading } from "../../../store/categoriesSlice";
 
 const SectionCategories = () => {
   const dispatch = useDispatch();
   const categories = useSelector(getCategories());
   const isLoading = useSelector(getIsLoading());
   const title = "Категории товаров";
+  const newCategory = {
+    title: "Новая категория",
+    parent: null,
+    children: [],
+  };
 
   useEffect(() => {
     dispatch(fatchAllCategories());
   }, []);
 
+  const handlerCreateCategory = () => {
+    dispatch(createCategory(newCategory));
+  };
+
+  console.log();
+
   let renderSection = null;
   if (!isLoading) {
     renderSection = (
-      <>
+      <div className={style["section-categories"]}>
         <h2 className={style["section-title"]}>{title}</h2>
+        <button className={style["create-category"]} onClick={handlerCreateCategory}>
+          Создать категорию
+        </button>
         <div className={style["section-content"]}>
           <ul className={style.list}>
             {categories.map((item) => (
@@ -30,7 +44,7 @@ const SectionCategories = () => {
             ))}
           </ul>
         </div>
-      </>
+      </div>
     );
   } else {
     renderSection = (

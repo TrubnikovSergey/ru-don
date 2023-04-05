@@ -6,8 +6,9 @@ import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
 import { useDispatch } from "react-redux";
 import { updateCategory } from "@/store/categoriesSlice";
+// import MultiSelectField from "@/components/multiSelect";
 
-const BlockEdit = ({ item }) => {
+const BlockEdit = ({ item, isEdit }) => {
   const [data, setData] = useState(null);
   const dispatch = useDispatch();
 
@@ -31,7 +32,9 @@ const BlockEdit = ({ item }) => {
     });
   }, []);
 
-  const handlerSave = () => {};
+  const handlerCancel = () => {
+    isEdit(false);
+  };
 
   const handlerChange = ({ target }) => {
     setData((prev) => {
@@ -51,6 +54,25 @@ const BlockEdit = ({ item }) => {
     newData.children = data.children.map((item) => item._id);
 
     dispatch(updateCategory(newData));
+  };
+
+  const toggleChildren = (id) => {
+    const isExist = Boolean(data.children.find((item) => item._id === id));
+
+    let newData = { ...data };
+    if (isExist) {
+      newData.children = data.children.filter((item) => item._id !== id);
+    } else {
+      const findItem = data.listCategories.find((item) => item._id === id);
+      newData.children.push(findItem);
+    }
+
+    setData(newData);
+  };
+
+  const handlerMultiSelectClick = (e) => {
+    toggleChildren(e.target.value);
+    console.dir(data.children);
   };
 
   return data ? (
@@ -76,16 +98,24 @@ const BlockEdit = ({ item }) => {
               })}
             </select>
           </div>
-          <div>
-            <p>Подкатегории</p>
-            <div className={style.listChildren}>
-              {data.children.length > 0 ? data.children.map((item, idx) => <i key={item._id}>{idx === 0 ? item.title : `, ${item.title}`}</i>) : <i>отсутствуют</i>}
+          <div className={style.subcategories}>
+            <div className={style["list-subcategories"]}>
+              <p>Подкатегории:&nbsp;</p>
+              <div className={style.listChildren}>
+                {data.children.length > 0 ? data.children.map((item, idx) => <i key={item._id}>{idx === 0 ? item.title : `, ${item.title}`}</i>) : <i>отсутствуют</i>}
+              </div>
             </div>
+            {/* <div className={style["multiselect-subcategories"]}>
+              <MultiSelectField listItems={data.listCategories} listChildren={data.children} toggleSelect={toggleChildren} />
+            </div> */}
           </div>
         </div>
-        <div className={style.save}>
-          <button className={style["button-save"]} type="submit" onClick={handlerSave}>
-            save
+        <div className={style["buttons-save-cancel"]}>
+          <button className={style["button"]} type="submit">
+            Сохранить
+          </button>
+          <button className={style["button"]} type="button" onClick={handlerCancel}>
+            Отмена
           </button>
         </div>
       </form>
@@ -97,6 +127,7 @@ const BlockEdit = ({ item }) => {
 
 BlockEdit.propTypes = {
   item: PropTypes.object,
+  isEdit: PropTypes.func,
 };
 
 export default BlockEdit;

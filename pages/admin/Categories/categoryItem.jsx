@@ -3,31 +3,36 @@ import PropTypes from "prop-types";
 import style from "./categoryItem.module.scss";
 import { useState } from "react";
 import BlockEdit from "./blockEdit";
+import { useDispatch } from "react-redux";
+import { removeCategory } from "../../../store/categoriesSlice";
 
 const CategoryItem = ({ item }) => {
   const [isEdit, setIsEdit] = useState(false);
   const { title, _id } = item;
+  const dispatch = useDispatch();
 
   const handlerEdit = (id) => {
     setIsEdit(!isEdit);
   };
 
-  const handlerDel = (id) => {};
+  const handlerDel = (id) => {
+    dispatch(removeCategory(id));
+  };
 
   return (
     <>
       <div className={style.item}>
         {title}
         <div className={style["item-buttons"]}>
-          <button className={style["button-edit"]} onClick={() => handlerEdit(_id)}>
-            Edit
-          </button>
-          <button className={style["button-del"]} onClick={() => handlerDel(_id)}>
-            Del
-          </button>
+          <div className={style["button"]} onClick={() => handlerEdit(_id)}>
+            <img className={style["button-img"]} src="/images/edit.svg" alt="Редактировать" />
+          </div>
+          <div className={style["button"]} onClick={() => handlerDel(_id)}>
+            <img className={style["button-img"]} src="/images/delete.svg" alt="Удалить" />
+          </div>
         </div>
       </div>
-      {isEdit && <BlockEdit item={item} />}
+      {isEdit && <BlockEdit item={item} isEdit={setIsEdit} />}
     </>
   );
 };

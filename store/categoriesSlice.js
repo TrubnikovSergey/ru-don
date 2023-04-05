@@ -9,6 +9,14 @@ const categoriesSlice = createSlice({
     isLoading: false,
   },
   reducers: {
+    requestCreateCategory: (state, action) => {},
+    responsCreateCategory: (state, action) => {
+      state.entities.unshift(action.payload);
+    },
+    responsCreateCategoryError: (state, action) => {
+      state.errors.push(action.payload);
+    },
+
     requestFetchAll: (state) => {
       state.isLoading = true;
     },
@@ -35,27 +43,77 @@ const categoriesSlice = createSlice({
     responsUpdateCategory: (state, action) => {
       state.isLoading = false;
 
-      const category = action.payload;
+      const categories = action.payload;
 
-      state.entities.forEach((item) => {
-        if (item._id === category._id) {
-          Object.keys(item).forEach((key) => (item[key] = category[key]));
-        }
-      });
+      for (let i = 0; i < categories.length; i++) {
+        const category = categories[i];
+
+        state.entities.forEach((item) => {
+          if (item._id === category._id) {
+            Object.keys(item).forEach((key) => (item[key] = category[key]));
+          }
+        });
+      }
+    },
+    requestRemoveCategory: (state) => {
+      state.isLoading = true;
+    },
+    responsRemoveCategory: (state, action) => {
+      state.entities = state.entities.filter((item) => item._id !== action.payload);
+      state.isLoading = false;
+    },
+    responsRemoveCategoryError: (state, action) => {
+      state.errors.push(action.payload);
+      state.isLoading = false;
     },
   },
 });
 
 const { reducer: categoriesReducer, actions } = categoriesSlice;
-const { requestFetchAll, requestFetchAllError, responsFetchAll, requestUpdateCategory, requestUpdateCategoryError, responsUpdateCategory } = actions;
+const {
+  requestCreateCategory,
+  responsCreateCategory,
+  responsCreateCategoryError,
+  requestFetchAll,
+  requestFetchAllError,
+  responsFetchAll,
+  requestUpdateCategory,
+  requestUpdateCategoryError,
+  responsUpdateCategory,
+  requestRemoveCategory,
+  responsRemoveCategory,
+  responsRemoveCategoryError,
+} = actions;
 
 const updateCategory = (category) => async (dispatch) => {
   dispatch(requestUpdateCategory());
   try {
-    const data = await categoriesService.saveCategory(category);
-    dispatch(responsUpdateCategory(data));
+    const changedCategories = await checkParentReferens(category);
+    const respons = await categoriesService.saveCategory(category);
+
+    if (respons.data.acknowledged) {
+      const data = JSON.parse(respons.config.data);
+      changedCategories.push(data.category);
+
+      dispatch(responsUpdateCategory(changedCategories));
+    }
   } catch (error) {
     dispatch(requestUpdateCategoryError(error));
+  }
+};
+
+const removeCategory = (categoryId) => async (dispatch) => {
+  dispatch(requestRemoveCategory());
+  try {
+    const data = await categoriesService.removeCategoryById(categoryId);
+
+    if (data.acknowledged) {
+      dispatch(responsRemoveCategory(categoryId));
+    } else {
+      dispatch(responsRemoveCategoryError({ codeError: 400, massage: "Remove category failed" }));
+    }
+  } catch (error) {
+    dispatch(responsRemoveCategoryError(error));
   }
 };
 
@@ -69,7 +127,71 @@ const fatchAllCategories = () => async (dispatch) => {
   }
 };
 
+const createCategory = (category) => async (dispatch) => {
+  dispatch(requestCreateCategory(category));
+  try {
+    const respons = await categoriesService.saveCategory(category);
+
+    if (respons.data.acknowledged) {
+      category._id = respons.data.insertedId;
+      dispatch(responsCreateCategory(category));
+    }
+  } catch (error) {
+    dispatch(responsCreateCategoryError(error));
+  }
+};
+
 const getCategories = () => (state) => state.categories.entities;
 const getIsLoading = () => (state) => state.categories.isLoading;
 
-export { categoriesReducer, fatchAllCategories, updateCategory, getCategories, getIsLoading };
+async function checkParentReferens(category) {
+  const respons = await categoriesService.getCategoryById(category._id);
+  const categoryFromBD = respons.data;
+
+  const changedCategories = [];
+  if (category.parent !== categoryFromBD.parent) {
+    if (!category.parent && categoryFromBD.parent) {
+      const changedObject = await changeParentReferens(categoryFromBD.parent, categoryFromBD._id, "remove");
+      changedCategories.push(changedObject);
+    } else if (category.parent && !categoryFromBD.parent) {
+      const changedObject = await changeParentReferens(category.parent, category._id, "add");
+      changedCategories.push(changedObject);
+    } else if (category.parent && categoryFromBD.parent) {
+      const changedObject = await changeParentReferens(categoryFromBD.parent, categoryFromBD._id, "remove");
+      changedCategories.push(changedObject);
+
+      const changedObject2 = await changeParentReferens(category.parent, categoryFromBD._id, "add");
+      changedCategories.push(changedObject2);
+    }
+  }
+
+  return changedCategories;
+}
+
+async function changeParentReferens(parentId, childrenId, mode) {
+  const respons = await categoriesService.getCategoryById(parentId);
+  const categoryParent = respons.data;
+
+  addRemoveChildrenCategory(categoryParent, childrenId, mode);
+  await categoriesService.saveCategory(categoryParent);
+
+  return categoryParent;
+}
+
+function addRemoveChildrenCategory(parent, childrenId, mode) {
+  const isExistChildren = parent.children.includes(childrenId);
+
+  if (mode === "add") {
+    if (!isExistChildren) {
+      parent.children.unshift(childrenId);
+    }
+  }
+
+  if (mode === "remove") {
+    if (isExistChildren) {
+      parent.children = parent.children.filter((item) => item !== childrenId);
+    }
+  }
+}
+
+export { categoriesReducer, fatchAllCategories, updateCategory, removeCategory, createCategory, getCategories, getIsLoading };

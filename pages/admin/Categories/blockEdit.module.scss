@@ -10,20 +10,32 @@
     margin: 15px;
     font-family: 'Roboto';
     font-size: 14px;
-    width: 50%;
+    width: 100%;
 }
 
 .listChildren{
-  margin-top: 5px;
   font-size: 14px;
 }
 
 .input{
   padding: 5px;
-  width: 100%;
+  width: 50%;
 }
 
-.save{
+.buttons-save-cancel{
 display: flex;
 justify-content: flex-end;
+gap: 10px;
+}
+
+.button-img{
+  width: 25px;
+}
+.list-subcategories{
+  display: flex;
+  align-items: center;
+}
+
+.multiselect-subcategories{
+  width: 50%;
 }

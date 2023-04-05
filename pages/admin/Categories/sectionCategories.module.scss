@@ -1,6 +1,7 @@
-.section-title{
-    text-align: center;
-    margin: 20px 0px;
+.section-categories{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .list{
@@ -10,9 +11,15 @@
     margin: 50px;
 }
 
+.section-title{
+    text-align: center;
+    margin: 20px 0px;
+}
+
 .section-content{
+    width: 100%;
     overflow-y: auto;
-    height: calc(100vh - 242px);
+    height: calc(100vh - 267px);
 }
 
 .section-content::-webkit-scrollbar {

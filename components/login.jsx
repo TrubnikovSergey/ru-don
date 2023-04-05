@@ -8,8 +8,6 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const handlerLogInLogOut = () => {
-    // if (isLogin) {
-    // }
     dispatch(actionsLogin.login(!isLogin));
   };
 
