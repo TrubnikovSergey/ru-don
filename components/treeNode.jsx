@@ -25,9 +25,7 @@ const TreeNode = ({ node }) => {
 
   useEffect(() => {
     if (children.length > 0) {
-      setTimeout(() => {
-        categoriesService.fetchByArrayId(children).then((data) => setTreeData(data));
-      }, 2000);
+      categoriesService.fetchByArrayId(children).then((data) => setTreeData(data));
     }
   }, []);
 
@@ -35,9 +33,7 @@ const TreeNode = ({ node }) => {
     setShowChildren(!showChildren);
   }
 
-  function handlerClickNode() {
-    console.log(_id);
-  }
+  function handlerClickNode() {}
 
   let renderChildren = null;
   if (showChildren) {
@@ -52,7 +48,6 @@ const TreeNode = ({ node }) => {
     }
   }
 
-  // <div onClick={handlerClickNode}>{title}</div>
   return (
     <>
       <div className={style.treeNode}>

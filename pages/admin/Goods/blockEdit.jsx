@@ -6,6 +6,7 @@ import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
 import { useDispatch } from "react-redux";
 import { updateCategory } from "@/store/categoriesSlice";
+import { updateGood } from "@/store/goodsSlice";
 // import MultiSelectField from "@/components/multiSelect";
 
 const BlockEdit = ({ item, isEdit }) => {
@@ -14,17 +15,7 @@ const BlockEdit = ({ item, isEdit }) => {
 
   useEffect(() => {
     categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {
-      let newData = {
-        title: item.title,
-        _id: item._id,
-        parent: item.parent,
-      };
-
-      if (item.children.length > 0) {
-        newData.children = response.filter((el) => item.children.includes(el._id));
-      } else {
-        newData.children = [];
-      }
+      let newData = { ...item };
 
       newData.listCategories = response;
 
@@ -38,49 +29,22 @@ const BlockEdit = ({ item, isEdit }) => {
 
   const handlerChange = ({ target }) => {
     setData((prev) => {
-      
       const { name, value } = target;
 
-      if (name === "parent") {
+      if (name === "categoryId") {
         value === "" ? null : value;
       }
 
       return { ...prev, [name]: value };
     });
   };
-  const handlerInput = ({ target }) => {
-    
-    console.dir(target);
-  };
 
   const handlerSubmit = (e) => {
     e.preventDefault();
-
     const newData = { ...data };
-
     delete newData.listCategories;
-    newData.children = data.children.map((item) => item._id);
 
-    dispatch(updateCategory(newData));
-  };
-
-  const toggleChildren = (id) => {
-    const isExist = Boolean(data.children.find((item) => item._id === id));
-
-    let newData = { ...data };
-    if (isExist) {
-      newData.children = data.children.filter((item) => item._id !== id);
-    } else {
-      const findItem = data.listCategories.find((item) => item._id === id);
-      newData.children.push(findItem);
-    }
-
-    setData(newData);
-  };
-
-  const handlerMultiSelectClick = (e) => {
-    toggleChildren(e.target.value);
-    console.dir(data.children);
+    dispatch(updateGood(newData));
   };
 
   return data ? (
@@ -92,8 +56,12 @@ const BlockEdit = ({ item, isEdit }) => {
             <input className={style.input} type="text" name="title" required={true} onChange={handlerChange} value={data.title} />
           </div>
           <div>
-            <p>Родительская категория</p>
-            <select className={style.input} name="parent" onChange={handlerChange} onInput={handlerInput} defaultValue={data.parent ? data.parent : ""}>
+            <p>Описание товара</p>
+            <textarea className={style.textarea} rows="10" name="description" onChange={handlerChange} value={data.description}></textarea>
+          </div>
+          <div>
+            <p>Категория товара</p>
+            <select className={style.input} name="categoryId" onChange={handlerChange} defaultValue={data.categoryId ? data.categoryId : ""}>
               <option value=""></option>
               {data.listCategories.map((item) => (
                 <option key={item._id} value={item._id}>
@@ -102,16 +70,17 @@ const BlockEdit = ({ item, isEdit }) => {
               ))}
             </select>
           </div>
-          <div className={style.subcategories}>
-            <div className={style["list-subcategories"]}>
-              <p>Подкатегории:&nbsp;</p>
-              <div className={style.listChildren}>
-                {data.children.length > 0 ? data.children.map((item, idx) => <i key={item._id}>{idx === 0 ? item.title : `, ${item.title}`}</i>) : <i>отсутствуют</i>}
-              </div>
-            </div>
-            {/* <div className={style["multiselect-subcategories"]}>
-              <MultiSelectField listItems={data.listCategories} listChildren={data.children} toggleSelect={toggleChildren} />
-            </div> */}
+          <div>
+            <p>Цена</p>
+            <input className={style["input-number"]} type="number" name="price" required={true} onChange={handlerChange} value={data.price} />
+          </div>
+          <div>
+            <p>Процент скидки</p>
+            <input className={style["input-number"]} type="number" name="discountProcent" required={true} onChange={handlerChange} value={data.discountProcent} />
+          </div>
+          <div>
+            <p>Сумма скидки</p>
+            <input className={style["input-number"]} type="number" name="discountCount" required={true} onChange={handlerChange} value={data.discountCount} />
           </div>
         </div>
         <div className={style["buttons-save-cancel"]}>

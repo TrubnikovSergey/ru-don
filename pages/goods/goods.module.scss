@@ -22,41 +22,6 @@
     text-align: center;
 }
 
-.goods__list{
-    list-style-type: none;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap; 
-}
-
-.goods__item{
-    border: 1px solid #CCC;
-    margin: 10px 20px;
-}
-
-.goods__content{    
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-
-    width: 200px;
-    height: 250px;
-    border: 1px solid #CCC;
-
-}
-
-.goods__img{
-    width: 50px;
-    height: 50px;    
-}
-
-.goods__link{
-    text-decoration: none;
-    text-align: center;
-
-}
-
 .sort{
     display: flex;
     align-items: center;

@@ -4,6 +4,7 @@ import Loading from "../../../components/loading";
 import CategoryItem from "./categoryItem";
 import { useDispatch, useSelector } from "react-redux";
 import { createCategory, fatchAllCategories, getCategories, getIsLoading } from "../../../store/categoriesSlice";
+import LayoutSection from "../Section/layoutSection";
 
 const SectionCategories = () => {
   const dispatch = useDispatch();
@@ -24,27 +25,19 @@ const SectionCategories = () => {
     dispatch(createCategory(newCategory));
   };
 
-  console.log();
-
   let renderSection = null;
   if (!isLoading) {
     renderSection = (
-      <div className={style["section-categories"]}>
-        <h2 className={style["section-title"]}>{title}</h2>
-        <button className={style["create-category"]} onClick={handlerCreateCategory}>
-          Создать категорию
-        </button>
-        <div className={style["section-content"]}>
-          <ul className={style.list}>
-            {categories.map((item) => (
-              <div className={style["item-container"]} key={item._id}>
-                <CategoryItem item={item} />
-                <hr className={style.hr} />
-              </div>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <LayoutSection onCreateNewElement={handlerCreateCategory} titleButtonCreate="Создать категорию" titleSection={title}>
+        <ul className={style.list}>
+          {categories.map((item) => (
+            <div className={style["item-container"]} key={item._id}>
+              <CategoryItem item={item} />
+              <hr />
+            </div>
+          ))}
+        </ul>
+      </LayoutSection>
     );
   } else {
     renderSection = (

@@ -10,7 +10,6 @@
     margin: 15px;
     font-family: 'Roboto';
     font-size: 14px;
-    width: 100%;
 }
 
 .listChildren{
@@ -20,6 +19,15 @@
 .input{
   padding: 5px;
   width: 50%;
+}
+.input-number{
+  padding: 5px;
+  width: 15%;
+}
+
+.textarea{
+  padding: 5px;
+  width: 100%;
 }
 
 .buttons-save-cancel{

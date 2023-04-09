@@ -66,6 +66,9 @@ const categoriesSlice = createSlice({
       state.errors.push(action.payload);
       state.isLoading = false;
     },
+    closeError: (state, action) => {
+      state.errors = state.errors.filter((item) => item._id !== action.payload);
+    },
   },
 });
 
@@ -83,6 +86,7 @@ const {
   requestRemoveCategory,
   responsRemoveCategory,
   responsRemoveCategoryError,
+  closeError,
 } = actions;
 
 const updateCategory = (category) => async (dispatch) => {
@@ -98,7 +102,8 @@ const updateCategory = (category) => async (dispatch) => {
       dispatch(responsUpdateCategory(changedCategories));
     }
   } catch (error) {
-    dispatch(requestUpdateCategoryError(error));
+    console.log(error);
+    dispatch(requestUpdateCategoryError(JSON.stringify(error)));
   }
 };
 
@@ -110,7 +115,8 @@ const removeCategory = (categoryId) => async (dispatch) => {
     if (data.acknowledged) {
       dispatch(responsRemoveCategory(categoryId));
     } else {
-      dispatch(responsRemoveCategoryError({ codeError: 400, massage: "Remove category failed" }));
+      const message = data.response.data.message;
+      dispatch(responsRemoveCategoryError({ _id: categoryId, message }));
     }
   } catch (error) {
     dispatch(responsRemoveCategoryError(error));
@@ -141,15 +147,12 @@ const createCategory = (category) => async (dispatch) => {
   }
 };
 
-const getCategories = () => (state) => state.categories.entities;
-const getIsLoading = () => (state) => state.categories.isLoading;
-
 async function checkParentReferens(category) {
   const respons = await categoriesService.getCategoryById(category._id);
   const categoryFromBD = respons.data;
 
   const changedCategories = [];
-  if (category.parent !== categoryFromBD.parent) {
+  if (categoryFromBD && category.parent !== categoryFromBD.parent) {
     if (!category.parent && categoryFromBD.parent) {
       const changedObject = await changeParentReferens(categoryFromBD.parent, categoryFromBD._id, "remove");
       changedCategories.push(changedObject);
@@ -194,4 +197,12 @@ function addRemoveChildrenCategory(parent, childrenId, mode) {
   }
 }
 
-export { categoriesReducer, fatchAllCategories, updateCategory, removeCategory, createCategory, getCategories, getIsLoading };
+const doCloseError = (_id) => (dispatch) => {
+  dispatch(closeError(_id));
+};
+
+const getCategories = () => (state) => state.categories.entities;
+const getErrors = () => (state) => state.categories.errors;
+const getIsLoading = () => (state) => state.categories.isLoading;
+
+export { categoriesReducer, fatchAllCategories, updateCategory, removeCategory, createCategory, doCloseError, getCategories, getIsLoading, getErrors };

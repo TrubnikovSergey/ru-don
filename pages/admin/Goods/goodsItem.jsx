@@ -1,16 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import style from "./categoryItem.module.scss";
+import style from "./goodsItem.module.scss";
 import { useState } from "react";
 import BlockEdit from "./blockEdit";
-import { useDispatch, useSelector } from "react-redux";
-import { getErrors, removeCategory } from "../../../store/categoriesSlice";
-import ErrorBlock from "./errorBlock";
+import { useDispatch } from "react-redux";
+import { removeGood } from "../../../store/goodsSlice";
 
-const CategoryItem = ({ item={} }) => {
+const GoodsItem = ({ item = {} }) => {
   const [isEdit, setIsEdit] = useState(false);
   const { title, _id } = item;
-  const errors = useSelector(getErrors());
   const dispatch = useDispatch();
 
   const handlerEdit = (id) => {
@@ -18,14 +16,13 @@ const CategoryItem = ({ item={} }) => {
   };
 
   const handlerDel = (id) => {
-    dispatch(removeCategory(id));
+    dispatch(removeGood(id));
   };
 
   return (
     <>
       <div className={style.item}>
         {title}
-        {errors.map((el) => el._id === item._id && <ErrorBlock error={el} />)}
         <div className={style["item-buttons"]}>
           <div className={style["button"]} onClick={() => handlerEdit(_id)}>
             <img className={style["button-img"]} src="/images/edit.svg" alt="Редактировать" />
@@ -40,8 +37,8 @@ const CategoryItem = ({ item={} }) => {
   );
 };
 
-CategoryItem.propTypes = {
-  item: PropTypes.object,
+GoodsItem.propTypes = {
+  item: PropTypes.object.isRequired,
 };
 
-export default CategoryItem;
+export default GoodsItem;

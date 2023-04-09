@@ -1,9 +1,13 @@
 import { useState } from "react";
 import style from "./auth.module.scss";
+import { useDispatch } from "react-redux";
+import { actionsLogin } from "@/store/loginSlice";
+import { useRouter } from "next/router";
 
 const Login = () => {
   const [data, setData] = useState({ login: "", password: "" });
-  console.log("---data---", data);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const handlerChange = ({ target }) => {
     const { name, value } = target;
@@ -13,7 +17,10 @@ const Login = () => {
 
   const handlerSubmit = () => {
     setData({ login: "", password: "" });
-    console.log("submit");
+    if (data.login === "admin" && data.password === "admin") {
+      dispatch(actionsLogin.login(true));
+      router.push("/");
+    }
   };
 
   return (

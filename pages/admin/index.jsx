@@ -2,6 +2,7 @@ import Link from "next/link";
 import style from "./admin.module.scss";
 import { useRouter } from "next/router";
 import SectionCategories from "./Categories/sectionCategories";
+import SectionGoods from "./Goods/sectionGoods";
 
 const Admin = () => {
   const route = useRouter();
@@ -10,6 +11,9 @@ const Admin = () => {
 
   if (section === "categories") {
     renderContent = <SectionCategories />;
+  }
+  if (section === "goods") {
+    renderContent = <SectionGoods />;
   }
 
   return (

@@ -1,25 +1,34 @@
 import style from "./goods.module.scss";
-import categoriesService from "../../services/categories.service";
-import goodsService from "../../services/goods.service";
+import { MongoClient } from "mongodb";
 import Tree from "@/components/tree";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useState } from "react";
-import { useEffect } from "react";
+import GoodsItem from "./goodsItem";
+import GoodsList from "./goodsList";
 
 export const getStaticProps = async () => {
-  const dataCategories = await categoriesService.fetchRootCategories();
-  const dataGoods = await goodsService.fetchAll();
+  const mongoURL = process.env.MONGO_URL;
+  const client = new MongoClient(`${mongoURL}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 
-  if (!dataCategories && !dataGoods) {
+  const req = client.db("energy");
+  let dataCategories = await req.collection("categories").find({ parent: null }).toArray();
+  let dataGoods = await req.collection("goods").find({}).toArray();
+
+  client.close();
+
+  if ((!dataCategories && !dataGoods) || (dataCategories.name === "Error" && dataGoods.name === "Error")) {
     return { notFound: true };
   }
 
   return {
     props: {
-      categories: dataCategories,
-      goods: dataGoods,
+      categories: JSON.parse(JSON.stringify(dataCategories)),
+      goods: JSON.parse(JSON.stringify(dataGoods)),
     },
+    revalidate: 10,
   };
 };
 
@@ -29,19 +38,21 @@ function filterGoodsByCategory(goodsList, categoryId) {
   return newList;
 }
 
-const GoodsList = ({ goods, categories }) => {
+const MainPage = ({ goods, categories }) => {
   const router = useRouter();
   const { categoryId, goodId } = router.query;
-  const [goodsList, setGoodsList] = useState(goods);
+  let goodsList = null;
+  let goodsItem = null;
 
-  useEffect(() => {
-    if (categoryId) {
-      const newGoodsList = filterGoodsByCategory(goods, categoryId);
-      setGoodsList(newGoodsList);
-    } else {
-      setGoodsList(goods);
-    }
-  }, [categoryId]);
+  if (goodId) {
+    goodsItem = goods.find((el) => el._id === goodId);
+  }
+
+  if (categoryId) {
+    goodsList = filterGoodsByCategory(goods, categoryId);
+  } else {
+    goodsList = goods;
+  }
 
   return (
     <main className={style.main}>
@@ -58,22 +69,10 @@ const GoodsList = ({ goods, categories }) => {
           <button className={style.search__button}>Поиск</button>
         </div>
         <section className={style.sort}>варианты сортировки</section>
-        <ul className={style.goods__list}>
-          {goodsList &&
-            goodsList.map((item) => (
-              <li className={style.goods__item} key={item._id}>
-                <a className={style.goods__link} href="./goodsItem.html">
-                  <div className={style.goods__content}>
-                    <img className={style.goods__img} src="/images/noimg.png" alt="изображение товара" />
-                    <h1 className={style.goods__title}>{item.title}</h1>
-                  </div>
-                </a>
-              </li>
-            ))}
-        </ul>
+        {goodId ? goodsItem && <GoodsItem item={goodsItem} /> : goodsList && <GoodsList goodsList={goodsList} />}
       </section>
     </main>
   );
 };
 
-export default GoodsList;
+export default MainPage;

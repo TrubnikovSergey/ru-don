@@ -4,7 +4,7 @@ import configJSON from "../config.json";
 const categoriesService = {
   fetchAll: async () => {
     try {
-      const { data } = await http.get(`${process.env.API_HOST || configJSON.API_HOST}/categories?action=fetchAll`);
+      const { data } = await http.get(`${configJSON.API_HOST}/categories?action=fetchAll`);
 
       return data;
     } catch (error) {
@@ -13,7 +13,7 @@ const categoriesService = {
   },
   fetchAllWithConcreteFields: async (fields) => {
     try {
-      const { data } = await http.post(`${process.env.API_HOST || configJSON.API_HOST}/categories?action=fetchAllWithConcreteFields`, { fields });
+      const { data } = await http.post(`${configJSON.API_HOST}/categories?action=fetchAllWithConcreteFields`, { fields });
       return data;
     } catch (error) {
       return error;
@@ -21,7 +21,8 @@ const categoriesService = {
   },
   fetchRootCategories: async () => {
     try {
-      const { data } = await http.get(`${process.env.API_HOST || configJSON.API_HOST}/categories?action=fetchRootCategories`);
+      const respons = await http.get(`${configJSON.API_HOST}/categories?action=fetchRootCategories`);
+      const { data } = respons;
       return data;
     } catch (error) {
       return error;
@@ -29,7 +30,7 @@ const categoriesService = {
   },
   fetchByArrayId: async (arrayId) => {
     try {
-      const { data } = await http.post(`${process.env.API_HOST || configJSON.API_HOST}/categories?action=fetchByArrayId`, { arrayId });
+      const { data } = await http.post(`${configJSON.API_HOST}/categories?action=fetchByArrayId`, { arrayId });
       return data;
     } catch (error) {
       return error;
@@ -37,7 +38,7 @@ const categoriesService = {
   },
   getCategoryById: async (categoryId) => {
     try {
-      const data = await http.post(`${process.env.API_HOST || configJSON.API_HOST}/categories?action=getCategoryById`, { categoryId });
+      const data = await http.post(`${configJSON.API_HOST}/categories?action=getCategoryById`, { categoryId });
       return data;
     } catch (error) {
       return error;
@@ -45,7 +46,7 @@ const categoriesService = {
   },
   saveCategory: async (category) => {
     try {
-      const respons = await http.post(`${process.env.API_HOST || configJSON.API_HOST}/categories?action=saveCategory`, { category });
+      const respons = await http.post(`${configJSON.API_HOST}/categories?action=saveCategory`, { category });
 
       return respons;
     } catch (error) {
@@ -55,7 +56,7 @@ const categoriesService = {
 
   removeCategoryById: async (categoryId) => {
     try {
-      const { data } = await http.post(`${process.env.API_HOST || configJSON.API_HOST}/categories?action=removeCategoryById`, { categoryId });
+      const { data } = await http.post(`${configJSON.API_HOST}/categories?action=removeCategoryById`, { categoryId });
 
       return data;
     } catch (error) {
