@@ -62,17 +62,19 @@ handler.post(async (req, res) => {
     if (action === "saveCategory") {
       const { category } = req.body;
 
-      let data = null;
+      let result = null;
+      let changedCategories = [];
       if (category._id) {
         const dataForUpdate = { ...category };
         delete dataForUpdate._id;
 
-        data = await req.db.collection("categories").updateOne({ _id: new ObjectId(category._id) }, { $set: dataForUpdate });
+        changedCategories = await checkParentReferens(category);
+        result = await req.db.collection("categories").updateOne({ _id: new ObjectId(category._id) }, { $set: dataForUpdate });
       } else {
-        data = await req.db.collection("categories").insertOne(category);
+        result = await req.db.collection("categories").insertOne(category);
       }
 
-      res.status(200).json(data);
+      res.status(200).json({ result, changedCategories });
     }
 
     if (action === "getCategoryById") {
@@ -93,24 +95,32 @@ handler.post(async (req, res) => {
   }
 });
 
-/////////////////////////////////////////////////////
 async function checkParentReferens(category) {
-  const respons = await categoriesService.getCategoryById(category._id);
-  const categoryFromBD = respons.data;
+  const mongoURL = process.env.MONGO_URL;
+  const client = new MongoClient(`${mongoURL}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  const req = client.db("energy");
+  const categoryFromBD = await req.collection("categories").findOne({ _id: new ObjectId(category._id) });
+
+  // const respons = await categoriesService.getCategoryById(category._id);
+  // const categoryFromBD = respons.data;
 
   const changedCategories = [];
   if (categoryFromBD && category.parent !== categoryFromBD.parent) {
     if (!category.parent && categoryFromBD.parent) {
-      const changedObject = await changeParentReferens(categoryFromBD.parent, categoryFromBD._id, "remove");
+      const changedObject = await changeParentReferens(req, categoryFromBD.parent, categoryFromBD._id, "remove");
       changedCategories.push(changedObject);
     } else if (category.parent && !categoryFromBD.parent) {
-      const changedObject = await changeParentReferens(category.parent, category._id, "add");
+      const changedObject = await changeParentReferens(req, category.parent, category._id, "add");
       changedCategories.push(changedObject);
     } else if (category.parent && categoryFromBD.parent) {
-      const changedObject = await changeParentReferens(categoryFromBD.parent, categoryFromBD._id, "remove");
+      const changedObject = await changeParentReferens(req, categoryFromBD.parent, categoryFromBD._id, "remove");
       changedCategories.push(changedObject);
 
-      const changedObject2 = await changeParentReferens(category.parent, categoryFromBD._id, "add");
+      const changedObject2 = await changeParentReferens(req, category.parent, categoryFromBD._id, "add");
       changedCategories.push(changedObject2);
     }
   }
@@ -118,17 +128,23 @@ async function checkParentReferens(category) {
   return changedCategories;
 }
 
-async function changeParentReferens(parentId, childrenId, mode) {
-  const respons = await categoriesService.getCategoryById(parentId);
-  const categoryParent = respons.data;
+async function changeParentReferens(req, parentId, childrenId, mode) {
+  const categoryParent = await req.collection("categories").findOne({ _id: new ObjectId(parentId) });
+  // const respons = await categoriesService.getCategoryById(parentId);
+  // const categoryParent = respons.data;
 
   addRemoveChildrenCategory(categoryParent, childrenId, mode);
-  await categoriesService.saveCategory(categoryParent);
+
+  const dataUpdate = { ...categoryParent };
+  delete dataUpdate._id;
+  await req.collection("categories").updateOne({ _id: new ObjectId(categoryParent._id) }, { $set: dataUpdate });
+  // await categoriesService.saveCategory(categoryParent);
 
   return categoryParent;
 }
 
-function addRemoveChildrenCategory(parent, childrenId, mode) {
+function addRemoveChildrenCategory(parent, children, mode) {
+  const childrenId = String(children);
   const isExistChildren = parent.children.includes(childrenId);
 
   if (mode === "add") {
@@ -143,23 +159,5 @@ function addRemoveChildrenCategory(parent, childrenId, mode) {
     }
   }
 }
-
-async function test(data) {
-  const client = new MongoClient("mongodb://82.148.28.101:27017", {
-    // const client = new MongoClient("mongodb://127.0.0.1:27017", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-
-  const req = client.db("energy");
-  let dataCategories = await req.collection("categories").find({ parent: null }).toArray();
-  let dataGoods = await req.collection("goods").find({}).toArray();
-
-  console.log("------dataCategories", dataCategories);
-  console.log("------dataGoods", dataGoods);
-  console.log("------data", data);
-}
-
-//////////////////////////////////////////////
 
 export default handler;

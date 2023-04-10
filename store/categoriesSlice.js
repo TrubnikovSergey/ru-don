@@ -92,14 +92,14 @@ const {
 const updateCategory = (category) => async (dispatch) => {
   dispatch(requestUpdateCategory());
   try {
-    const changedCategories = await checkParentReferens(category);
     const respons = await categoriesService.saveCategory(category);
 
-    if (respons.data.acknowledged) {
-      const data = JSON.parse(respons.config.data);
-      changedCategories.push(data.category);
+    let { data, config } = respons;
+    if (data.result.acknowledged) {
+      const configData = JSON.parse(config.data);
+      data.changedCategories.push(configData.category);
 
-      dispatch(responsUpdateCategory(changedCategories));
+      dispatch(responsUpdateCategory(data.changedCategories));
     }
   } catch (error) {
     console.log(error);
@@ -137,65 +137,15 @@ const createCategory = (category) => async (dispatch) => {
   dispatch(requestCreateCategory(category));
   try {
     const respons = await categoriesService.saveCategory(category);
-
-    if (respons.data.acknowledged) {
-      category._id = respons.data.insertedId;
+    const { acknowledged, insertedId } = respons.data.result;
+    if (acknowledged) {
+      category._id = insertedId;
       dispatch(responsCreateCategory(category));
     }
   } catch (error) {
     dispatch(responsCreateCategoryError(error));
   }
 };
-
-async function checkParentReferens(category) {
-  const respons = await categoriesService.getCategoryById(category._id);
-  const categoryFromBD = respons.data;
-
-  const changedCategories = [];
-  if (categoryFromBD && category.parent !== categoryFromBD.parent) {
-    if (!category.parent && categoryFromBD.parent) {
-      const changedObject = await changeParentReferens(categoryFromBD.parent, categoryFromBD._id, "remove");
-      changedCategories.push(changedObject);
-    } else if (category.parent && !categoryFromBD.parent) {
-      const changedObject = await changeParentReferens(category.parent, category._id, "add");
-      changedCategories.push(changedObject);
-    } else if (category.parent && categoryFromBD.parent) {
-      const changedObject = await changeParentReferens(categoryFromBD.parent, categoryFromBD._id, "remove");
-      changedCategories.push(changedObject);
-
-      const changedObject2 = await changeParentReferens(category.parent, categoryFromBD._id, "add");
-      changedCategories.push(changedObject2);
-    }
-  }
-
-  return changedCategories;
-}
-
-async function changeParentReferens(parentId, childrenId, mode) {
-  const respons = await categoriesService.getCategoryById(parentId);
-  const categoryParent = respons.data;
-
-  addRemoveChildrenCategory(categoryParent, childrenId, mode);
-  await categoriesService.saveCategory(categoryParent);
-
-  return categoryParent;
-}
-
-function addRemoveChildrenCategory(parent, childrenId, mode) {
-  const isExistChildren = parent.children.includes(childrenId);
-
-  if (mode === "add") {
-    if (!isExistChildren) {
-      parent.children.unshift(childrenId);
-    }
-  }
-
-  if (mode === "remove") {
-    if (isExistChildren) {
-      parent.children = parent.children.filter((item) => item !== childrenId);
-    }
-  }
-}
 
 const doCloseError = (_id) => (dispatch) => {
   dispatch(closeError(_id));

@@ -38,20 +38,16 @@ const BlockEdit = ({ item, isEdit }) => {
 
   const handlerChange = ({ target }) => {
     setData((prev) => {
-      
-      const { name, value } = target;
+      let { name, value } = target;
 
       if (name === "parent") {
-        value === "" ? null : value;
+        value = value === "" ? null : value;
       }
 
       return { ...prev, [name]: value };
     });
   };
-  const handlerInput = ({ target }) => {
-    
-    console.dir(target);
-  };
+  const handlerInput = ({ target }) => {};
 
   const handlerSubmit = (e) => {
     e.preventDefault();
@@ -60,7 +56,6 @@ const BlockEdit = ({ item, isEdit }) => {
 
     delete newData.listCategories;
     newData.children = data.children.map((item) => item._id);
-
     dispatch(updateCategory(newData));
   };
 
@@ -80,7 +75,6 @@ const BlockEdit = ({ item, isEdit }) => {
 
   const handlerMultiSelectClick = (e) => {
     toggleChildren(e.target.value);
-    console.dir(data.children);
   };
 
   return data ? (

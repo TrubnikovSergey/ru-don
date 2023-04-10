@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
 import { useDispatch } from "react-redux";
-import { updateCategory } from "@/store/categoriesSlice";
 import { updateGood } from "@/store/goodsSlice";
 // import MultiSelectField from "@/components/multiSelect";
 
@@ -29,10 +28,10 @@ const BlockEdit = ({ item, isEdit }) => {
 
   const handlerChange = ({ target }) => {
     setData((prev) => {
-      const { name, value } = target;
+      let { name, value } = target;
 
       if (name === "categoryId") {
-        value === "" ? null : value;
+        value = value === "" ? null : value;
       }
 
       return { ...prev, [name]: value };
