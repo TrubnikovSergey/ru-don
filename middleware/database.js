@@ -1,5 +1,6 @@
 import { MongoClient } from "mongodb";
 import nextConnect from "next-connect";
+import cors from "cors";
 
 const mongoURL = process.env.MONGO_URL;
 const client = new MongoClient(`${mongoURL}`, {
@@ -15,6 +16,11 @@ async function database(req, res, next) {
 }
 
 const middleware = nextConnect();
+const host = process.env.API_HOST;
+const corsOptions = {
+  origin: `${host}`,
+};
+middleware.use(cors(corsOptions));
 
 middleware.use(database);
 

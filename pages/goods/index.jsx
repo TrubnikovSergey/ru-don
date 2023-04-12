@@ -59,7 +59,9 @@ const MainPage = ({ goods, categories }) => {
       <section className={style.categories}>
         <div className={style.container}>
           <h1 className={style.categories__title}>Категории</h1>
-          <Link href="/goods"> Все товары</Link>
+          <div className={style["link-all-goods"]}>
+            <Link href="/goods"> Все товары</Link>
+          </div>
           <Tree treeData={categories} />
         </div>
       </section>

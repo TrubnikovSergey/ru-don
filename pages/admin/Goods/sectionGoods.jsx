@@ -1,10 +1,11 @@
-import style from "./sectionGoods.module.scss";
+import style from "../styles/listItemsOfSection.module.scss";
 import { useEffect } from "react";
 import Loading from "../../../components/loading";
 import { useDispatch, useSelector } from "react-redux";
-import LayoutSection from "../Section/layoutSection";
-import { createGood, fatchAllGoods, getGoods, getIsLoading } from "../../../store/goodsSlice";
-import GoodsItem from "./goodsItem";
+import LayoutSection from "../components/layoutSection";
+import { createGood, fatchAllGoods, getGoods, getIsLoading, removeGood } from "../../../store/goodsSlice";
+import ListItemsOfSection from "../components/listItemsOfSection";
+import BlockEditGood from "./BlockEditGood";
 
 const SectionGoods = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,10 @@ const SectionGoods = () => {
     dispatch(fatchAllGoods());
   }, []);
 
+  const handlerDeleteGoods = (id) => {
+    dispatch(removeGood(id));
+  };
+
   const handlerCreateGoods = () => {
     dispatch(createGood(newGood));
   };
@@ -32,14 +37,17 @@ const SectionGoods = () => {
   if (!isLoading) {
     renderSection = (
       <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
-        <ul className={style.list}>
+        <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods}>
+          <BlockEditGood />
+        </ListItemsOfSection>
+        {/* <ul className={style.list}>
           {goods.map((item) => (
             <div className={style["item-container"]} key={item._id}>
               <GoodsItem item={item} />
               <hr />
             </div>
           ))}
-        </ul>
+        </ul> */}
       </LayoutSection>
     );
   } else {

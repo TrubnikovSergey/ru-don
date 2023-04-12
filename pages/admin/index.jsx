@@ -3,6 +3,7 @@ import style from "./admin.module.scss";
 import { useRouter } from "next/router";
 import SectionCategories from "./Categories/sectionCategories";
 import SectionGoods from "./Goods/sectionGoods";
+import SectionNews from "./News/sectionNews";
 
 const Admin = () => {
   const route = useRouter();
@@ -15,6 +16,9 @@ const Admin = () => {
   if (section === "goods") {
     renderContent = <SectionGoods />;
   }
+  if (section === "news") {
+    renderContent = <SectionNews />;
+  }
 
   return (
     <div className={style.wrapper}>
@@ -26,6 +30,9 @@ const Admin = () => {
           </div>
           <div className={style["left-panel__item"]}>
             <Link href="/admin?section=goods">Товары</Link>
+          </div>
+          <div className={style["left-panel__item"]}>
+            <Link href="/admin?section=news">Новости</Link>
           </div>
           <div className={style["left-panel__item"]}>
             <Link href="/admin?section=users">Пользователи</Link>

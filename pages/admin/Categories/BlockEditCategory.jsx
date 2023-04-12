@@ -1,5 +1,5 @@
 import { useState } from "react";
-import style from "./blockEdit.module.scss";
+import style from "./BlockEditCategory.module.scss";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { updateCategory } from "@/store/categoriesSlice";
 // import MultiSelectField from "@/components/multiSelect";
 
-const BlockEdit = ({ item, isEdit }) => {
+const BlockEditCategory = ({ item, isEdit }) => {
   const [data, setData] = useState(null);
   const dispatch = useDispatch();
 
@@ -123,9 +123,9 @@ const BlockEdit = ({ item, isEdit }) => {
   );
 };
 
-BlockEdit.propTypes = {
+BlockEditCategory.propTypes = {
   item: PropTypes.object,
   isEdit: PropTypes.func,
 };
 
-export default BlockEdit;
+export default BlockEditCategory;

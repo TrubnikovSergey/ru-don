@@ -2,12 +2,10 @@
     display: flex;
     margin-bottom: 10px;
     cursor: pointer;
+    overflow: hidden;
+    height: 20px;
 }
 
 .treeNode-children{    
     padding-left: 10px ;
-    // border-left: 1px solid rgb(50, 50, 50)
-}
-
-.expand-symbol, .treeNode-title{
 }

@@ -1,10 +1,11 @@
-import style from "./sectionCategories.module.scss";
+import style from "../styles/listItemsOfSection.module.scss";
 import { useEffect } from "react";
 import Loading from "../../../components/loading";
-import CategoryItem from "./categoryItem";
 import { useDispatch, useSelector } from "react-redux";
-import { createCategory, fatchAllCategories, getCategories, getIsLoading } from "../../../store/categoriesSlice";
-import LayoutSection from "../Section/layoutSection";
+import { createCategory, fatchAllCategories, getCategories, getIsLoading, removeCategory } from "../../../store/categoriesSlice";
+import LayoutSection from "../components/layoutSection";
+import ListItemsOfSection from "../components/listItemsOfSection";
+import BlockEditCategory from "./BlockEditCategory";
 
 const SectionCategories = () => {
   const dispatch = useDispatch();
@@ -21,6 +22,10 @@ const SectionCategories = () => {
     dispatch(fatchAllCategories());
   }, []);
 
+  const handlerDeleteCategory = (id) => {
+    dispatch(removeCategory(id));
+  };
+
   const handlerCreateCategory = () => {
     dispatch(createCategory(newCategory));
   };
@@ -29,16 +34,20 @@ const SectionCategories = () => {
   if (!isLoading) {
     renderSection = (
       <LayoutSection onCreateNewElement={handlerCreateCategory} titleButtonCreate="Создать категорию" titleSection={title}>
-        <ul className={style.list}>
+        <ListItemsOfSection listItems={categories} handlerDel={handlerDeleteCategory}>
+          <BlockEditCategory />
+        </ListItemsOfSection>
+      </LayoutSection>
+    );
+
+    /**        {/* <ul className={style.list}>
           {categories.map((item) => (
             <div className={style["item-container"]} key={item._id}>
               <CategoryItem item={item} />
               <hr />
             </div>
           ))}
-        </ul>
-      </LayoutSection>
-    );
+        </ul> */
   } else {
     renderSection = (
       <>

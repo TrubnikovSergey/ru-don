@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import style from "./goodsItem.module.scss";
 import { useState } from "react";
-import BlockEdit from "./blockEdit";
+import BlockEdit from "./BlockEditGood";
 import { useDispatch } from "react-redux";
 import { removeGood } from "../../../store/goodsSlice";
 

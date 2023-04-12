@@ -18,7 +18,7 @@ handler.get(async (req, res) => {
 handler.post(async (req, res) => {
   try {
     const { action } = req.query;
-    const { arrayId, categoryId, fields } = req.body;
+    const { arrayId, goodId, fields, good } = req.body;
 
     if (action === "fetchByArrayId") {
       if (arrayId.length > 0) {
@@ -35,15 +35,12 @@ handler.post(async (req, res) => {
       }
     }
 
-    if (action === "removeGoodsById") {
-      const data = await req.db.collection("goods").deleteOne({ _id: new ObjectId(goodsId) });
-
+    if (action === "removeGoodById") {
+      const data = await req.db.collection("goods").deleteOne({ _id: new ObjectId(goodId) });
       res.status(200).json(data);
     }
 
     if (action === "saveGood") {
-      const { good } = req.body;
-
       let data = null;
       if (good._id) {
         const dataForUpdate = { ...good };
@@ -58,7 +55,6 @@ handler.post(async (req, res) => {
     }
 
     if (action === "getGoodById") {
-      const { goodId } = req.body;
       const data = await req.db.collection("goods").findOne({ _id: new ObjectId(goodId) });
 
       res.status(200).json(data);

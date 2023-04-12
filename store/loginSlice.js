@@ -13,8 +13,8 @@ const loginSlice = createSlice({
   },
 });
 
-const { reducer: reducerLogin, actions: actionsLogin } = loginSlice;
+const { reducer: loginReducer, actions: actionsLogin } = loginSlice;
 
 const getIsLogin = () => (state) => state.login.isLogin;
 
-export { reducerLogin, actionsLogin, getIsLogin };
+export { loginReducer, actionsLogin, getIsLogin };
