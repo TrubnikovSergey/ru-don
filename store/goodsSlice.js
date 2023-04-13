@@ -29,7 +29,6 @@ const goodsSlice = createSlice({
     responsFetchAll: (state, action) => {
       state.entities = action.payload;
       state.isLoading = false;
-      state.errors = [];
     },
 
     requestUpdateGood: (state, action) => {
@@ -133,6 +132,7 @@ const createGood = (good) => async (dispatch) => {
 };
 
 const getGoods = () => (state) => state.goods.entities;
+const getErrors = () => (state) => state.goods.errors;
 const getIsLoading = () => (state) => state.goods.isLoading;
 
-export { goodsReducer, fatchAllGoods, updateGood, removeGood, createGood, getGoods, getIsLoading };
+export { goodsReducer, fatchAllGoods, updateGood, removeGood, createGood, getGoods, getIsLoading, getErrors };

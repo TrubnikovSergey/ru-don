@@ -3,13 +3,14 @@ import { useEffect } from "react";
 import Loading from "../../../components/loading";
 import { useDispatch, useSelector } from "react-redux";
 import LayoutSection from "../components/layoutSection";
-import { createGood, fatchAllGoods, getGoods, getIsLoading, removeGood } from "../../../store/goodsSlice";
+import { createGood, fatchAllGoods, getErrors, getGoods, getIsLoading, removeGood } from "../../../store/goodsSlice";
 import ListItemsOfSection from "../components/listItemsOfSection";
 import BlockEditGood from "./BlockEditGood";
 
 const SectionGoods = () => {
   const dispatch = useDispatch();
   const goods = useSelector(getGoods());
+  const errors = useSelector(getErrors());
   const isLoading = useSelector(getIsLoading());
   const title = "Товары";
   const newGood = {
@@ -34,20 +35,12 @@ const SectionGoods = () => {
   };
 
   let renderSection = null;
-  if (!isLoading) {
+  if (goods.length > 0) {
     renderSection = (
       <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
-        <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods}>
+        <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
           <BlockEditGood />
         </ListItemsOfSection>
-        {/* <ul className={style.list}>
-          {goods.map((item) => (
-            <div className={style["item-container"]} key={item._id}>
-              <GoodsItem item={item} />
-              <hr />
-            </div>
-          ))}
-        </ul> */}
       </LayoutSection>
     );
   } else {

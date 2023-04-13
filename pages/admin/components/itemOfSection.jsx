@@ -4,8 +4,9 @@ import style from "./itemOfSection.module.scss";
 import { useState } from "react";
 import BlockEditCategory from "../Categories/BlockEditCategory";
 import BlockEditGood from "../Goods/BlockEditGood";
+import BlockEditNews from "../News/blockEditNews";
 
-const ItemOfSection = ({ item = {}, handlerDel, children }) => {
+const ItemOfSection = ({ item = {}, handlerDel, children, errors = [] }) => {
   const [isEdit, setIsEdit] = useState(false);
   const { title, _id } = item;
 
@@ -17,6 +18,7 @@ const ItemOfSection = ({ item = {}, handlerDel, children }) => {
     <>
       <div className={style.item}>
         {title}
+        {errors.map((el) => el._id === item._id && <ErrorBlock error={el} />)}
         <div className={style["item-buttons"]}>
           <div className={style["button"]} onClick={handlerEdit}>
             <img className={style["button-img"]} src="/images/edit.svg" alt="Редактировать" />
@@ -28,8 +30,7 @@ const ItemOfSection = ({ item = {}, handlerDel, children }) => {
       </div>
       {isEdit &&
         React.Children.map(children, (child) => {
-          if (child.type === BlockEditCategory || child.type === BlockEditGood) {
-            console.log("React.Children", child);
+          if (child.type === BlockEditCategory || child.type === BlockEditGood || child.type === BlockEditNews) {
             return React.cloneElement(child, { item, isEdit: setIsEdit });
           }
           return child;
@@ -37,7 +38,6 @@ const ItemOfSection = ({ item = {}, handlerDel, children }) => {
     </>
   );
 };
-// <BlockEdit item={item} isEdit={setIsEdit} />}
 
 ItemOfSection.propTypes = {
   item: PropTypes.object.isRequired,

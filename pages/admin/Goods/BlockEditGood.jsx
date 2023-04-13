@@ -9,18 +9,18 @@ import { updateGood } from "@/store/goodsSlice";
 // import MultiSelectField from "@/components/multiSelect";
 
 const BlockEditGood = ({ item, isEdit }) => {
-  const [data, setData] = useState(null);
+  let [data, setData] = useState({ ...item, listCategories: [] });
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {
-      let newData = { ...item };
+  // useEffect(() => {
+  //   categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {
+  //     let newData = { ...item };
 
-      newData.listCategories = response;
+  //     newData.listCategories = response;
 
-      setData(newData);
-    });
-  }, []);
+  //     setData(newData);
+  //   });
+  // }, []);
 
   const handlerCancel = () => {
     isEdit(false);

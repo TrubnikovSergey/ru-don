@@ -14,13 +14,14 @@ const newsSlice = createSlice({
     },
     responseNews: (state, action) => {
       state.isLoading = false;
-      state.entities.push(action.payload);
+      state.entities = action.payload;
     },
     requestNewsError: (state, action) => {
       state.isLoading = false;
       state.errors.push(action.payload);
       state.entities = [];
     },
+
     requestCreateNews: (state, action) => {
       state.isLoading = true;
     },
@@ -28,29 +29,76 @@ const newsSlice = createSlice({
       state.isLoading = false;
       state.entities.push(action.payload);
     },
-    responsCreateNewsError: (state, action) => {
+    requestCreateNewsError: (state, action) => {
       state.isLoading = false;
       state.errors.push(action.payload);
-      state.entities = [];
+    },
+
+    requestUpdateNews: (state, action) => {
+      state.isLoading = true;
+    },
+    responsUpdateNews: (state, action) => {
+      state.isLoading = false;
+
+      const news = action.payload;
+
+      state.entities.forEach((item) => {
+        if (item._id === news._id) {
+          Object.keys(item).forEach((key) => (item[key] = news[key]));
+        }
+      });
+    },
+    requestUpdateNewsError: (state, action) => {
+      state.isLoading = false;
+      state.errors.push(action.payload);
     },
   },
 });
 
 const { reducer: newsReducer, actions } = newsSlice;
-const { requestNews, responseNews, requestNewsError, requestCreateNews, responsCreateNews, responsCreateNewsError } = actions;
+const { requestNews, responseNews, requestNewsError, requestCreateNews, responsCreateNews, requestCreateNewsError, requestUpdateNews, responsUpdateNews, requestUpdateNewsError } = actions;
 
 const fetchAllNews = () => async (dispatch) => {
-  dispatch(requestNews);
+  dispatch(requestNews());
   try {
     const data = await newsService.fetchAll();
-    if (data.acknowledged) {
-      dispatch(responseNews(data));
-    }
+    dispatch(responseNews(data));
   } catch (error) {
     dispatch(requestNewsError(error));
   }
 };
 
-const getNews = () => (state) => state.news.entities;
+const updateNews = (news) => async (dispatch) => {
+  dispatch(requestUpdateNews());
+  try {
+    const respons = await newsService.saveNews(news);
 
-export { newsReducer, fetchAllNews, getNews };
+    const { acknowledged } = respons.data;
+    if (acknowledged) {
+      dispatch(responsUpdateNews(news));
+    }
+  } catch (error) {
+    dispatch(requestUpdateNewsError(error));
+  }
+};
+
+const createNews = (news) => async (dispatch) => {
+  dispatch(requestCreateNews());
+  try {
+    const respons = await newsService.saveNews(news);
+
+    const { acknowledged, insertedId } = respons.data;
+    if (acknowledged) {
+      news._id = insertedId;
+      dispatch(responsCreateNews(news));
+    }
+  } catch (error) {
+    dispatch(requestCreateNewsError(error));
+  }
+};
+
+const getNews = () => (state) => state.news.entities;
+const getErrors = () => (state) => state.news.errors;
+const getIsLoading = () => (state) => state.news.isLoading;
+
+export { newsReducer, fetchAllNews, createNews, updateNews, getNews, getErrors, getIsLoading };

@@ -1,0 +1,50 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('../../../public/fonts/Roboto-Regular.ttf') format('truetype');
+  }
+
+.block-edit-content{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px;
+    font-family: 'Roboto';
+    font-size: 14px;
+}
+
+.listChildren{
+  font-size: 14px;
+}
+
+.input{
+  padding: 5px;
+  width: 50%;
+}
+.input-number{
+  padding: 5px;
+  width: 15%;
+}
+
+.textarea{
+  padding: 5px;
+  width: 100%;
+}
+
+.buttons-save-cancel{
+display: flex;
+justify-content: flex-end;
+gap: 10px;
+margin-bottom: 15px;
+}
+
+.button-img{
+  width: 25px;
+}
+.list-subcategories{
+  display: flex;
+  align-items: center;
+}
+
+.multiselect-subcategories{
+  width: 50%;
+}

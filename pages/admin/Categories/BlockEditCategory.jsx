@@ -8,28 +8,32 @@ import { useDispatch } from "react-redux";
 import { updateCategory } from "@/store/categoriesSlice";
 // import MultiSelectField from "@/components/multiSelect";
 
+const getCategoriesForSelect = (setData, item) => {
+  categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {
+    let newData = {
+      title: item.title,
+      _id: item._id,
+      parent: item.parent,
+    };
+
+    if (item.children.length > 0) {
+      newData.children = response.filter((el) => item.children.includes(el._id));
+    } else {
+      newData.children = [];
+    }
+
+    newData.listCategories = response;
+
+    setData(newData);
+  });
+};
+
 const BlockEditCategory = ({ item, isEdit }) => {
   const [data, setData] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {
-      let newData = {
-        title: item.title,
-        _id: item._id,
-        parent: item.parent,
-      };
-
-      if (item.children.length > 0) {
-        newData.children = response.filter((el) => item.children.includes(el._id));
-      } else {
-        newData.children = [];
-      }
-
-      newData.listCategories = response;
-
-      setData(newData);
-    });
+    getCategoriesForSelect(setData, item);
   }, []);
 
   const handlerCancel = () => {
@@ -47,7 +51,11 @@ const BlockEditCategory = ({ item, isEdit }) => {
       return { ...prev, [name]: value };
     });
   };
-  const handlerInput = ({ target }) => {};
+  const handlerFocus = ({ target }) => {
+    console.log("----handlerFocus");
+
+    getCategoriesForSelect(setData, item);
+  };
 
   const handlerSubmit = (e) => {
     e.preventDefault();
@@ -57,24 +65,6 @@ const BlockEditCategory = ({ item, isEdit }) => {
     delete newData.listCategories;
     newData.children = data.children.map((item) => item._id);
     dispatch(updateCategory(newData));
-  };
-
-  const toggleChildren = (id) => {
-    const isExist = Boolean(data.children.find((item) => item._id === id));
-
-    let newData = { ...data };
-    if (isExist) {
-      newData.children = data.children.filter((item) => item._id !== id);
-    } else {
-      const findItem = data.listCategories.find((item) => item._id === id);
-      newData.children.push(findItem);
-    }
-
-    setData(newData);
-  };
-
-  const handlerMultiSelectClick = (e) => {
-    toggleChildren(e.target.value);
   };
 
   return data ? (
@@ -87,7 +77,7 @@ const BlockEditCategory = ({ item, isEdit }) => {
           </div>
           <div>
             <p>Родительская категория</p>
-            <select className={style.input} name="parent" onChange={handlerChange} onInput={handlerInput} defaultValue={data.parent ? data.parent : ""}>
+            <select className={style.input} name="parent" onChange={handlerChange} onFocus={handlerFocus} defaultValue={data.parent ? data.parent : ""}>
               <option value=""></option>
               {data.listCategories.map((item) => (
                 <option key={item._id} value={item._id}>
@@ -103,9 +93,6 @@ const BlockEditCategory = ({ item, isEdit }) => {
                 {data.children.length > 0 ? data.children.map((item, idx) => <i key={item._id}>{idx === 0 ? item.title : `, ${item.title}`}</i>) : <i>отсутствуют</i>}
               </div>
             </div>
-            {/* <div className={style["multiselect-subcategories"]}>
-              <MultiSelectField listItems={data.listCategories} listChildren={data.children} toggleSelect={toggleChildren} />
-            </div> */}
           </div>
         </div>
         <div className={style["buttons-save-cancel"]}>

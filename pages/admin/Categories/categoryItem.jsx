@@ -5,7 +5,7 @@ import { useState } from "react";
 import BlockEdit from "./BlockEditCategory";
 import { useDispatch, useSelector } from "react-redux";
 import { getErrors, removeCategory } from "../../../store/categoriesSlice";
-import ErrorBlock from "./errorBlock";
+import ErrorBlock from "../components/errorBlock";
 
 const CategoryItem = ({ item = {} }) => {
   const [isEdit, setIsEdit] = useState(false);
@@ -25,7 +25,7 @@ const CategoryItem = ({ item = {} }) => {
     <>
       <div className={style.item}>
         {title}
-        {errors.map((el) => el._id === item._id && <ErrorBlock error={el} />)}
+        {errors.map((el) => el._id === item._id && <ErrorBlock key={item._id} error={el} />)}
         <div className={style["item-buttons"]}>
           <div className={style["button"]} onClick={() => handlerEdit(_id)}>
             <img className={style["button-img"]} src="/images/edit.svg" alt="Редактировать" />

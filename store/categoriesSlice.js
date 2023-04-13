@@ -9,11 +9,15 @@ const categoriesSlice = createSlice({
     isLoading: false,
   },
   reducers: {
-    requestCreateCategory: (state, action) => {},
+    requestCreateCategory: (state, action) => {
+      state.isLoading = true;
+    },
     responsCreateCategory: (state, action) => {
+      state.isLoading = false;
       state.entities.unshift(action.payload);
     },
     responsCreateCategoryError: (state, action) => {
+      state.isLoading = false;
       state.errors.push(action.payload);
     },
 
@@ -29,7 +33,6 @@ const categoriesSlice = createSlice({
     responsFetchAll: (state, action) => {
       state.entities = action.payload;
       state.isLoading = false;
-      state.errors = [];
     },
 
     requestUpdateCategory: (state, action) => {
@@ -100,6 +103,9 @@ const updateCategory = (category) => async (dispatch) => {
       data.changedCategories.push(configData.category);
 
       dispatch(responsUpdateCategory(data.changedCategories));
+    } else {
+      const message = data.response.data.message;
+      dispatch(requestUpdateCategoryError({ _id: category._id, message }));
     }
   } catch (error) {
     console.log(error);
@@ -141,6 +147,9 @@ const createCategory = (category) => async (dispatch) => {
     if (acknowledged) {
       category._id = insertedId;
       dispatch(responsCreateCategory(category));
+    } else {
+      const message = data.response.data.message;
+      dispatch(requestUpdateCategoryError({ _id: category._id, message }));
     }
   } catch (error) {
     dispatch(responsCreateCategoryError(error));
