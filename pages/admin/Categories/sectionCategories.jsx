@@ -1,4 +1,4 @@
-import style from "../styles/listItemsOfSection.module.scss";
+import style from "../styles/section.module.scss";
 import { useEffect } from "react";
 import Loading from "../../../components/loading";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,9 +31,9 @@ const SectionCategories = () => {
     dispatch(createCategory(newCategory));
   };
 
-  let renderSection = null;
+  let renderCategories = null;
   if (categories.length > 0) {
-    renderSection = (
+    renderCategories = (
       <LayoutSection onCreateNewElement={handlerCreateCategory} titleButtonCreate="Создать категорию" titleSection={title}>
         <ListItemsOfSection listItems={categories} handlerDel={handlerDeleteCategory} errors={errors}>
           <BlockEditCategory />
@@ -41,15 +41,19 @@ const SectionCategories = () => {
       </LayoutSection>
     );
   } else {
-    renderSection = (
-      <>
-        <h2 className={style["section-title"]}>{title}</h2>
-        <Loading />
-      </>
-    );
+    if (isLoading) {
+      renderCategories = (
+        <>
+          <h2 className={style["section-title"]}>{title}</h2>
+          <Loading />
+        </>
+      );
+    } else {
+      renderCategories = <LayoutSection onCreateNewElement={handlerCreateCategory} titleButtonCreate="Создать категорию" titleSection={title}></LayoutSection>;
+    }
   }
 
-  return renderSection;
+  return renderCategories;
 };
 
 export default SectionCategories;

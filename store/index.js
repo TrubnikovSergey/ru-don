@@ -3,6 +3,7 @@ import { loginReducer } from "./loginSlice";
 import { categoriesReducer } from "./categoriesSlice";
 import { goodsReducer } from "./goodsSlice";
 import { newsReducer } from "./newsSlice";
+import { contactsReducer } from "./contactsSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     categories: categoriesReducer,
     goods: goodsReducer,
     news: newsReducer,
+    contacts: contactsReducer,
   },
 });
 

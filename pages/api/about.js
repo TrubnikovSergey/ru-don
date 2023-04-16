@@ -10,7 +10,7 @@ handler.get(async (req, res) => {
   const { action } = req.query;
 
   if (action === "fetchAll") {
-    let data = await req.db.collection("news").find({}).toArray();
+    let data = await req.db.collection("about").find({}).toArray();
     res.status(200).json(data);
   }
 });
@@ -18,27 +18,21 @@ handler.get(async (req, res) => {
 handler.post(async (req, res) => {
   try {
     const { action } = req.query;
-    const { news, newsId } = req.body;
+    const { about } = req.body;
 
-    if (action === "removeNewsById") {
-      const data = await req.db.collection("news").deleteOne({ _id: new ObjectId(newsId) });
-      res.status(200).json(data);
-    }
-
-    if (action === "saveNews") {
+    if (action === "saveAbout") {
       let data = null;
-      if (news._id) {
-        const dataForUpdate = { ...news };
+      if (about._id) {
+        const dataForUpdate = { ...about };
         delete dataForUpdate._id;
 
-        data = await req.db.collection("news").updateOne({ _id: new ObjectId(news._id) }, { $set: dataForUpdate });
+        data = await req.db.collection("about").updateOne({ _id: new ObjectId(about._id) }, { $set: dataForUpdate });
       } else {
-        data = await req.db.collection("news").insertOne(news);
+        data = await req.db.collection("about").insertOne(about);
       }
 
       res.status(200).json(data);
     }
-
   } catch (error) {
     res.status(500).json({ message: `На сервере произошла ошибка\n${error}` });
   }

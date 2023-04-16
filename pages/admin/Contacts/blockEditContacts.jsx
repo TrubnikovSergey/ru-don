@@ -1,31 +1,13 @@
 import { useState } from "react";
-import style from "./blockEditNews.module.scss";
+import style from "./blockEditContacts.module.scss";
 import PropTypes from "prop-types";
 import Loading from "@/components/loading";
 import { useDispatch } from "react-redux";
-import { updateNews } from "@/store/newsSlice";
+import { updateContacts } from "@/store/contactsSlice";
 
-const dateToFormaForValueInput = (value) => {
-  if (value) {
-    const date = new Date(value);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-
-    const dayStr = day <= 9 ? `0${String(day)}` : String(day);
-    const monthStr = month <= 9 ? `0${String(month)}` : String(month);
-
-    return `${year}-${monthStr}-${dayStr}`;
-  }
-
-  return "";
-};
-
-const BlockEditNews = ({ item, isEdit }) => {
+const BlockEditContacts = ({ item, isEdit }) => {
   const [data, setData] = useState(item);
   const dispatch = useDispatch();
-
-  let atDateNews = dateToFormaForValueInput(data?.atDate);
 
   const handlerCancel = () => {
     isEdit(false);
@@ -41,7 +23,7 @@ const BlockEditNews = ({ item, isEdit }) => {
   const handlerSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(updateNews(data));
+    dispatch(updateContacts(data));
   };
 
   return data ? (
@@ -49,16 +31,12 @@ const BlockEditNews = ({ item, isEdit }) => {
       <form onSubmit={handlerSubmit}>
         <div className={style["block-edit-content"]}>
           <div>
-            <p>Заголовок новости</p>
+            <p>Название контакта</p>
             <input className={style.input} type="text" name="title" required={true} onChange={handlerChange} value={data.title} />
           </div>
           <div>
-            <p>Сдержание новости</p>
+            <p>Описание котакта</p>
             <textarea className={style.textarea} rows="10" name="description" onChange={handlerChange} value={data.description}></textarea>
-          </div>
-          <div>
-            <p>Дата публикации</p>
-            <input type="date" name="atDate" value={atDateNews} onChange={handlerChange} />
           </div>
         </div>
         <div className={style["buttons-save-cancel"]}>
@@ -76,9 +54,9 @@ const BlockEditNews = ({ item, isEdit }) => {
   );
 };
 
-BlockEditNews.propTypes = {
+BlockEditContacts.propTypes = {
   item: PropTypes.object,
   isEdit: PropTypes.func,
 };
 
-export default BlockEditNews;
+export default BlockEditContacts;

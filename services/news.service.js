@@ -18,6 +18,15 @@ const newsService = {
       return null;
     }
   },
+
+  removeNewsById: async (newsId) => {
+    try {
+      const data = await http.post(`${configJSON.API_HOST}/news?action=removeNewsById`, { newsId });
+      return data;
+    } catch (error) {
+      return null;
+    }
+  },
 };
 
 export default newsService;

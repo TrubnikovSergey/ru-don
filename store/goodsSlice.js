@@ -101,7 +101,7 @@ const removeGood = (goodId) => async (dispatch) => {
     if (data.acknowledged) {
       dispatch(responsRemoveGood(goodId));
     } else {
-      dispatch(responsRemoveGoodError({ codeError: 400, massage: "Remove category failed" }));
+      dispatch(responsRemoveGoodError({ codeError: 400, massage: "Remove good failed" }));
     }
   } catch (error) {
     dispatch(responsRemoveGoodError(error));

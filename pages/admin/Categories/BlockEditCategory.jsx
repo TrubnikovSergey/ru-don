@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { updateCategory } from "@/store/categoriesSlice";
 // import MultiSelectField from "@/components/multiSelect";
 
-const getCategoriesForSelect = (setData, item) => {
+const createState = (setData, item) => {
   categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {
     let newData = {
       title: item.title,
@@ -33,7 +33,7 @@ const BlockEditCategory = ({ item, isEdit }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getCategoriesForSelect(setData, item);
+    createState(setData, item);
   }, []);
 
   const handlerCancel = () => {
@@ -51,10 +51,8 @@ const BlockEditCategory = ({ item, isEdit }) => {
       return { ...prev, [name]: value };
     });
   };
-  const handlerFocus = ({ target }) => {
-    console.log("----handlerFocus");
-
-    getCategoriesForSelect(setData, item);
+  const handlerFocus = () => {
+    createState(setData, item);
   };
 
   const handlerSubmit = (e) => {

@@ -34,6 +34,18 @@ const newsSlice = createSlice({
       state.errors.push(action.payload);
     },
 
+    requestRemoveNews: (state, action) => {
+      state.isLoading = true;
+    },
+    responsRemoveNews: (state, action) => {
+      state.isLoading = false;
+      state.entities = state.entities.filter((item) => item._id !== action.payload);
+    },
+    requestRemoveNewsError: (state, action) => {
+      state.isLoading = false;
+      state.errors.push(error);
+    },
+
     requestUpdateNews: (state, action) => {
       state.isLoading = true;
     },
@@ -56,7 +68,20 @@ const newsSlice = createSlice({
 });
 
 const { reducer: newsReducer, actions } = newsSlice;
-const { requestNews, responseNews, requestNewsError, requestCreateNews, responsCreateNews, requestCreateNewsError, requestUpdateNews, responsUpdateNews, requestUpdateNewsError } = actions;
+const {
+  requestNews,
+  responseNews,
+  requestNewsError,
+  requestCreateNews,
+  responsCreateNews,
+  requestCreateNewsError,
+  requestUpdateNews,
+  responsUpdateNews,
+  requestUpdateNewsError,
+  requestRemoveNews,
+  responsRemoveNews,
+  requestRemoveNewsError,
+} = actions;
 
 const fetchAllNews = () => async (dispatch) => {
   dispatch(requestNews());
@@ -97,8 +122,21 @@ const createNews = (news) => async (dispatch) => {
   }
 };
 
+const removeNews = (newsId) => async (dispatch) => {
+  dispatch(requestRemoveNews());
+  try {
+    const respons = await newsService.removeNewsById(newsId);
+    const { data } = respons;
+    if (data.acknowledged) {
+      dispatch(responsRemoveNews(newsId));
+    } else {
+      dispatch(requestRemoveNewsError({ codeError: 400, massage: "Remove news failed" }));
+    }
+  } catch (error) {}
+};
+
 const getNews = () => (state) => state.news.entities;
 const getErrors = () => (state) => state.news.errors;
 const getIsLoading = () => (state) => state.news.isLoading;
 
-export { newsReducer, fetchAllNews, createNews, updateNews, getNews, getErrors, getIsLoading };
+export { newsReducer, fetchAllNews, createNews, updateNews, removeNews, getNews, getErrors, getIsLoading };

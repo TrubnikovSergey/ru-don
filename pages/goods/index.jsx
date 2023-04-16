@@ -19,7 +19,7 @@ export const getStaticProps = async () => {
 
   client.close();
 
-  if ((!dataCategories && !dataGoods) || (dataCategories.name === "Error" && dataGoods.name === "Error")) {
+  if (dataCategories.name === "Error" && dataGoods.name === "Error") {
     return { notFound: true };
   }
 

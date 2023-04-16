@@ -1,0 +1,14 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.description{
+    padding: 5px;
+}
+
+.button-save{
+    display: flex;
+    justify-content: flex-end;
+}

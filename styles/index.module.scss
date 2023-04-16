@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'Roboto' ;
+    src: url('../public/fonts/Roboto-Regular.ttf') format('truetype');
+}
+
 .slider{
     height: 250px;
     max-width: 100%;
@@ -15,15 +20,41 @@
     font-size: 34px;
 }
 
-.news{
+.section-news{
     margin: 0px 20px;
 }
 
-.news__item{
+.section-news-title{
+    text-align: center;
+}
+
+.news-list{
     list-style-type: none;
     margin:20px 0;
 }
 
-.news__title{
-    text-align: center;
+.news-item{
+    list-style-type: none;
+    margin:20px 0;
+}
+
+.item-title{
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.item-atDate{
+    font-size: 10px;
+    color: rgb(150, 150, 150);
+}
+
+.item-description{
+    margin-top: 5px;
+    font-size: 14px;
+    font-family: "Roboto";
+    white-space: pre-wrap;
+    margin-left: 20px;
+    margin-top: 10px;
 }

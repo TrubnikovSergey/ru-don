@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import LayoutSection from "../components/layoutSection";
-import { createNews, fetchAllNews, getIsLoading, getNews } from "@/store/newsSlice";
+import { createNews, fetchAllNews, getIsLoading, getNews, removeNews } from "@/store/newsSlice";
 import { getErrors } from "@/store/newsSlice";
 import ListItemsOfSection from "../components/listItemsOfSection";
 import BlockEditNews from "./blockEditNews";
 import { useEffect } from "react";
 import Loading from "@/components/loading";
-import style from "./sectionNews.module.scss";
+import style from "../styles/section.module.scss";
 
 const SectionNews = () => {
   const dispatch = useDispatch();
@@ -26,20 +26,33 @@ const SectionNews = () => {
   const handlerCreateNews = () => {
     dispatch(createNews(newNews));
   };
-  const handlerDeleteNews = () => {};
+  const handlerDeleteNews = (id) => {
+    dispatch(removeNews(id));
+  };
 
-  return news.length > 0 ? (
-    <LayoutSection onCreateNewElement={handlerCreateNews} titleButtonCreate="Создать новость" titleSection={title}>
-      <ListItemsOfSection listItems={news} handlerDel={handlerDeleteNews} errors={errors}>
-        <BlockEditNews />
-      </ListItemsOfSection>
-    </LayoutSection>
-  ) : (
-    <>
-      <h2 className={style["section-title"]}>{title}</h2>
-      <Loading />
-    </>
-  );
+  let renderNews = null;
+  if (news.length > 0) {
+    renderNews = (
+      <LayoutSection onCreateNewElement={handlerCreateNews} titleButtonCreate="Создать новость" titleSection={title}>
+        <ListItemsOfSection listItems={news} handlerDel={handlerDeleteNews} errors={errors}>
+          <BlockEditNews />
+        </ListItemsOfSection>
+      </LayoutSection>
+    );
+  } else {
+    if (isLoading) {
+      renderNews = (
+        <>
+          <h2 className={style["section-title"]}>{title}</h2>
+          <Loading />
+        </>
+      );
+    } else {
+      renderNews = <LayoutSection onCreateNewElement={handlerCreateNews} titleButtonCreate="Создать новость" titleSection={title}></LayoutSection>;
+    }
+  }
+
+  return renderNews;
 };
 
 export default SectionNews;

@@ -1,4 +1,4 @@
-import style from "../styles/listItemsOfSection.module.scss";
+import style from "../styles/section.module.scss";
 import { useEffect } from "react";
 import Loading from "../../../components/loading";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,9 +34,9 @@ const SectionGoods = () => {
     dispatch(createGood(newGood));
   };
 
-  let renderSection = null;
+  let renderGoods = null;
   if (goods.length > 0) {
-    renderSection = (
+    renderGoods = (
       <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
         <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
           <BlockEditGood />
@@ -44,15 +44,19 @@ const SectionGoods = () => {
       </LayoutSection>
     );
   } else {
-    renderSection = (
-      <>
-        <h2 className={style["section-title"]}>{title}</h2>
-        <Loading />
-      </>
-    );
+    if (isLoading) {
+      renderGoods = (
+        <>
+          <h2 className={style["section-title"]}>{title}</h2>
+          <Loading />
+        </>
+      );
+    } else {
+      renderGoods = <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}></LayoutSection>;
+    }
   }
 
-  return renderSection;
+  return renderGoods;
 };
 
 export default SectionGoods;

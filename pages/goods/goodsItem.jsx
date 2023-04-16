@@ -28,9 +28,7 @@ const GoodsItem = ({ item }) => {
       <div className={style["slider"]}>Слайдер изображений товара</div>
       <div className={style["description"]}>
         <h1 className={style["description-title"]}>Описание</h1>
-        <div className={style["description-content"]}>
-          <p>{data.description}</p>
-        </div>
+        <pre className={style["description-content"]}>{data.description}</pre>
       </div>
     </div>
   ) : (
