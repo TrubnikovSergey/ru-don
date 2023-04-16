@@ -1,6 +1,6 @@
 {
-    "API_HOST_l":"http://77.223.99.138:3000/api",
-    "API_HOST":"http://localhost:3000/api",
-    "MONGO_URL_l":"mongodb://82.148.28.101:27017",
-    "MONGO_URL":"mongodb://127.0.0.1:27017"
+    "API_HOST":"http://77.223.99.138:3000/api",
+    "API_HOST_l":"http://localhost:3000/api",
+    "MONGO_URL":"mongodb://82.148.28.101:27017",
+    "MONGO_URL_l":"mongodb://127.0.0.1:27017"
 }
