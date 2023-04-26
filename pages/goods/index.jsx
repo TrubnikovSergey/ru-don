@@ -6,7 +6,7 @@ import Link from "next/link";
 import GoodsItem from "./goodsItem";
 import GoodsList from "./goodsList";
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const mongoURL = process.env.MONGO_URL;
   const client = new MongoClient(`${mongoURL}`, {
     useNewUrlParser: true,
@@ -28,7 +28,6 @@ export const getStaticProps = async () => {
       categories: JSON.parse(JSON.stringify(dataCategories)),
       goods: JSON.parse(JSON.stringify(dataGoods)),
     },
-    revalidate: 10,
   };
 };
 

@@ -20,7 +20,6 @@ const SectionDelivery = () => {
   };
 
   const handlerSave = () => {
-    // console.log("Save", data);
     deliveryService.saveDelivery(data);
   };
 

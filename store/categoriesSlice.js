@@ -108,7 +108,6 @@ const updateCategory = (category) => async (dispatch) => {
       dispatch(requestUpdateCategoryError({ _id: category._id, message }));
     }
   } catch (error) {
-    console.log(error);
     dispatch(requestUpdateCategoryError(JSON.stringify(error)));
   }
 };

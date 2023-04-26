@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
 import style from "./delivery.module.scss";
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const mongoURL = process.env.MONGO_URL;
   const client = new MongoClient(`${mongoURL}`, {
     useNewUrlParser: true,
@@ -21,7 +21,6 @@ export const getStaticProps = async () => {
     props: {
       delivery: JSON.parse(JSON.stringify(dataDelivery)),
     },
-    revalidate: 10,
   };
 };
 

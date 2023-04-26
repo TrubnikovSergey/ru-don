@@ -1,7 +1,7 @@
 import newsService from "../services/news.service";
 import style from "../styles/index.module.scss";
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   const data = await newsService.fetchAll();
 
   if (!data) {
@@ -10,12 +10,10 @@ export const getStaticProps = async () => {
 
   return {
     props: { news: data },
-    revalidate: 10,
   };
 };
 
 const Index = ({ news }) => {
-  console.log(news);
   return (
     <main>
       <section className={style.slider}>

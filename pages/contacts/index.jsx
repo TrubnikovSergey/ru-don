@@ -1,24 +1,44 @@
-import contactsService from "@/services/contacts.service";
+import { MongoClient } from "mongodb";
 import style from "./contacts.module.scss";
 
-export const getStaticProps = async () => {
-  const data = await contactsService.fetchAll();
+export const getServerSideProps = async () => {
+  const mongoURL = process.env.MONGO_URL;
+  const client = new MongoClient(`${mongoURL}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 
-  if (!data) {
+  const req = client.db("energy");
+  let dataContacts = await req.collection("contacts").find({}).toArray();
+
+  client.close();
+
+  if (!dataContacts || dataContacts.length === 0 || dataContacts.name === "Error") {
     return { notFound: true };
   }
 
   return {
-    props: { contacts: data },
-    revalidate: 10,
+    props: { contacts: JSON.parse(JSON.stringify(dataContacts)) },
   };
 };
 
 const Contacts = ({ contacts }) => {
   return (
     <main className={style.main}>
-      <section className={style.map}>карта</section>
-      <section className={style.content}>{contacts && contacts.map((item) => <div>{JSON.stringify(item)}</div>)}</section>
+      <h1 className={style.title}>Контакты</h1>
+      <div className={style.content}>
+        <section className={style["list-contacts"]}>
+          <div className={style.content}>
+            {contacts &&
+              contacts.map((item) => (
+                <pre className={style.description} key={item._id}>
+                  {item.description}
+                </pre>
+              ))}
+          </div>
+        </section>
+        <section className={style.map}>карта</section>
+      </div>
     </main>
   );
 };

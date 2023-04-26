@@ -20,13 +20,11 @@ const SectionAbout = () => {
   };
 
   const handlerSave = () => {
-    // console.log("Save", data);
     aboutService.saveAbout(data);
   };
 
   useEffect(() => {
     aboutService.fetchAll().then((respons) => {
-      console.log(respons);
       if (respons.length > 0) {
         setDate(respons[0]);
       } else {

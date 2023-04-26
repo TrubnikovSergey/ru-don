@@ -11,9 +11,9 @@ const goodsService = {
       return error;
     }
   },
-  fetchAllWithConcreteFields: async (fields) => {
+  fetchAllWithConcreteFields: async (arrayFields) => {
     try {
-      const { data } = await http.post(`${configJSON.API_HOST}/goods?action=fetchAllWithConcreteFields`, { fields });
+      const { data } = await http.post(`${configJSON.API_HOST}/goods?action=fetchAllWithConcreteFields`, { arrayFields });
       return data;
     } catch (error) {
       return error;
@@ -27,17 +27,35 @@ const goodsService = {
       return error;
     }
   },
-  getGoodById: async (goodId) => {
+  getGoodById: async (goodsId) => {
     try {
-      const data = await http.post(`${configJSON.API_HOST}/goods?action=getGoodById`, { goodId });
+      const data = await http.post(`${configJSON.API_HOST}/goods?action=getGoodById`, { goodsId });
       return data;
     } catch (error) {
       return error;
     }
   },
-  saveGood: async (good) => {
+  saveGoods: async (goods) => {
+    console.log("-----Service goods saveGoods");
     try {
-      const respons = await http.post(`${configJSON.API_HOST}/goods?action=saveGood`, { good });
+      const respons = await http.post(`${configJSON.API_HOST}/goods?action=saveGoods`, goods, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return respons;
+    } catch (error) {
+      return error;
+    }
+  },
+  sendFormData: async (data) => {
+    try {
+      const respons = await http.post(`${configJSON.API_HOST}/goods?action=formData`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       return respons;
     } catch (error) {
@@ -45,9 +63,9 @@ const goodsService = {
     }
   },
 
-  removeGoodById: async (goodId) => {
+  removeGoodById: async (goodsId) => {
     try {
-      const { data } = await http.post(`${configJSON.API_HOST}/goods?action=removeGoodById`, { goodId });
+      const { data } = await http.post(`${configJSON.API_HOST}/goods?action=removeGoodsById`, { goodsId });
 
       return data;
     } catch (error) {

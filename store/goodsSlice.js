@@ -42,11 +42,11 @@ const goodsSlice = createSlice({
     responsUpdateGood: (state, action) => {
       state.isLoading = false;
 
-      const good = action.payload;
+      const goods = action.payload;
 
       state.entities.forEach((item) => {
-        if (item._id === good._id) {
-          Object.keys(item).forEach((key) => (item[key] = good[key]));
+        if (item._id === goods._id) {
+          Object.keys(item).forEach((key) => (item[key] = goods[key]));
         }
       });
     },
@@ -80,28 +80,44 @@ const {
   responsRemoveGoodError,
 } = actions;
 
-const updateGood = (good) => async (dispatch) => {
+const updateGood = (goods) => async (dispatch) => {
   dispatch(requestUpdateGood());
   try {
-    const respons = await goodsService.saveGood(good);
+    const respons = await goodsService.saveGoods(goods);
+    console.log("-----updateGood respons", respons);
+    console.log("-----updateGood goods", goods);
 
-    if (respons.data.acknowledged) {
-      const { good } = JSON.parse(respons.config.data);
-      dispatch(responsUpdateGood(good));
+    if (respons?.data?.acknowledged) {
+      goods.images = respons.data.images;
+      dispatch(responsUpdateGood(goods));
     }
   } catch (error) {
     dispatch(requestUpdateGoodError(error));
   }
 };
 
-const removeGood = (goodId) => async (dispatch) => {
+// const sendFormData = (data) => async (dispatch) => {
+//   dispatch(requestUpdateGood());
+//   try {
+//     const respons = await goodsService.sendFormData(data);
+//     console.log("----------respons", respons);
+//     // if (respons?.data?.acknowledged) {
+//     //   const { goods } = JSON.parse(respons.config.data);
+//     //   dispatch(responsUpdateGood(goods));
+//     // }
+//   } catch (error) {
+//     dispatch(requestUpdateGoodError(error));
+//   }
+// };
+
+const removeGood = (goodsId) => async (dispatch) => {
   dispatch(requestRemoveGood());
   try {
-    const data = await goodsService.removeGoodById(goodId);
-    if (data.acknowledged) {
-      dispatch(responsRemoveGood(goodId));
+    const data = await goodsService.removeGoodById(goodsId);
+    if (data?.acknowledged) {
+      dispatch(responsRemoveGood(goodsId));
     } else {
-      dispatch(responsRemoveGoodError({ codeError: 400, massage: "Remove good failed" }));
+      dispatch(responsRemoveGoodError({ codeError: 400, massage: "Remove goods failed" }));
     }
   } catch (error) {
     dispatch(responsRemoveGoodError(error));
@@ -118,13 +134,15 @@ const fatchAllGoods = () => async (dispatch) => {
   }
 };
 
-const createGood = (good) => async (dispatch) => {
-  dispatch(requestCreateGood(good));
+const createGood = (goods) => async (dispatch) => {
+  dispatch(requestCreateGood(goods));
   try {
-    const respons = await goodsService.saveGood(good);
-    if (respons.data.acknowledged) {
-      good._id = respons.data.insertedId;
-      dispatch(responsCreateGood(good));
+    const respons = await goodsService.saveGoods(goods);
+    console.log("-----createGood", respons);
+
+    if (respons?.data?.acknowledged) {
+      goods._id = respons.data.insertedId;
+      dispatch(responsCreateGood(goods));
     }
   } catch (error) {
     dispatch(responsCreateGoodError(error));
