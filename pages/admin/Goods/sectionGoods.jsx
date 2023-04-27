@@ -3,9 +3,9 @@ import { useEffect } from "react";
 import Loading from "../../../components/loading";
 import { useDispatch, useSelector } from "react-redux";
 import LayoutSection from "../components/layoutSection";
-import { createGood, fatchAllGoods, getErrors, getGoods, getIsLoading, removeGood } from "../../../store/goodsSlice";
+import { createGoods, fatchAllGoods, getErrors, getGoods, getIsLoading, removeGoods } from "../../../store/goodsSlice";
 import ListItemsOfSection from "../components/listItemsOfSection";
-import BlockEditGood from "./BlockEditGood";
+import BlockEditGoods from "./BlockEditGoods";
 
 const SectionGoods = () => {
   const dispatch = useDispatch();
@@ -13,7 +13,7 @@ const SectionGoods = () => {
   const errors = useSelector(getErrors());
   const isLoading = useSelector(getIsLoading());
   const title = "Товары";
-  const newGood = {
+  const newGoods = {
     title: "Новый товар",
     description: "",
     categoryId: null,
@@ -27,11 +27,11 @@ const SectionGoods = () => {
   }, []);
 
   const handlerDeleteGoods = (id) => {
-    dispatch(removeGood(id));
+    dispatch(removeGoods(id));
   };
 
   const handlerCreateGoods = () => {
-    dispatch(createGood(newGood));
+    dispatch(createGoods(newGoods));
   };
 
   let renderGoods = null;
@@ -39,7 +39,7 @@ const SectionGoods = () => {
     renderGoods = (
       <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
         <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
-          <BlockEditGood />
+          <BlockEditGoods />
         </ListItemsOfSection>
       </LayoutSection>
     );

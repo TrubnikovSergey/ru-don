@@ -4,5 +4,7 @@
     "MONGO_URL_l":"mongodb://82.148.28.101:27017",
     "MONGO_URL":"mongodb://127.0.0.1:27017",
     "FOLDER_TEMP":"./public/temp",
-    "FOLDER_UPLOAD":"./public/upload"
+    "FOLDER_UPLOAD":"./public/upload",
+    "HOST":"http://localhost:3000",
+    "HOST_l":"http://77.223.99.138:3000"
 }

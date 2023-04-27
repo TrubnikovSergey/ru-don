@@ -39,12 +39,12 @@ function filterGoodsByCategory(goodsList, categoryId) {
 
 const MainPage = ({ goods, categories }) => {
   const router = useRouter();
-  const { categoryId, goodId } = router.query;
+  const { categoryId, goodsId } = router.query;
   let goodsList = null;
   let goodsItem = null;
 
-  if (goodId) {
-    goodsItem = goods.find((el) => el._id === goodId);
+  if (goodsId) {
+    goodsItem = goods.find((el) => el._id === goodsId);
   }
 
   if (categoryId) {
@@ -70,7 +70,7 @@ const MainPage = ({ goods, categories }) => {
           <button className={style.search__button}>Поиск</button>
         </div>
         <section className={style.sort}>варианты сортировки</section>
-        {goodId ? goodsItem && <GoodsItem item={goodsItem} /> : goodsList && <GoodsList goodsList={goodsList} />}
+        {goodsId ? goodsItem && <GoodsItem item={goodsItem} /> : goodsList && <GoodsList goodsList={goodsList} />}
       </section>
     </main>
   );

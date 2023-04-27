@@ -13,8 +13,10 @@ const GoodsItem = ({ item }) => {
     router.back();
   };
 
+  console.log("-------GoodsItem", item);
+
   useEffect(() => {
-    goodsService.getGoodById(item._id).then((respons) => setData(respons.data));
+    goodsService.getGoodsById(item._id).then((respons) => setData(respons.data));
   }, []);
 
   return data ? (

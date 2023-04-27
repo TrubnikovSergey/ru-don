@@ -1,20 +1,58 @@
 import { useState } from "react";
-import style from "./BlockEditGood.module.scss";
+import style from "./BlockEditGoods.module.scss";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
 import { useDispatch } from "react-redux";
-import { sendFormData, updateGood } from "@/store/goodsSlice";
+import { updateGoods } from "@/store/goodsSlice";
 import BlockUploadedImages from "../components/blockUploadedImages";
+import httpService from "@/services/http.service";
+import configJSON from "../../../config.json";
 
-const BlockEditGood = ({ item, isEdit }) => {
+const HOST = configJSON.HOST;
+
+const BlockEditGoods = ({ item, isEdit }) => {
   const [data, setData] = useState({ ...item, listCategories: [] });
-  const [images, setImages] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
-  console.log("-----item", item);
+
   useEffect(() => {
-    categoriesService.fetchAllWithConcreteFields(["_id", "title"]).then((respons) => setData((prev) => ({ ...prev, listCategories: respons })));
+    const allPromise = [categoriesService.fetchAllWithConcreteFields(["_id", "title"])];
+    if (item?.images?.length > 0) {
+      for (let el of item.images) {
+        allPromise.push(
+          httpService.get(`http://localhost:3000/upload/${el.newFilename}`, {
+            responseType: "arraybuffer",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+        );
+      }
+    }
+
+    Promise.allSettled(allPromise)
+      .then((result) => {
+        const arrayImages = [];
+        let idxImage = 0;
+
+        for (let i = 0; i < result.length; i++) {
+          const el = result[i];
+          if (el.status === "rejected") continue;
+
+          if (i === 0) {
+            setData((prev) => ({ ...prev, listCategories: el.value }));
+          } else {
+            const fileImage = new File([new Blob([el.value.data])], item.images[idxImage].originalFilename, { type: "image/png" });
+            arrayImages.push({ image: fileImage, url: URL.createObjectURL(fileImage) });
+            idxImage += 1;
+          }
+        }
+        setIsLoading(false);
+        setData((prev) => ({ ...prev, images: arrayImages }));
+      })
+      .catch((err) => console.log("------ Error \n", err));
   }, []);
 
   const handlerCancel = () => {
@@ -30,16 +68,15 @@ const BlockEditGood = ({ item, isEdit }) => {
       }
       if (name === "images") {
         const arrayImage = [];
-        const newFiles = [];
+        const newFiles = [...data.images];
 
         for (let i = 0; i < files.length; i++) {
           if (files[i].size <= 1000000) {
             const image = { image: files[i], url: URL.createObjectURL(files[i]) };
-            arrayImage.push(image);
-            newFiles.push(files[i]);
+
+            newFiles.push(image);
           }
         }
-        setImages(arrayImage);
 
         value = newFiles;
       }
@@ -48,9 +85,10 @@ const BlockEditGood = ({ item, isEdit }) => {
   };
 
   const handleDelete = (item) => {
-    setData((prev) => ({ ...prev, images: prev.images.filter((el) => !(el.lastModified === item.image.lastModified && el.name === item.image.name && el.size === item.image.size)) }));
-
-    setImages((prev) => prev.filter((el) => !(el.image.lastModified === item.image.lastModified && el.image.name === item.image.name && el.image.size === item.image.size)));
+    setData((prev) => ({
+      ...prev,
+      images: prev.images.filter((el) => !(el.image.lastModified === item.image.lastModified && el.image.name === item.image.name && el.image.size === item.image.size)),
+    }));
   };
 
   const handlerSubmit = (e) => {
@@ -63,19 +101,17 @@ const BlockEditGood = ({ item, isEdit }) => {
     Object.keys(newData).forEach((key) => {
       if (key === "images") {
         for (let i = 0; i < newData[key].length; i++) {
-          sendData.append(`${key}[]`, newData[key][i]);
+          sendData.append(`${key}[]`, newData[key][i].image);
         }
       } else {
         sendData.append(`${key}`, newData[key]);
       }
     });
 
-    dispatch(updateGood(newData));
-    // console.log("++++++++++++++", newData);
-    // dispatch(sendFormData(sendData));
+    dispatch(updateGoods(sendData));
   };
 
-  return data && data.listCategories.length > 0 && images ? (
+  return !isLoading ? (
     <div className={style["block-edit"]}>
       <form onSubmit={handlerSubmit}>
         <div className={style["block-edit-content"]}>
@@ -111,7 +147,8 @@ const BlockEditGood = ({ item, isEdit }) => {
             <input className={style["input-number"]} type="number" name="discountCount" required={true} onChange={handlerChange} value={data.discountCount} />
           </div>
           <div>
-            {images.length > 0 ? <BlockUploadedImages list={images} handleDelete={handleDelete} /> : null}
+            {data.images.length > 0 ? <BlockUploadedImages list={data.images} handleDelete={handleDelete} /> : null}
+            {/* {data.images.length > 0 && <img src={data.images[0].url} alt="изображение товара" />} */}
             <input className={style["btn-upload"]} type="file" name="images" accept=".jpg, .jpeg" onChange={handlerChange} multiple />
             <p>(размер изображения не более 1 мб)</p>
           </div>
@@ -131,9 +168,9 @@ const BlockEditGood = ({ item, isEdit }) => {
   );
 };
 
-BlockEditGood.propTypes = {
+BlockEditGoods.propTypes = {
   item: PropTypes.object,
   isEdit: PropTypes.func,
 };
 
-export default BlockEditGood;
+export default BlockEditGoods;

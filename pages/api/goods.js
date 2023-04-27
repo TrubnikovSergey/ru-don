@@ -37,6 +37,9 @@ handler.post(async (req, res) => {
     await form.parse(req, async (err, fields, files) => {
       const { action } = req.query;
 
+      if (action === "getImagesFilesByNames") {
+      }
+
       if (action === "fetchByArrayId") {
         const { arrayId } = fields;
         if (arrayId.length > 0) {
@@ -63,6 +66,7 @@ handler.post(async (req, res) => {
         const images = "images[]" in files ? files["images[]"] : [];
         const goods = { ...fields };
         let data = null;
+
         const imagesConvert = (images) => {
           let result = [];
           if (Array.isArray(images)) {
@@ -122,23 +126,23 @@ handler.post(async (req, res) => {
         res.status(200).json(data);
       }
 
-      // if (action === "saveGood") {
+      // if (action === "saveGoods") {
       //   let data = null;
       //   const { goods } = fields;
 
       //   if (goods._id) {
-      //     const dataForUpdate = { ...good };
+      //     const dataForUpdate = { ...goods };
       //     delete dataForUpdate._id;
 
-      //     data = await req.db.collection("goods").updateOne({ _id: new ObjectId(good._id) }, { $set: dataForUpdate });
+      //     data = await req.db.collection("goods").updateOne({ _id: new ObjectId(goods._id) }, { $set: dataForUpdate });
       //   } else {
-      //     data = await req.db.collection("goods").insertOne(good);
+      //     data = await req.db.collection("goods").insertOne(goods);
       //   }
 
       //   res.status(200).json(data);
       // }
 
-      if (action === "getGoodById") {
+      if (action === "getGoodsById") {
         const { goodsId } = fields;
         const data = await req.db.collection("goods").findOne({ _id: new ObjectId(goodsId) });
 

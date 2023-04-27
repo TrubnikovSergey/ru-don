@@ -9,11 +9,11 @@ const goodsSlice = createSlice({
     isLoading: false,
   },
   reducers: {
-    requestCreateGood: (state, action) => {},
-    responsCreateGood: (state, action) => {
+    requestCreateGoods: (state, action) => {},
+    responsCreateGoods: (state, action) => {
       state.entities.unshift(action.payload);
     },
-    responsCreateGoodError: (state, action) => {
+    responsCreateGoodsError: (state, action) => {
       state.errors.push(action.payload);
     },
 
@@ -31,15 +31,15 @@ const goodsSlice = createSlice({
       state.isLoading = false;
     },
 
-    requestUpdateGood: (state, action) => {
+    requestUpdateGoods: (state, action) => {
       state.isLoading = true;
     },
-    requestUpdateGoodError: (state, action) => {
+    requestUpdateGoodsError: (state, action) => {
       state.isLoading = false;
       state.errors.push(action.payload);
     },
 
-    responsUpdateGood: (state, action) => {
+    responsUpdateGoods: (state, action) => {
       state.isLoading = false;
 
       const goods = action.payload;
@@ -50,14 +50,14 @@ const goodsSlice = createSlice({
         }
       });
     },
-    requestRemoveGood: (state) => {
+    requestRemoveGoods: (state) => {
       state.isLoading = true;
     },
-    responsRemoveGood: (state, action) => {
+    responsRemoveGoods: (state, action) => {
       state.entities = state.entities.filter((item) => item._id !== action.payload);
       state.isLoading = false;
     },
-    responsRemoveGoodError: (state, action) => {
+    responsRemoveGoodsError: (state, action) => {
       state.errors.push(action.payload);
       state.isLoading = false;
     },
@@ -66,61 +66,75 @@ const goodsSlice = createSlice({
 
 const { reducer: goodsReducer, actions } = goodsSlice;
 const {
-  requestCreateGood,
-  responsCreateGood,
-  responsCreateGoodError,
+  requestCreateGoods,
+  responsCreateGoods,
+  responsCreateGoodsError,
   requestFetchAll,
   requestFetchAllError,
   responsFetchAll,
-  requestUpdateGood,
-  requestUpdateGoodError,
-  responsUpdateGood,
-  requestRemoveGood,
-  responsRemoveGood,
-  responsRemoveGoodError,
+  requestUpdateGoods,
+  requestUpdateGoodsError,
+  responsUpdateGoods,
+  requestRemoveGoods,
+  responsRemoveGoods,
+  responsRemoveGoodsError,
 } = actions;
 
-const updateGood = (goods) => async (dispatch) => {
-  dispatch(requestUpdateGood());
+const updateGoods = (goods) => async (dispatch) => {
+  dispatch(requestUpdateGoods());
   try {
     const respons = await goodsService.saveGoods(goods);
-    console.log("-----updateGood respons", respons);
-    console.log("-----updateGood goods", goods);
 
-    if (respons?.data?.acknowledged) {
-      goods.images = respons.data.images;
-      dispatch(responsUpdateGood(goods));
+    if (respons.data.acknowledged) {
+      const stateData = {};
+
+      for (let el of respons.config.data) {
+        const key = el[0];
+        const value = el[1];
+
+        if (key === "_id") {
+          stateData[key] = value;
+        }
+        if (key === "title") {
+          stateData[key] = value;
+        }
+        if (key === "description") {
+          stateData[key] = value;
+        }
+        if (key === "categoryId") {
+          stateData[key] = value;
+        }
+        if (key === "price") {
+          stateData[key] = Number(value);
+        }
+        if (key === "discountProcent") {
+          stateData[key] = Number(value);
+        }
+        if (key === "discountCount") {
+          stateData[key] = Number(value);
+        }
+      }
+
+      stateData.images = respons.data.images;
+
+      dispatch(responsUpdateGoods(stateData));
     }
   } catch (error) {
-    dispatch(requestUpdateGoodError(error));
+    dispatch(requestUpdateGoodsError(error));
   }
 };
 
-// const sendFormData = (data) => async (dispatch) => {
-//   dispatch(requestUpdateGood());
-//   try {
-//     const respons = await goodsService.sendFormData(data);
-//     console.log("----------respons", respons);
-//     // if (respons?.data?.acknowledged) {
-//     //   const { goods } = JSON.parse(respons.config.data);
-//     //   dispatch(responsUpdateGood(goods));
-//     // }
-//   } catch (error) {
-//     dispatch(requestUpdateGoodError(error));
-//   }
-// };
-
-const removeGood = (goodsId) => async (dispatch) => {
-  dispatch(requestRemoveGood());
+const removeGoods = (goodsId) => async (dispatch) => {
+  dispatch(requestRemoveGoods());
   try {
-    const data = await goodsService.removeGoodById(goodsId);
-    if (data?.acknowledged) {
-      dispatch(responsRemoveGood(goodsId));
+    const data = await goodsService.removeGoodsById(goodsId);
+    if (data.acknowledged) {
+      dispatch(responsRemoveGoods(goodsId));
     } else {
-      dispatch(responsRemoveGoodError({ codeError: 400, massage: "Remove goods failed" }));
+      dispatch(responsRemoveGoodsError({ codeError: 400, massage: "Remove goods failed" }));
     }
   } catch (error) {
-    dispatch(responsRemoveGoodError(error));
+    dispatch(responsRemoveGoodsError(error));
   }
 };
 
@@ -134,18 +148,19 @@ const fatchAllGoods = () => async (dispatch) => {
   }
 };
 
-const createGood = (goods) => async (dispatch) => {
-  dispatch(requestCreateGood(goods));
+const createGoods = (goods) => async (dispatch) => {
+  dispatch(requestCreateGoods(goods));
   try {
     const respons = await goodsService.saveGoods(goods);
-    console.log("-----createGood", respons);
 
-    if (respons?.data?.acknowledged) {
+    if (respons.data.acknowledged) {
       goods._id = respons.data.insertedId;
-      dispatch(responsCreateGood(goods));
+      goods.images = respons.data.images;
+
+      dispatch(responsCreateGoods(goods));
     }
   } catch (error) {
-    dispatch(responsCreateGoodError(error));
+    dispatch(responsCreateGoodsError(error));
   }
 };
 
@@ -153,4 +168,4 @@ const getGoods = () => (state) => state.goods.entities;
 const getErrors = () => (state) => state.goods.errors;
 const getIsLoading = () => (state) => state.goods.isLoading;
 
-export { goodsReducer, fatchAllGoods, updateGood, removeGood, createGood, getGoods, getIsLoading, getErrors };
+export { goodsReducer, fatchAllGoods, updateGoods, removeGoods, createGoods, getGoods, getIsLoading, getErrors };

@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import style from "./goodsItem.module.scss";
 import { useState } from "react";
-import BlockEdit from "./BlockEditGood";
+import BlockEdit from "./BlockEditGoods";
 import { useDispatch } from "react-redux";
-import { removeGood } from "../../../store/goodsSlice";
+import { removeGoods } from "../../../store/goodsSlice";
 
 const GoodsItem = ({ item = {} }) => {
   const [isEdit, setIsEdit] = useState(false);
@@ -16,7 +16,7 @@ const GoodsItem = ({ item = {} }) => {
   };
 
   const handlerDel = (id) => {
-    dispatch(removeGood(id));
+    dispatch(removeGoods(id));
   };
 
   return (
