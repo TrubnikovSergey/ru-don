@@ -7,6 +7,7 @@ import SectionNews from "./News/sectionNews";
 import SectionDelivery from "./delivery/sectionDelivery";
 import SectionAbout from "./about/sectionAbout";
 import SectionContacts from "./Contacts/sectionContacts";
+import Card from "@/components/card";
 
 const Admin = () => {
   const route = useRouter();
@@ -40,7 +41,7 @@ const Admin = () => {
   return (
     <div className={style.wrapper}>
       <div className={style.container}>
-        <div className={style["left-panel"]}>
+        <Card moreStyle={style["left-panel"]}>
           <h2 className={style["left-panel__title"]}>Разделы</h2>
           <div className={style["left-panel__item"]}>
             <Link href="/admin?section=categories">Категории товаров</Link>
@@ -63,8 +64,8 @@ const Admin = () => {
           <div className={style["left-panel__item"]}>
             <Link href="/admin?section=users">Пользователи</Link>
           </div>
-        </div>
-        <div className={style["right-panel"]}>{renderContent}</div>
+        </Card>
+        <Card moreStyle={style["right-panel"]}>{renderContent}</Card>
       </div>
     </div>
   );

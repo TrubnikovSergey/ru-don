@@ -105,9 +105,6 @@ async function checkParentReferens(category) {
   const req = client.db("energy");
   const categoryFromBD = await req.collection("categories").findOne({ _id: new ObjectId(category._id) });
 
-  // const respons = await categoriesService.getCategoryById(category._id);
-  // const categoryFromBD = respons.data;
-
   const changedCategories = [];
   if (categoryFromBD && category.parent !== categoryFromBD.parent) {
     if (!category.parent && categoryFromBD.parent) {
@@ -130,15 +127,12 @@ async function checkParentReferens(category) {
 
 async function changeParentReferens(req, parentId, childrenId, mode) {
   const categoryParent = await req.collection("categories").findOne({ _id: new ObjectId(parentId) });
-  // const respons = await categoriesService.getCategoryById(parentId);
-  // const categoryParent = respons.data;
 
   addRemoveChildrenCategory(categoryParent, childrenId, mode);
 
   const dataUpdate = { ...categoryParent };
   delete dataUpdate._id;
   await req.collection("categories").updateOne({ _id: new ObjectId(categoryParent._id) }, { $set: dataUpdate });
-  // await categoriesService.saveCategory(categoryParent);
 
   return categoryParent;
 }

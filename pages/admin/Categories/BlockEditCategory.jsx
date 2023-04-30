@@ -6,7 +6,6 @@ import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
 import { useDispatch } from "react-redux";
 import { updateCategory } from "@/store/categoriesSlice";
-// import MultiSelectField from "@/components/multiSelect";
 
 const createState = (setData, item) => {
   categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {

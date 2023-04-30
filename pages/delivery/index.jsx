@@ -1,5 +1,6 @@
 import { MongoClient } from "mongodb";
 import style from "./delivery.module.scss";
+import Card from "@/components/card";
 
 export const getServerSideProps = async () => {
   const mongoURL = process.env.MONGO_URL;
@@ -28,10 +29,12 @@ const SectionDelivery = ({ delivery }) => {
   const data = delivery.length > 0 ? delivery[0] : {};
 
   return (
-    <section className={style.delivery}>
-      <h1 className={style.title}>{data.title}</h1>
-      <pre className={style.description}>{data.description}</pre>
-    </section>
+    <Card>
+      <main className={style.delivery}>
+        <h1 className={style.title}>{data.title}</h1>
+        <pre className={style.description}>{data.description}</pre>
+      </main>
+    </Card>
   );
 };
 

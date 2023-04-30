@@ -1,5 +1,6 @@
 import http from "./http.service";
 import configJSON from "../config.json";
+import { MongoClient } from "mongodb";
 
 const newsService = {
   fetchAll: async () => {
@@ -7,6 +8,7 @@ const newsService = {
       const { data } = await http.get(`${configJSON.API_HOST}/news?action=fetchAll`);
       return data;
     } catch (error) {
+      console.log("-----newsService error", error);
       return null;
     }
   },

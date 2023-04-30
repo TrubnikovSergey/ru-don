@@ -148,7 +148,7 @@ const BlockEditGoods = ({ item, isEdit }) => {
           </div>
           <div>
             {data.images.length > 0 ? <BlockUploadedImages list={data.images} handleDelete={handleDelete} /> : null}
-            {/* {data.images.length > 0 && <img src={data.images[0].url} alt="изображение товара" />} */}
+
             <input className={style["btn-upload"]} type="file" name="images" accept=".jpg, .jpeg" onChange={handlerChange} multiple />
             <p>(размер изображения не более 1 мб)</p>
           </div>

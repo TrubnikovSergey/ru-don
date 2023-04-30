@@ -3,8 +3,9 @@ import { MongoClient } from "mongodb";
 import Tree from "@/components/tree";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import GoodsItem from "./goodsItem";
 import GoodsList from "./goodsList";
+import Card from "@/components/card";
+import GoodsPage from "./goodsPage";
 
 export const getServerSideProps = async () => {
   const mongoURL = process.env.MONGO_URL;
@@ -55,22 +56,26 @@ const MainPage = ({ goods, categories }) => {
 
   return (
     <main className={style.main}>
-      <section className={style.categories}>
-        <div className={style.container}>
-          <h1 className={style.categories__title}>Категории</h1>
-          <div className={style["link-all-goods"]}>
-            <Link href="/goods"> Все товары</Link>
+      <Card moreStyle={style.categories}>
+        <section>
+          <div className={style.container}>
+            <h1 className={style.categories__title}>Категории</h1>
+            <div className={style["link-all-goods"]}>
+              <Link href="/goods"> Все товары</Link>
+            </div>
+            <Tree treeData={categories} />
           </div>
-          <Tree treeData={categories} />
-        </div>
-      </section>
+        </section>
+      </Card>
       <section className={style.goods}>
-        <div className={style.search}>
-          <input className={style.search__input} type="text" />
-          <button className={style.search__button}>Поиск</button>
-        </div>
-        <section className={style.sort}>варианты сортировки</section>
-        {goodsId ? goodsItem && <GoodsItem item={goodsItem} /> : goodsList && <GoodsList goodsList={goodsList} />}
+        <Card moreStyle={style["tools-bar"]}>
+          <div className={style.search}>
+            <input className={style.search__input} type="text" />
+            <button className={style.search__button}>Поиск</button>
+          </div>
+          <section className={style.sort}>варианты сортировки</section>
+        </Card>
+        {goodsId ? goodsItem && <GoodsPage item={goodsItem} /> : goodsList && <GoodsList goodsList={goodsList} />}
       </section>
     </main>
   );

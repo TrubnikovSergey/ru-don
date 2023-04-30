@@ -1,5 +1,6 @@
 import { MongoClient } from "mongodb";
 import style from "./contacts.module.scss";
+import Card from "@/components/card";
 
 export const getServerSideProps = async () => {
   const mongoURL = process.env.MONGO_URL;
@@ -24,22 +25,24 @@ export const getServerSideProps = async () => {
 
 const Contacts = ({ contacts }) => {
   return (
-    <main className={style.main}>
-      <h1 className={style.title}>Контакты</h1>
-      <div className={style.content}>
-        <section className={style["list-contacts"]}>
-          <div className={style.content}>
-            {contacts &&
-              contacts.map((item) => (
-                <pre className={style.description} key={item._id}>
-                  {item.description}
-                </pre>
-              ))}
-          </div>
-        </section>
-        <section className={style.map}>карта</section>
-      </div>
-    </main>
+    <Card moreStyle={style.main}>
+      <main>
+        <h1 className={style.title}>Контакты</h1>
+        <div className={style.content}>
+          <section className={style["list-contacts"]}>
+            <div className={style.content}>
+              {contacts &&
+                contacts.map((item) => (
+                  <pre className={style.description} key={item._id}>
+                    {item.description}
+                  </pre>
+                ))}
+            </div>
+          </section>
+          <section className={style.map}>карта</section>
+        </div>
+      </main>
+    </Card>
   );
 };
 

@@ -10,6 +10,7 @@ handler.get(async (req, res) => {
   const { action } = req.query;
 
   if (action === "fetchAll") {
+    console.log("------Back fetchAll");
     let data = await req.db.collection("news").find({}).toArray();
     res.status(200).json(data);
   }

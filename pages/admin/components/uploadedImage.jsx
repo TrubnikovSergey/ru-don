@@ -15,14 +15,16 @@ const UploadedImage = ({ item, handleDelete }) => {
   };
 
   return (
-    <div className={classNameItem} key={item.url} onClick={() => handleDelete(item)}>
-      <div className={classNameContent} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-        <div className={style["item-image"]}>
-          <img className={style.image} src={item.url} alt="изображение товара" />
+    item && (
+      <div className={classNameItem} key={item.url} onClick={() => handleDelete(item)}>
+        <div className={classNameContent} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+          <div className={style["item-image"]}>
+            <img className={style.image} src={item.url} alt="изображение товара" />
+          </div>
+          <div className={style["item-title"]}>{item.image.name}</div>
         </div>
-        <div className={style["item-title"]}>{item.image.name}</div>
       </div>
-    </div>
+    )
   );
 };
 

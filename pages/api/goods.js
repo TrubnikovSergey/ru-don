@@ -119,28 +119,12 @@ handler.post(async (req, res) => {
           const newGoods = { ...goods };
           newGoods.images = imagesConvert(images);
 
-          data = await req.db.collection("goods").insertOne(goods);
+          data = await req.db.collection("goods").insertOne(newGoods);
           data.images = newGoods.images;
         }
 
         res.status(200).json(data);
       }
-
-      // if (action === "saveGoods") {
-      //   let data = null;
-      //   const { goods } = fields;
-
-      //   if (goods._id) {
-      //     const dataForUpdate = { ...goods };
-      //     delete dataForUpdate._id;
-
-      //     data = await req.db.collection("goods").updateOne({ _id: new ObjectId(goods._id) }, { $set: dataForUpdate });
-      //   } else {
-      //     data = await req.db.collection("goods").insertOne(goods);
-      //   }
-
-      //   res.status(200).json(data);
-      // }
 
       if (action === "getGoodsById") {
         const { goodsId } = fields;

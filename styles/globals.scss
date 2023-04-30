@@ -1,3 +1,8 @@
+
+$color_black: #383638;
+$color_gray: #747374;
+$color_foxy: #e9672b;
+
 @font-face {
   font-family: 'Roboto Bold';
   src: url('../public/fonts/Roboto-Bold.ttf') format('truetype');
@@ -19,17 +24,16 @@
 
 body{
   font-family: 'Roboto Bold';
-  color: rgb(50, 50, 50);
+  color: $color_black;
+  background: $color_foxy;
 }
 
 a{
-  color: rgb(50, 50, 50);
+  color: $color_black;
   text-decoration: none;
-}
-
-a:hover{
-  // color: rgb(90, 90, 90);
-  border-bottom: 1px solid rgb(50, 50, 50);
+  &:hover{
+    color: $color_foxy;
+  }
 }
 
 button{

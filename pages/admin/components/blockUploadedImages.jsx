@@ -1,7 +1,7 @@
 import style from "./blockUploadedImages.module.scss";
 import UploadedImage from "./uploadedImage";
 
-const BlockUploadedImages = ({ list, handleDelete }) => {
+const BlockUploadedImages = ({ list = [], handleDelete }) => {
   return (
     <div className={style["uploaded-files"]}>
       {list.map((item) => {

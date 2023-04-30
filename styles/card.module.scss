@@ -1,0 +1,9 @@
+$bg_block: #fff;
+$box_shadow: 0px 0px 5px #383638;
+$border_radius: 5px;
+
+.card{
+    border-radius: $border_radius;
+    background: $bg_block;
+    box-shadow: $box_shadow
+}

@@ -1,9 +1,14 @@
-.header, .footer{
-    
+.header{
     padding: 20px 0px;
-    // border: 1px solid;
     height: 65px;
+    margin: 20px 0px;
 }
+.footer{
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
 .container{
     max-width: 1500px;

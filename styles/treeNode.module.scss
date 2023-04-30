@@ -1,11 +1,9 @@
 .treeNode{
     display: flex;
-    margin-bottom: 10px;
+    padding-bottom: 10px;
     cursor: pointer;
-    overflow: hidden;
-    height: 20px;
 }
 
 .treeNode-children{    
-    padding-left: 10px ;
+    padding-left: 5%;
 }
