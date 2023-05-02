@@ -31,7 +31,7 @@ const AutoSlider = ({ imageNameList, moreStyle }) => {
   return (
     <div className={style.wrapper}>
       {imageNameList.length > 0 && (
-        <img className={style.image} src={`/upload/${imageNameList[idxImageRef.current]}`} alt="Изображение твоара" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}></img>
+        <img className={style.image} src={`/upload/${imageNameList[idxImageRef.current]}`} alt="Изображение товара" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}></img>
       )}
     </div>
   );

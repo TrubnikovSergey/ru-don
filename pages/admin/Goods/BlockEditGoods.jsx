@@ -22,7 +22,7 @@ const BlockEditGoods = ({ item, isEdit }) => {
     if (item?.images?.length > 0) {
       for (let el of item.images) {
         allPromise.push(
-          httpService.get(`http://localhost:3000/upload/${el.newFilename}`, {
+          httpService.get(`${HOST}/upload/${el.newFilename}`, {
             responseType: "arraybuffer",
             headers: {
               "Content-Type": "application/json",
@@ -98,9 +98,18 @@ const BlockEditGoods = ({ item, isEdit }) => {
     const newData = { ...data };
     delete newData.listCategories;
 
-    Object.keys(newData).forEach((key) => {
+    Object.keys(newData).forEach(async (key) => {
       if (key === "images") {
         for (let i = 0; i < newData[key].length; i++) {
+          const image = newData[key][i].image;
+
+          // const reader = new FileReader();
+          // await reader.readAsBinaryString(image);
+          // reader.onload = function (e) {
+          //   // binary data
+          //   console.log("-----Bin image", e.target.result);
+          // };
+
           sendData.append(`${key}[]`, newData[key][i].image);
         }
       } else {

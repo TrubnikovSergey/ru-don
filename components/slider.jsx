@@ -23,7 +23,7 @@ const Slider = ({ imageNameList }) => {
   };
 
   const handleClickLeftArrow = () => {
-    if (idxImage - 1 > 0) {
+    if (idxImage - 1 >= 0) {
       setIdxImage((prev) => prev - 1);
     } else {
       setIdxImage(imageNameList.length - 1);

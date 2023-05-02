@@ -1,6 +1,6 @@
 import nextConnect from "next-connect";
 import middleware from "../../middleware/database";
-import { ObjectId } from "mongodb";
+import { Binary, ObjectId } from "mongodb";
 import formidable from "formidable";
 import * as fs from "fs";
 
@@ -69,6 +69,8 @@ handler.post(async (req, res) => {
 
         const imagesConvert = (images) => {
           let result = [];
+          let binResult = [];
+
           if (Array.isArray(images)) {
             result = images.map((item) => ({ newFilename: item.newFilename, originalFilename: item.originalFilename, size: item.size }));
           } else {
