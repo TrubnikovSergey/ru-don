@@ -29,7 +29,7 @@ const GoodsPage = ({ item }) => {
         <div className={style["title"]}>
           <h1>{data.title}</h1>
         </div>
-        {data.images.length > 0 && <Slider imageNameList={data.images.map((item) => item.newFilename)} />}
+        {data.images.length > 0 && <Slider imagesList={data.images.map((item) => ({ imageBase64: item.imageBase64 }))} />}
         <div className={style["description"]}>
           <h1 className={style["description-title"]}>Описание</h1>
           <pre className={style["description-content"]}>{data.description}</pre>

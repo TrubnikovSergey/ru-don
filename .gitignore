@@ -32,6 +32,3 @@ yarn-error.log*
 .vercel
 
 config.json
-
-/public/upload
-/public/temp

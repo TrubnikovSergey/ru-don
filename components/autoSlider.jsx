@@ -3,15 +3,15 @@ import style from "../styles/autoSlider.module.scss";
 import { useEffect } from "react";
 import { useRef } from "react";
 
-const AutoSlider = ({ imageNameList, moreStyle }) => {
+const AutoSlider = ({ imagesList, moreStyle }) => {
   const [toggle, setToggle] = useState(true);
   const idxImageRef = useRef(0);
   const intervalRef = useRef(null);
 
   const calculateIdxImage = () => {
     setToggle((prev) => !prev);
-    if (imageNameList.length > 0) {
-      if (idxImageRef.current === imageNameList.length - 1) {
+    if (imagesList.length > 0) {
+      if (idxImageRef.current === imagesList.length - 1) {
         idxImageRef.current = 0;
       } else {
         idxImageRef.current += 1;
@@ -30,8 +30,8 @@ const AutoSlider = ({ imageNameList, moreStyle }) => {
 
   return (
     <div className={style.wrapper}>
-      {imageNameList.length > 0 && (
-        <img className={style.image} src={`/upload/${imageNameList[idxImageRef.current]}`} alt="Изображение товара" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}></img>
+      {imagesList.length > 0 && (
+        <img className={style.image} src={imagesList[idxImageRef.current].imageBase64} alt="Изображение товара" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}></img>
       )}
     </div>
   );

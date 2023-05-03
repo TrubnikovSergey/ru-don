@@ -5,20 +5,12 @@ import Slider from "@/components/slider";
 import AutoSlider from "@/components/autoSlider";
 
 const GoodsList = ({ goodsList = [] }) => {
-  const getFerstImageGoods = (images) => {
-    if (images.length > 0) {
-      return `/upload/${images[0].newFilename}`;
-    }
-
-    return "/images/noimg.png";
-  };
-
   return (
     <ul className={style.goods__list}>
       {goodsList.map((item) => (
         <Card key={item._id}>
           <li className={style.goods__item}>
-            <AutoSlider imageNameList={item.images.map((item) => item.newFilename)} />
+            <AutoSlider imagesList={item.images.map((item) => ({ imageBase64: item.imageBase64 }))} />
             <Link className={style.goods__link} href={`/goods?goodsId=${item._id}`}>
               <p className={style.goods__title}>{item.title}</p>
             </Link>

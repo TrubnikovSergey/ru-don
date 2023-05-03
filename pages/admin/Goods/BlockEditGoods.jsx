@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import style from "./BlockEditGoods.module.scss";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
@@ -18,76 +19,60 @@ const BlockEditGoods = ({ item, isEdit }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const allPromise = [categoriesService.fetchAllWithConcreteFields(["_id", "title"])];
-    if (item?.images?.length > 0) {
-      for (let el of item.images) {
-        allPromise.push(
-          httpService.get(`${HOST}/upload/${el.newFilename}`, {
-            responseType: "arraybuffer",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-        );
-      }
-    }
-
-    Promise.allSettled(allPromise)
-      .then((result) => {
-        const arrayImages = [];
-        let idxImage = 0;
-
-        for (let i = 0; i < result.length; i++) {
-          const el = result[i];
-          if (el.status === "rejected") continue;
-
-          if (i === 0) {
-            setData((prev) => ({ ...prev, listCategories: el.value }));
-          } else {
-            const fileImage = new File([new Blob([el.value.data])], item.images[idxImage].originalFilename, { type: "image/png" });
-            arrayImages.push({ image: fileImage, url: URL.createObjectURL(fileImage) });
-            idxImage += 1;
-          }
-        }
-        setIsLoading(false);
-        setData((prev) => ({ ...prev, images: arrayImages }));
-      })
-      .catch((err) => console.log("------ Error \n", err));
+    categoriesService.fetchAllWithConcreteFields(["_id", "title"]).then((resp) => {
+      setData((prev) => ({ ...prev, listCategories: resp }));
+      setIsLoading(false);
+    });
   }, []);
 
   const handlerCancel = () => {
     isEdit(false);
   };
 
-  const handlerChange = (e) => {
-    setData((prev) => {
-      let { name, value, files } = e.target;
+  function fileToBase64(file) {
+    return new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
 
-      if (name === "categoryId") {
-        value = value === "" ? null : value;
-      }
-      if (name === "images") {
-        const arrayImage = [];
-        const newFiles = [...data.images];
+      reader.onload = function () {
+        res(reader.result);
+      };
 
-        for (let i = 0; i < files.length; i++) {
-          if (files[i].size <= 1000000) {
-            const image = { image: files[i], url: URL.createObjectURL(files[i]) };
+      reader.onerror = function () {
+        rej(reader.error);
+      };
+    });
+  }
 
-            newFiles.push(image);
-          }
+  const handlerChange = async (e) => {
+    let { name, value, files } = e.target;
+
+    if (name === "categoryId") {
+      value = value === "" ? null : value;
+    }
+    if (name === "images") {
+      const base64Images = [];
+
+      for (let el of files) {
+        if (el.size <= 500000) {
+          const imageBase64 = await fileToBase64(el);
+          const img = { name: el.name, size: el.size, type: el.type, imageBase64, _id: uuidv4() };
+          base64Images.push(img);
         }
-
-        value = newFiles;
       }
-      return { ...prev, [name]: value };
+
+      value = base64Images;
+    }
+
+    setData((prev) => {
+      return { ...prev, [name]: name === "images" ? [...prev.images, ...value] : value };
     });
   };
 
   const handleDelete = (item) => {
     setData((prev) => ({
       ...prev,
-      images: prev.images.filter((el) => !(el.image.lastModified === item.image.lastModified && el.image.name === item.image.name && el.image.size === item.image.size)),
+      images: prev.images.filter((el) => !(el._id === item._id)),
     }));
   };
 
@@ -98,26 +83,20 @@ const BlockEditGoods = ({ item, isEdit }) => {
     const newData = { ...data };
     delete newData.listCategories;
 
-    Object.keys(newData).forEach(async (key) => {
-      if (key === "images") {
-        for (let i = 0; i < newData[key].length; i++) {
-          const image = newData[key][i].image;
+    // Object.keys(newData).forEach(async (key) => {
+    //   if (key === "images") {
+    //     for (let i = 0; i < newData[key].length; i++) {
+    //       const image = newData[key][i].image;
 
-          // const reader = new FileReader();
-          // await reader.readAsBinaryString(image);
-          // reader.onload = function (e) {
-          //   // binary data
-          //   console.log("-----Bin image", e.target.result);
-          // };
+    //       sendData.append(`${key}[]`, newData[key][i].image);
+    //     }
+    //   } else {
+    //     sendData.append(`${key}`, newData[key]);
+    //   }
+    // });
 
-          sendData.append(`${key}[]`, newData[key][i].image);
-        }
-      } else {
-        sendData.append(`${key}`, newData[key]);
-      }
-    });
-
-    dispatch(updateGoods(sendData));
+    // dispatch(updateGoods(sendData));
+    dispatch(updateGoods(newData));
   };
 
   return !isLoading ? (
@@ -156,10 +135,10 @@ const BlockEditGoods = ({ item, isEdit }) => {
             <input className={style["input-number"]} type="number" name="discountCount" required={true} onChange={handlerChange} value={data.discountCount} />
           </div>
           <div>
-            {data.images.length > 0 ? <BlockUploadedImages list={data.images} handleDelete={handleDelete} /> : null}
+            {data.images.length > 0 ? <BlockUploadedImages imagesList={data.images} handleDelete={handleDelete} /> : null}
 
             <input className={style["btn-upload"]} type="file" name="images" accept=".jpg, .jpeg" onChange={handlerChange} multiple />
-            <p>(размер изображения не более 1 мб)</p>
+            <p>(размер изображения не более 500 кб)</p>
           </div>
         </div>
         <div className={style["buttons-save-cancel"]}>

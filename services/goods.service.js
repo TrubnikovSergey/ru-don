@@ -37,22 +37,9 @@ const goodsService = {
   },
   saveGoods: async (goods) => {
     try {
-      const respons = await http.post(`${configJSON.API_HOST}/goods?action=saveGoods`, goods, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const respons = await http.post(`${configJSON.API_HOST}/goods?action=saveGoods`, { goods });
 
       return respons;
-    } catch (error) {
-      return error;
-    }
-  },
-  getImagesFilesByNames: async (arrayNames) => {
-    try {
-      const { data } = await http.post(`${configJSON.API_HOST}/goods?action=getImagesFilesByNames`, { arrayNames });
-
-      return data;
     } catch (error) {
       return error;
     }

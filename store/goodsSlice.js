@@ -86,38 +86,7 @@ const updateGoods = (goods) => async (dispatch) => {
     const respons = await goodsService.saveGoods(goods);
 
     if (respons.data.acknowledged) {
-      const stateData = {};
-
-      for (let el of respons.config.data) {
-        const key = el[0];
-        const value = el[1];
-
-        if (key === "_id") {
-          stateData[key] = value;
-        }
-        if (key === "title") {
-          stateData[key] = value;
-        }
-        if (key === "description") {
-          stateData[key] = value;
-        }
-        if (key === "categoryId") {
-          stateData[key] = value;
-        }
-        if (key === "price") {
-          stateData[key] = Number(value);
-        }
-        if (key === "discountProcent") {
-          stateData[key] = Number(value);
-        }
-        if (key === "discountCount") {
-          stateData[key] = Number(value);
-        }
-      }
-
-      stateData.images = respons.data.images;
-
-      dispatch(responsUpdateGoods(stateData));
+      dispatch(responsUpdateGoods(goods));
     }
   } catch (error) {
     dispatch(requestUpdateGoodsError(error));
@@ -155,7 +124,7 @@ const createGoods = (goods) => async (dispatch) => {
 
     if (respons.data.acknowledged) {
       goods._id = respons.data.insertedId;
-      goods.images = respons.data.images;
+      goods.images = [];
 
       dispatch(responsCreateGoods(goods));
     }

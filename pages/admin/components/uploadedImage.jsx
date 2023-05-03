@@ -16,12 +16,12 @@ const UploadedImage = ({ item, handleDelete }) => {
 
   return (
     item && (
-      <div className={classNameItem} key={item.url} onClick={() => handleDelete(item)}>
+      <div className={classNameItem} key={item._id} onClick={() => handleDelete(item)}>
         <div className={classNameContent} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
           <div className={style["item-image"]}>
-            <img className={style.image} src={item.url} alt="изображение товара" />
+            <img className={style.image} src={item.imageBase64} alt="изображение товара" />
           </div>
-          <div className={style["item-title"]}>{item.image.name}</div>
+          <div className={style["item-title"]}>{item.name}</div>
         </div>
       </div>
     )
