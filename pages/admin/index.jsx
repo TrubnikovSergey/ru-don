@@ -8,6 +8,7 @@ import SectionDelivery from "./delivery/sectionDelivery";
 import SectionAbout from "./about/sectionAbout";
 import SectionContacts from "./Contacts/sectionContacts";
 import Card from "@/components/card";
+import SectionUsers from "./Users/sectionUsers";
 
 const Admin = () => {
   const route = useRouter();
@@ -32,6 +33,9 @@ const Admin = () => {
       break;
     case "contacts":
       renderContent = <SectionContacts />;
+      break;
+    case "users":
+      renderContent = <SectionUsers />;
       break;
 
     default:

@@ -6,6 +6,7 @@ import BlockEditCategory from "../Categories/BlockEditCategory";
 import BlockEditGoods from "../Goods/BlockEditGoods";
 import BlockEditNews from "../News/blockEditNews";
 import BlockEditContacts from "../Contacts/blockEditContacts";
+import BlockEditUser from "../Users/blockEditUser";
 
 const ItemOfSection = ({ item = {}, handlerDel, children, errors = [] }) => {
   const [isEdit, setIsEdit] = useState(false);
@@ -31,7 +32,7 @@ const ItemOfSection = ({ item = {}, handlerDel, children, errors = [] }) => {
       </div>
       {isEdit &&
         React.Children.map(children, (child) => {
-          if (child.type === BlockEditCategory || child.type === BlockEditGoods || child.type === BlockEditNews || child.type === BlockEditContacts) {
+          if (child.type === BlockEditCategory || child.type === BlockEditGoods || child.type === BlockEditNews || child.type === BlockEditContacts || child.type === BlockEditUser) {
             return React.cloneElement(child, { item, isEdit: setIsEdit });
           }
           return child;
