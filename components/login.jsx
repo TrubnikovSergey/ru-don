@@ -1,14 +1,14 @@
-import { actionsLogin, getIsLogin } from "@/store/loginSlice";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
+import { signOut, isAuth } from "../store/authSlice";
 import style from "../styles/login.module.scss";
 
 const Login = () => {
-  const isLogin = useSelector(getIsLogin());
+  const isLogin = useSelector(isAuth());
   const dispatch = useDispatch();
 
   const handlerLogOut = () => {
-    dispatch(actionsLogin.login(false));
+    dispatch(signOut());
   };
 
   let renderLogin = null;
@@ -28,7 +28,7 @@ const Login = () => {
   } else {
     renderLogin = (
       <>
-        <Link className={style["header__login-link"]} href="/auth">
+        <Link className={style["header__login-link"]} href="/login">
           <img className={style["log-img"]} src="/images/login.svg" alt="Вход" />
           <p>Вход</p>
         </Link>

@@ -1,15 +1,18 @@
 .wrapperInput{
     width: 100%;
     display: flex;
+    border: 1px solid #ccc;
   }
-
+  
   .input{
+    all: unset;
     padding: 5px;
+    width: 100%;
   }
   
   .wrapperEye{
     width: 30px;
-    padding-left: 5px;
+    padding: 0px 5px;
   }
   
   .eye{

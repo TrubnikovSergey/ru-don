@@ -1,5 +1,4 @@
 import Link from "next/link";
-import style from "./admin.module.scss";
 import { useRouter } from "next/router";
 import SectionCategories from "./Categories/sectionCategories";
 import SectionGoods from "./Goods/sectionGoods";
@@ -9,11 +8,25 @@ import SectionAbout from "./about/sectionAbout";
 import SectionContacts from "./Contacts/sectionContacts";
 import Card from "@/components/card";
 import SectionUsers from "./Users/sectionUsers";
+import LayoutSection from "./components/layoutSection";
+import { useSelector } from "react-redux";
+import { isAuth } from "@/store/authSlice";
+import { useEffect } from "react";
+import configJSON from "../../config.json";
+import style from "./admin.module.scss";
 
 const Admin = () => {
   const route = useRouter();
+  const isLogin = useSelector(isAuth());
   const { section } = route.query;
   let renderContent = null;
+  console.log("---------Admin");
+  useEffect(() => {
+    console.log("---------useEffect Admin");
+    if (!isLogin) {
+      route.push(`${configJSON.HOST}/login`);
+    }
+  }, []);
 
   switch (section) {
     case "categories":
@@ -39,39 +52,42 @@ const Admin = () => {
       break;
 
     default:
+      renderContent = <LayoutSection titleSection="Выберите раздел" />;
       break;
   }
 
   return (
-    <div className={style.wrapper}>
-      <div className={style.container}>
-        <Card moreStyle={style["left-panel"]}>
-          <h2 className={style["left-panel__title"]}>Разделы</h2>
-          <div className={style["left-panel__item"]}>
-            <Link href="/admin?section=categories">Категории товаров</Link>
-          </div>
-          <div className={style["left-panel__item"]}>
-            <Link href="/admin?section=goods">Товары</Link>
-          </div>
-          <div className={style["left-panel__item"]}>
-            <Link href="/admin?section=news">Новости</Link>
-          </div>
-          <div className={style["left-panel__item"]}>
-            <Link href="/admin?section=delivery">Доставка</Link>
-          </div>
-          <div className={style["left-panel__item"]}>
-            <Link href="/admin?section=about">О нас</Link>
-          </div>
-          <div className={style["left-panel__item"]}>
-            <Link href="/admin?section=contacts">Контакты</Link>
-          </div>
-          <div className={style["left-panel__item"]}>
-            <Link href="/admin?section=users">Пользователи</Link>
-          </div>
-        </Card>
-        <Card moreStyle={style["right-panel"]}>{renderContent}</Card>
+    isLogin && (
+      <div className={style.wrapper}>
+        <div className={style.container}>
+          <Card moreStyle={style["left-panel"]}>
+            <h2 className={style["left-panel__title"]}>Разделы</h2>
+            <div className={style["left-panel__item"]}>
+              <Link href="/admin?section=categories">Категории товаров</Link>
+            </div>
+            <div className={style["left-panel__item"]}>
+              <Link href="/admin?section=goods">Товары</Link>
+            </div>
+            <div className={style["left-panel__item"]}>
+              <Link href="/admin?section=news">Новости</Link>
+            </div>
+            <div className={style["left-panel__item"]}>
+              <Link href="/admin?section=delivery">Доставка</Link>
+            </div>
+            <div className={style["left-panel__item"]}>
+              <Link href="/admin?section=about">О нас</Link>
+            </div>
+            <div className={style["left-panel__item"]}>
+              <Link href="/admin?section=contacts">Контакты</Link>
+            </div>
+            <div className={style["left-panel__item"]}>
+              <Link href="/admin?section=users">Пользователи</Link>
+            </div>
+          </Card>
+          <Card moreStyle={style["right-panel"]}>{renderContent}</Card>
+        </div>
       </div>
-    </div>
+    )
   );
 };
 
