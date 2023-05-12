@@ -1,6 +1,7 @@
 import nextConnect from "next-connect";
 import middleware from "../../middleware/database";
 import { ObjectId } from "mongodb";
+import * as bcrypt from "bcryptjs";
 
 const handler = nextConnect();
 
@@ -26,6 +27,9 @@ handler.post(async (req, res) => {
     }
 
     if (action === "saveUser") {
+      const hashPassword = await bcrypt.hash(user.password, 12);
+      user.password = hashPassword;
+
       let data = null;
       if (user._id) {
         const dataForUpdate = { ...user };

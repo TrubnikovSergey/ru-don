@@ -4,9 +4,11 @@ import PropTypes from "prop-types";
 import Loading from "@/components/loading";
 import { useDispatch } from "react-redux";
 import { updateUser } from "@/store/userSlice";
+import { useRef } from "react";
+import InputField from "@/components/inputField";
 
 const BlockEditUser = ({ item, isEdit }) => {
-  const [data, setData] = useState(item);
+  const [data, setData] = useState({ ...item, password: "" });
   const dispatch = useDispatch();
 
   const handlerCancel = () => {
@@ -30,18 +32,9 @@ const BlockEditUser = ({ item, isEdit }) => {
     <div className={style["block-edit"]}>
       <form onSubmit={handlerSubmit}>
         <div className={style["block-edit-content"]}>
-          <div>
-            <p>Имя</p>
-            <input className={style.input} type="text" name="title" required={true} onChange={handlerChange} value={data.title} />
-          </div>
-          <div>
-            <p>Email</p>
-            <input className={style.input} type="email" name="email" required={true} onChange={handlerChange} value={data.email} />
-          </div>
-          <div>
-            <p>Пароль</p>
-            <input className={style.input} type="password" name="password" required={true} onChange={handlerChange} value={data.password} />
-          </div>
+          <InputField label="Имя" type="text" name="title" required={true} onChange={handlerChange} value={data.title} />
+          <InputField label="Email" type="email" name="email" required={true} onChange={handlerChange} value={data.email} />
+          <InputField name="password" type="password" label="Пароль" onChange={handlerChange} required={true} value={data.password} />
         </div>
         <div className={style["buttons-save-cancel"]}>
           <button className={style["button"]} type="submit">

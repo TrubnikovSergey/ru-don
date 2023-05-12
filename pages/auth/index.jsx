@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { actionsLogin } from "@/store/loginSlice";
 import { useRouter } from "next/router";
 import Card from "@/components/card";
+import InputField from "@/components/inputField";
 
 const Login = () => {
   const [data, setData] = useState({ login: "", password: "" });
@@ -17,26 +18,25 @@ const Login = () => {
   };
 
   const handlerSubmit = () => {
+    console.log(data);
     setData({ login: "", password: "" });
-    if (data.login === "admin" && data.password === "admin") {
-      dispatch(actionsLogin.login(true));
-      router.push("/");
-    }
+    // if (data.login === "admin" && data.password === "admin") {
+    //   dispatch(actionsLogin.login(true));
+    //   router.push("/");
+    // }
   };
 
   return (
     <div className={style.auth}>
-      <div>
+      <form onSubmit={handlerSubmit}>
         <Card moreStyle={style.container}>
-          <p>login</p>
-          <input className={style.input} type="text" name="login" value={data.login} onChange={handlerChange} />
-          <p>password</p>
-          <input className={style.input} type="password" name="password" value={data.password} onChange={handlerChange} />
+          <InputField moreStyle={style.input} label="login" type="text" name="login" value={data.login} onChange={handlerChange} />
+          <InputField moreStyle={style.input} label="password" type="password" name="password" value={data.password} onChange={handlerChange} />
           <div className={style["submit-auth__button"]} onClick={handlerSubmit}>
             Login
           </div>
         </Card>
-      </div>
+      </form>
     </div>
   );
 };
