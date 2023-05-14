@@ -131,7 +131,7 @@ const removeContacts = (contactsId) => async (dispatch) => {
     if (data.acknowledged) {
       dispatch(responsRemoveContacts(contactsId));
     } else {
-      dispatch(requestRemoveContactsError({ codeError: 400, massage: "Remove contact failed" }));
+      dispatch(requestRemoveContactsError({ codeError: 400, message: "Remove contact failed" }));
     }
   } catch (error) {}
 };

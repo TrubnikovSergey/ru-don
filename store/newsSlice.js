@@ -130,7 +130,7 @@ const removeNews = (newsId) => async (dispatch) => {
     if (data.acknowledged) {
       dispatch(responsRemoveNews(newsId));
     } else {
-      dispatch(requestRemoveNewsError({ codeError: 400, massage: "Remove news failed" }));
+      dispatch(requestRemoveNewsError({ codeError: 400, message: "Remove news failed" }));
     }
   } catch (error) {}
 };

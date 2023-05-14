@@ -130,7 +130,7 @@ const removeUser = (UserId) => async (dispatch) => {
     if (data.acknowledged) {
       dispatch(responsRemoveUser(UserId));
     } else {
-      dispatch(requestRemoveUserError({ codeError: 400, massage: "Remove User failed" }));
+      dispatch(requestRemoveUserError({ codeError: 400, message: "Remove User failed" }));
     }
   } catch (error) {}
 };

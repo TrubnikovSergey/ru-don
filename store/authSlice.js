@@ -6,54 +6,55 @@ const authSlice = createSlice({
   initialState: {
     isAuth: false,
     isLoading: false,
-    error: [],
+    errors: [],
     email: "",
     name: "",
   },
   reducers: {
     requestSignIn: (state, action) => {
       state.isLoading = true;
+      state.errors = [];
     },
     responsSignIn: (state, action) => {
       state.isAuth = true;
       state.isLoading = false;
       state.email = action.payload.email;
       state.name = action.payload.title;
-      state.error = [];
+      state.errors = [];
     },
-    responsSignInError: (state, action) => {
+    responsSignInErrors: (state, action) => {
       state.isAuth = false;
       state.isLoading = false;
       state.email = "";
       state.name = "";
       console.log(action.payload);
-      state.error.push(action.payload);
+      state.errors.push(action.payload);
     },
     requestSignOut: (state, action) => {
       state.isAuth = false;
       state.isLoading = false;
       state.email = "";
       state.name = "";
-      state.error = [];
+      state.errors = [];
     },
   },
 });
 
 const { reducer: authReducer, actions } = authSlice;
-const { requestSignIn, responsSignIn, responsSignInError, requestSignOut } = actions;
+const { requestSignIn, responsSignIn, responsSignInErrors, requestSignOut } = actions;
 
 const signIn = (authData) => async (dispatch) => {
   dispatch(requestSignIn());
   try {
     const respons = await authService.signIn(authData);
 
-    if ("error" in respons) {
-      dispatch(responsSignInError(respons.error));
-    } else {
+    if (!respons.error) {
       dispatch(responsSignIn(respons.data));
+    } else {
+      dispatch(responsSignInErrors(respons.error));
     }
   } catch (error) {
-    dispatch(responsSignInError({ code: 400, massage: `signIn throw errro\n${JSON.stringify(error)}` }));
+    dispatch(responsSignInErrors({ code: 400, message: `signIn throw errro\n${JSON.stringify(error)}` }));
   }
 };
 
@@ -62,6 +63,7 @@ const signOut = () => (dispatch) => {
 };
 
 const isAuth = () => (state) => state.auth.isAuth;
+const getErrors = () => (state) => state.auth.errors;
 const isSignInLoading = () => (state) => state.auth.isLoading;
 
-export { authReducer, signIn, signOut, isAuth, isSignInLoading };
+export { authReducer, signIn, signOut, isAuth, isSignInLoading, getErrors };

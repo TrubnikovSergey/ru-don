@@ -18,6 +18,7 @@ const categoriesSlice = createSlice({
     },
     responsCreateCategoryError: (state, action) => {
       state.isLoading = false;
+      state.errors = [];
       state.errors.push(action.payload);
     },
 
@@ -26,6 +27,7 @@ const categoriesSlice = createSlice({
     },
     requestFetchAllError: (state, action) => {
       state.isLoading = false;
+      state.errors = [];
       state.errors.push(action.payload);
       state.entities = [];
     },
@@ -40,6 +42,7 @@ const categoriesSlice = createSlice({
     },
     requestUpdateCategoryError: (state, action) => {
       state.isLoading = false;
+      state.errors = [];
       state.errors.push(action.payload);
     },
 
@@ -66,6 +69,7 @@ const categoriesSlice = createSlice({
       state.isLoading = false;
     },
     responsRemoveCategoryError: (state, action) => {
+      state.errors = [];
       state.errors.push(action.payload);
       state.isLoading = false;
     },
@@ -97,15 +101,13 @@ const updateCategory = (category) => async (dispatch) => {
   try {
     const respons = await categoriesService.saveCategory(category);
 
-    let { data, config } = respons;
-    if (data.result.acknowledged) {
-      const configData = JSON.parse(config.data);
-      data.changedCategories.push(configData.category);
+    if (!respons.error) {
+      const updatedCategory = JSON.parse(respons.config.data);
+      respons.data.changedCategories.push(updatedCategory.category);
 
-      dispatch(responsUpdateCategory(data.changedCategories));
+      dispatch(responsUpdateCategory(respons.data.changedCategories));
     } else {
-      const message = data.response.data.message;
-      dispatch(requestUpdateCategoryError({ _id: category._id, message }));
+      dispatch(requestUpdateCategoryError(respons.error));
     }
   } catch (error) {
     dispatch(requestUpdateCategoryError(JSON.stringify(error)));
@@ -115,26 +117,30 @@ const updateCategory = (category) => async (dispatch) => {
 const removeCategory = (categoryId) => async (dispatch) => {
   dispatch(requestRemoveCategory());
   try {
-    const data = await categoriesService.removeCategoryById(categoryId);
+    const respons = await categoriesService.removeCategoryById(categoryId);
 
-    if (data.acknowledged) {
+    if (!respons.error) {
       dispatch(responsRemoveCategory(categoryId));
     } else {
-      const message = data.response.data.message;
-      dispatch(responsRemoveCategoryError({ _id: categoryId, message }));
+      dispatch(responsRemoveCategoryError(respons.error));
     }
   } catch (error) {
-    dispatch(responsRemoveCategoryError(error));
+    dispatch(responsRemoveCategoryError(JSON.stringify(error)));
   }
 };
 
 const fatchAllCategories = () => async (dispatch) => {
   dispatch(requestFetchAll());
   try {
-    const data = await categoriesService.fetchAll();
-    dispatch(responsFetchAll(data));
+    const respons = await categoriesService.fetchAll();
+
+    if (!respons.error) {
+      dispatch(responsFetchAll(respons.data));
+    } else {
+      dispatch(requestFetchAllError(respons.error));
+    }
   } catch (error) {
-    dispatch(requestFetchAllError(error));
+    dispatch(requestFetchAllError(JSON.stringify(error)));
   }
 };
 
@@ -142,13 +148,12 @@ const createCategory = (category) => async (dispatch) => {
   dispatch(requestCreateCategory(category));
   try {
     const respons = await categoriesService.saveCategory(category);
-    const { acknowledged, insertedId } = respons.data.result;
-    if (acknowledged) {
-      category._id = insertedId;
+
+    if (!respons.error) {
+      category._id = respons.data.category.insertedId;
       dispatch(responsCreateCategory(category));
     } else {
-      const message = data.response.data.message;
-      dispatch(requestUpdateCategoryError({ _id: category._id, message }));
+      dispatch(requestUpdateCategoryError(respons.error));
     }
   } catch (error) {
     dispatch(responsCreateCategoryError(error));

@@ -4,26 +4,29 @@ import PropTypes from "prop-types";
 import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateCategory } from "@/store/categoriesSlice";
+import { getResponsError } from "@/utils/errors";
 
 const createState = (setData, item) => {
   categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {
-    let newData = {
-      title: item.title,
-      _id: item._id,
-      parent: item.parent,
-    };
+    if (!response.error) {
+      let newData = {
+        title: item.title,
+        _id: item._id,
+        parent: item.parent,
+      };
 
-    if (item.children.length > 0) {
-      newData.children = response.filter((el) => item.children.includes(el._id));
-    } else {
-      newData.children = [];
+      if (item.children.length > 0) {
+        newData.children = response.data.filter((el) => item.children.includes(el._id));
+      } else {
+        newData.children = [];
+      }
+
+      newData.listCategories = response.data;
+
+      setData(newData);
     }
-
-    newData.listCategories = response;
-
-    setData(newData);
   });
 };
 

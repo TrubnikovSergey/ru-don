@@ -100,7 +100,7 @@ const removeGoods = (goodsId) => async (dispatch) => {
     if (data.acknowledged) {
       dispatch(responsRemoveGoods(goodsId));
     } else {
-      dispatch(responsRemoveGoodsError({ codeError: 400, massage: "Remove goods failed" }));
+      dispatch(responsRemoveGoodsError({ codeError: 400, message: "Remove goods failed" }));
     }
   } catch (error) {
     dispatch(responsRemoveGoodsError(error));

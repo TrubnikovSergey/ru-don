@@ -6,18 +6,25 @@ import { createCategory, fatchAllCategories, getCategories, getErrors, getIsLoad
 import LayoutSection from "../components/layoutSection";
 import ListItemsOfSection from "../components/listItemsOfSection";
 import BlockEditCategory from "./BlockEditCategory";
+import { toast } from "react-toastify";
 
 const SectionCategories = () => {
   const dispatch = useDispatch();
   const categories = useSelector(getCategories());
-  const errors = useSelector(getErrors());
   const isLoading = useSelector(getIsLoading());
   const title = "Категории товаров";
+  const errors = useSelector(getErrors());
   const newCategory = {
     title: "Новая категория",
     parent: null,
     children: [],
   };
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      toast.error(errors[0].message);
+    }
+  }, [errors]);
 
   useEffect(() => {
     dispatch(fatchAllCategories());

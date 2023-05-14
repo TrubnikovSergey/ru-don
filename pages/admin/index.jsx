@@ -20,9 +20,8 @@ const Admin = () => {
   const isLogin = useSelector(isAuth());
   const { section } = route.query;
   let renderContent = null;
-  console.log("---------Admin");
+
   useEffect(() => {
-    console.log("---------useEffect Admin");
     if (!isLogin) {
       route.push(`${configJSON.HOST}/login`);
     }

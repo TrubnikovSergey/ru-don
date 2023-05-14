@@ -7,7 +7,7 @@ const deliveryService = {
       const { data } = await http.get(`${configJSON.API_HOST}/delivery?action=fetchAll`);
       return data;
     } catch (error) {
-      return null;
+      return getResponsError(error);
     }
   },
   saveDelivery: async (news) => {
@@ -15,7 +15,7 @@ const deliveryService = {
       const data = await http.post(`${configJSON.API_HOST}/delivery?action=saveDelivery`, { news });
       return data;
     } catch (error) {
-      return null;
+      return getResponsError(error);
     }
   },
 };

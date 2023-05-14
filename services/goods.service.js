@@ -8,7 +8,7 @@ const goodsService = {
 
       return data;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
   fetchAllWithConcreteFields: async (arrayFields) => {
@@ -16,7 +16,7 @@ const goodsService = {
       const { data } = await http.post(`${configJSON.API_HOST}/goods?action=fetchAllWithConcreteFields`, { arrayFields });
       return data;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
   fetchByArrayId: async (arrayId) => {
@@ -24,7 +24,7 @@ const goodsService = {
       const { data } = await http.post(`${configJSON.API_HOST}/goods?action=fetchByArrayId`, { arrayId });
       return data;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
   getGoodsById: async (goodsId) => {
@@ -32,7 +32,7 @@ const goodsService = {
       const data = await http.post(`${configJSON.API_HOST}/goods?action=getGoodsById`, { goodsId });
       return data;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
   saveGoods: async (goods) => {
@@ -41,7 +41,7 @@ const goodsService = {
 
       return respons;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
 
@@ -51,7 +51,7 @@ const goodsService = {
 
       return data;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
 };

@@ -1,47 +1,51 @@
 import http from "./http.service";
 import configJSON from "../config.json";
+import { getResponsError } from "@/utils/errors";
 
 const categoriesService = {
   fetchAll: async () => {
     try {
-      const { data } = await http.get(`${configJSON.API_HOST}/categories?action=fetchAll`);
+      const respons = await http.get(`${configJSON.API_HOST}/categories?action=fetchAll`);
 
-      return data;
+      return respons;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
   fetchAllWithConcreteFields: async (fields) => {
     try {
-      const { data } = await http.post(`${configJSON.API_HOST}/categories?action=fetchAllWithConcreteFields`, { fields });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/categories?action=fetchAllWithConcreteFields`, { fields });
+
+      return respons;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
   fetchRootCategories: async () => {
     try {
       const respons = await http.get(`${configJSON.API_HOST}/categories?action=fetchRootCategories`);
-      const { data } = respons;
-      return data;
+
+      return respons;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
   fetchByArrayId: async (arrayId) => {
     try {
-      const { data } = await http.post(`${configJSON.API_HOST}/categories?action=fetchByArrayId`, { arrayId });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/categories?action=fetchByArrayId`, { arrayId });
+
+      return respons;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
   getCategoryById: async (categoryId) => {
     try {
-      const data = await http.post(`${configJSON.API_HOST}/categories?action=getCategoryById`, { categoryId });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/categories?action=getCategoryById`, { categoryId });
+
+      return respons;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
   saveCategory: async (category) => {
@@ -50,17 +54,17 @@ const categoriesService = {
 
       return respons;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
 
   removeCategoryById: async (categoryId) => {
     try {
-      const { data } = await http.post(`${configJSON.API_HOST}/categories?action=removeCategoryById`, { categoryId });
+      const respons = await http.post(`${configJSON.API_HOST}/categories?action=removeCategoryById`, { categoryId });
 
-      return data;
+      return respons;
     } catch (error) {
-      return error;
+      return getResponsError(error);
     }
   },
 };

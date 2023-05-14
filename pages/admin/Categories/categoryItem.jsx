@@ -4,13 +4,12 @@ import style from "./categoryItem.module.scss";
 import { useState } from "react";
 import BlockEdit from "./BlockEditCategory";
 import { useDispatch, useSelector } from "react-redux";
-import { getErrors, removeCategory } from "../../../store/categoriesSlice";
+import { removeCategory } from "../../../store/categoriesSlice";
 import ErrorBlock from "../components/errorBlock";
 
 const CategoryItem = ({ item = {} }) => {
   const [isEdit, setIsEdit] = useState(false);
   const { title, _id } = item;
-  const errors = useSelector(getErrors());
   const dispatch = useDispatch();
 
   const handlerEdit = (id) => {

@@ -1,13 +1,14 @@
 import http from "./http.service";
 import configJSON from "../config.json";
+import { getResponsError } from "@/utils/errors";
 
 const userService = {
   fetchAll: async () => {
     try {
-      const { data } = await http.get(`${configJSON.API_HOST}/user?action=fetchAll`);
+      const data = await http.get(`${configJSON.API_HOST}/user?action=fetchAll`);
       return data;
     } catch (error) {
-      return null;
+      return getResponsError(error);
     }
   },
   saveUser: async (user) => {
@@ -15,7 +16,7 @@ const userService = {
       const data = await http.post(`${configJSON.API_HOST}/user?action=saveUser`, { user });
       return data;
     } catch (error) {
-      return null;
+      return getResponsError(error);
     }
   },
 
@@ -24,7 +25,7 @@ const userService = {
       const data = await http.post(`${configJSON.API_HOST}/user?action=removeUserById`, { userId });
       return data;
     } catch (error) {
-      return null;
+      return getResponsError(error);
     }
   },
 };

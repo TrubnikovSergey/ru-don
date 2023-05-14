@@ -5,12 +5,16 @@ import Card from "@/components/card";
 import InputField from "@/components/inputField";
 import { isAuth, isSignInLoading, signIn } from "../../store/authSlice";
 import configJSON from "../../config.json";
+import { toast } from "react-toastify";
 import style from "./auth.module.scss";
 import Loading from "@/components/loading";
+import { getErrors } from "@/store/authSlice";
+import { useEffect } from "react";
 
 const Login = () => {
   const [data, setData] = useState({ login: "", password: "" });
   const isLogin = useSelector(isAuth());
+  const errors = useSelector(getErrors());
   const isLoading = useSelector(isSignInLoading());
   const dispatch = useDispatch();
   const router = useRouter();
@@ -18,6 +22,12 @@ const Login = () => {
   if (isLogin) {
     router.replace(`${configJSON.HOST}/admin`);
   }
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      toast.error(errors[0].message);
+    }
+  }, [errors]);
 
   const handlerChange = ({ target }) => {
     const { name, value } = target;
@@ -27,7 +37,6 @@ const Login = () => {
 
   const handlerSubmit = () => {
     dispatch(signIn(data));
-    setData({ email: "", password: "" });
   };
 
   return !isLoading && !isLogin ? (
@@ -36,9 +45,9 @@ const Login = () => {
         <Card moreStyle={style.container}>
           <InputField moreStyle={style.input} label="login" type="text" name="email" value={data.email} onChange={handlerChange} />
           <InputField moreStyle={style.input} label="password" type="password" name="password" value={data.password} onChange={handlerChange} />
-          <div className={style["submit-auth__button"]} onClick={handlerSubmit}>
+          <button className={style["submit-auth__button"]} type="submit">
             Login
-          </div>
+          </button>
         </Card>
       </form>
     </div>

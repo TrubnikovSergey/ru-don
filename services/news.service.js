@@ -7,7 +7,7 @@ const newsService = {
       const { data } = await http.get(`${configJSON.API_HOST}/news?action=fetchAll`);
       return data;
     } catch (error) {
-      return null;
+      return getResponsError(error);
     }
   },
   saveNews: async (news) => {
@@ -15,7 +15,7 @@ const newsService = {
       const data = await http.post(`${configJSON.API_HOST}/news?action=saveNews`, { news });
       return data;
     } catch (error) {
-      return null;
+      return getResponsError(error);
     }
   },
 
@@ -24,7 +24,7 @@ const newsService = {
       const data = await http.post(`${configJSON.API_HOST}/news?action=removeNewsById`, { newsId });
       return data;
     } catch (error) {
-      return null;
+      return getResponsError(error);
     }
   },
 };

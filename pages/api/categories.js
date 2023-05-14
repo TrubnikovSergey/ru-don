@@ -8,17 +8,20 @@ handler.use(middleware);
 
 handler.get(async (req, res) => {
   const { action } = req.query;
+  try {
+    if (action === "fetchAll") {
+      let data = await req.db.collection("categories").find({}).toArray();
 
-  if (action === "fetchAll") {
-    let data = await req.db.collection("categories").find({}).toArray();
+      res.status(200).json(data);
+    }
 
-    res.status(200).json(data);
-  }
+    if (action === "fetchRootCategories") {
+      let data = await req.db.collection("categories").find({ parent: null }).toArray();
 
-  if (action === "fetchRootCategories") {
-    let data = await req.db.collection("categories").find({ parent: null }).toArray();
-
-    res.status(200).json(data);
+      res.status(200).json(data);
+    }
+  } catch (error) {
+    res.status(500).json({ error: { code: 500, message: `Error categories API (get metod) - ${JSON.stringify(error)}` } });
   }
 });
 
@@ -48,10 +51,8 @@ handler.post(async (req, res) => {
 
       if (goodsWithCategory > 0 || categoriesWithCategory > 0) {
         const message = `На удаляемую категорию есть ссылки: (${goodsWithCategory}) в товарах , (${categoriesWithCategory}) в категориях`;
-
-        res.status(409).json({
-          message,
-        });
+        
+        res.status(409).json({ error: { code: 409, message } });
       } else {
         const data = await req.db.collection("categories").deleteOne({ _id: new ObjectId(categoryId) });
 
@@ -74,7 +75,7 @@ handler.post(async (req, res) => {
         result = await req.db.collection("categories").insertOne(category);
       }
 
-      res.status(200).json({ result, changedCategories });
+      res.status(200).json({ category: result, changedCategories });
     }
 
     if (action === "getCategoryById") {
@@ -91,7 +92,7 @@ handler.post(async (req, res) => {
       res.status(200).json(data);
     }
   } catch (error) {
-    res.status(500).json({ message: `На сервере произошла ошибка\n${error}` });
+    res.status(500).json({ error: { code: 500, message: `Error categories API (post metod) - ${JSON.stringify(error)}` } });
   }
 });
 

@@ -1,5 +1,6 @@
 import http from "./http.service";
 import configJSON from "../config.json";
+import { getResponsError } from "@/utils/errors";
 
 const authService = {
   signIn: async (authData) => {
@@ -8,10 +9,7 @@ const authService = {
 
       return data;
     } catch (error) {
-      const code = error.response.status;
-      const massage = error.response.data.massage;
-
-      return { error: { code, massage } };
+      return getResponsError(error);
     }
   },
 };

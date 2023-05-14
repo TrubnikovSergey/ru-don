@@ -7,7 +7,7 @@ const contactsService = {
       const { data } = await http.get(`${configJSON.API_HOST}/contacts?action=fetchAll`);
       return data;
     } catch (error) {
-      return null;
+      return getResponsError(error);
     }
   },
   saveContacts: async (contact) => {
@@ -15,7 +15,7 @@ const contactsService = {
       const data = await http.post(`${configJSON.API_HOST}/contacts?action=saveContact`, { contact });
       return data;
     } catch (error) {
-      return null;
+      return getResponsError(error);
     }
   },
 
@@ -24,7 +24,7 @@ const contactsService = {
       const data = await http.post(`${configJSON.API_HOST}/contacts?action=removeContactById`, { contactId });
       return data;
     } catch (error) {
-      return null;
+      return getResponsError(error);
     }
   },
 };

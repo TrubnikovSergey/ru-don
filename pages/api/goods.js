@@ -10,9 +10,13 @@ handler.use(middleware);
 handler.get(async (req, res) => {
   const { action } = req.query;
 
-  if (action === "fetchAll") {
-    let data = await req.db.collection("goods").find({}).toArray();
-    res.status(200).json(data);
+  try {
+    if (action === "fetchAll") {
+      let data = await req.db.collection("goods").find({}).toArray();
+      res.status(200).json(data);
+    }
+  } catch (error) {
+    res.status(500).json({ error: { code: 500, message: `Error goods API (get metod) - ${JSON.stringify(error)}` } });
   }
 });
 
@@ -74,7 +78,7 @@ handler.post(async (req, res) => {
     }
   } catch (error) {
     console.log("Error", error);
-    res.status(500).json({ message: `На сервере произошла ошибка\n${error}` });
+    res.status(500).json({ error: { code: 500, message: `Error goods API (post metod) - ${JSON.stringify(error)}` } });
   }
 });
 
