@@ -4,6 +4,7 @@ import style from "./sectionAbout.module.scss";
 import LayoutSection from "../components/layoutSection";
 import { useState } from "react";
 import aboutService from "@/services/about.service";
+import { toast } from "react-toastify";
 
 const SectionAbout = () => {
   const [data, setDate] = useState(null);
@@ -19,14 +20,17 @@ const SectionAbout = () => {
     setDate((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlerSave = () => {
-    aboutService.saveAbout(data);
+  const handlerSave = async () => {
+    const respons = await aboutService.saveAbout(data);
+    if (!respons.error) {
+      toast.success(`Раздел "${data.title}" сохранен`);
+    }
   };
 
   useEffect(() => {
     aboutService.fetchAll().then((respons) => {
-      if (respons.length > 0) {
-        setDate(respons[0]);
+      if (respons.data.length > 0) {
+        setDate(respons.data[0]);
       } else {
         setDate(newAbout);
       }
@@ -44,10 +48,9 @@ const SectionAbout = () => {
       </div>
     </LayoutSection>
   ) : (
-    <>
-      <h2 className={style["section-title"]}>{title}</h2>
+    <LayoutSection titleSection={title}>
       <Loading />
-    </>
+    </LayoutSection>
   );
 };
 

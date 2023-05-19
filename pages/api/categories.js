@@ -1,6 +1,6 @@
 import nextConnect from "next-connect";
 import middleware from "../../middleware/database";
-import { ObjectId, MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 
 const handler = nextConnect();
 
@@ -50,8 +50,8 @@ handler.post(async (req, res) => {
       const categoriesWithCategory = await req.db.collection("categories").count({ parent: categoryId });
 
       if (goodsWithCategory > 0 || categoriesWithCategory > 0) {
-        const message = `На удаляемую категорию есть ссылки: (${goodsWithCategory}) в товарах , (${categoriesWithCategory}) в категориях`;
-        
+        const message = `Категория не может быт удалена! \n На категорию есть ссылки: (${goodsWithCategory}) в товарах , (${categoriesWithCategory}) в категориях`;
+
         res.status(409).json({ error: { code: 409, message } });
       } else {
         const data = await req.db.collection("categories").deleteOne({ _id: new ObjectId(categoryId) });

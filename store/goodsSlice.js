@@ -6,6 +6,7 @@ const goodsSlice = createSlice({
   initialState: {
     entities: [],
     errors: [],
+    success: [],
     isLoading: false,
   },
   reducers: {
@@ -14,6 +15,7 @@ const goodsSlice = createSlice({
       state.entities.unshift(action.payload);
     },
     responsCreateGoodsError: (state, action) => {
+      state.errors = [];
       state.errors.push(action.payload);
     },
 
@@ -22,6 +24,7 @@ const goodsSlice = createSlice({
     },
     requestFetchAllError: (state, action) => {
       state.isLoading = false;
+      state.errors = [];
       state.errors.push(action.payload);
       state.entities = [];
     },
@@ -36,13 +39,15 @@ const goodsSlice = createSlice({
     },
     requestUpdateGoodsError: (state, action) => {
       state.isLoading = false;
+      state.errors = [];
       state.errors.push(action.payload);
     },
 
     responsUpdateGoods: (state, action) => {
       state.isLoading = false;
-
       const goods = action.payload;
+      state.success = [];
+      state.success.push({ _id: goods._id, message: `Товар "${goods.title}" сохранен` });
 
       state.entities.forEach((item) => {
         if (item._id === goods._id) {
@@ -58,8 +63,12 @@ const goodsSlice = createSlice({
       state.isLoading = false;
     },
     responsRemoveGoodsError: (state, action) => {
+      state.errors = [];
       state.errors.push(action.payload);
       state.isLoading = false;
+    },
+    clearSuccess: (state, action) => {
+      state.success = state.success.filter((item) => item._id !== action.payload);
     },
   },
 });
@@ -78,6 +87,7 @@ const {
   requestRemoveGoods,
   responsRemoveGoods,
   responsRemoveGoodsError,
+  clearSuccess,
 } = actions;
 
 const updateGoods = (goods) => async (dispatch) => {
@@ -85,8 +95,10 @@ const updateGoods = (goods) => async (dispatch) => {
   try {
     const respons = await goodsService.saveGoods(goods);
 
-    if (respons.data.acknowledged) {
+    if (!respons.error) {
       dispatch(responsUpdateGoods(goods));
+    } else {
+      dispatch(requestUpdateGoodsError(respons.error));
     }
   } catch (error) {
     dispatch(requestUpdateGoodsError(error));
@@ -96,11 +108,12 @@ const updateGoods = (goods) => async (dispatch) => {
 const removeGoods = (goodsId) => async (dispatch) => {
   dispatch(requestRemoveGoods());
   try {
-    const data = await goodsService.removeGoodsById(goodsId);
-    if (data.acknowledged) {
+    const respons = await goodsService.removeGoodsById(goodsId);
+
+    if (!respons.error) {
       dispatch(responsRemoveGoods(goodsId));
     } else {
-      dispatch(responsRemoveGoodsError({ codeError: 400, message: "Remove goods failed" }));
+      dispatch(responsRemoveGoodsError(respons.error));
     }
   } catch (error) {
     dispatch(responsRemoveGoodsError(error));
@@ -110,8 +123,13 @@ const removeGoods = (goodsId) => async (dispatch) => {
 const fatchAllGoods = () => async (dispatch) => {
   dispatch(requestFetchAll());
   try {
-    const data = await goodsService.fetchAll();
-    dispatch(responsFetchAll(data));
+    const respons = await goodsService.fetchAll();
+
+    if (!respons.error) {
+      dispatch(responsFetchAll(respons.data));
+    } else {
+      dispatch(requestFetchAllError(respons.error));
+    }
   } catch (error) {
     dispatch(requestFetchAllError(error));
   }
@@ -122,19 +140,25 @@ const createGoods = (goods) => async (dispatch) => {
   try {
     const respons = await goodsService.saveGoods(goods);
 
-    if (respons.data.acknowledged) {
+    if (!respons.error) {
       goods._id = respons.data.insertedId;
-      goods.images = [];
 
       dispatch(responsCreateGoods(goods));
+    } else {
+      dispatch(responsCreateGoodsError(respons.error));
     }
   } catch (error) {
     dispatch(responsCreateGoodsError(error));
   }
 };
 
+const doClearSuccess = (id) => (dispatch) => {
+  dispatch(clearSuccess(id));
+};
+
 const getGoods = () => (state) => state.goods.entities;
 const getErrors = () => (state) => state.goods.errors;
+const getSuccess = () => (state) => state.goods.success;
 const getIsLoading = () => (state) => state.goods.isLoading;
 
-export { goodsReducer, fatchAllGoods, updateGoods, removeGoods, createGoods, getGoods, getIsLoading, getErrors };
+export { goodsReducer, fatchAllGoods, updateGoods, removeGoods, createGoods, getGoods, getIsLoading, getErrors, getSuccess, doClearSuccess };

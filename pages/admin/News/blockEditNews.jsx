@@ -2,8 +2,9 @@ import { useState } from "react";
 import style from "./blockEditNews.module.scss";
 import PropTypes from "prop-types";
 import Loading from "@/components/loading";
-import { useDispatch } from "react-redux";
-import { updateNews } from "@/store/newsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { doClearSuccess, getSuccess, updateNews } from "@/store/newsSlice";
+import useSuccess from "@/hooks/useSuccess";
 
 const dateToFormaForValueInput = (value) => {
   if (value) {
@@ -24,6 +25,9 @@ const dateToFormaForValueInput = (value) => {
 const BlockEditNews = ({ item, isEdit }) => {
   const [data, setData] = useState(item);
   const dispatch = useDispatch();
+  const successData = useSelector(getSuccess());
+
+  useSuccess(successData, item._id, doClearSuccess);
 
   let atDateNews = dateToFormaForValueInput(data?.atDate);
 

@@ -5,6 +5,7 @@ const newsSlice = createSlice({
   name: "news",
   initialState: {
     entities: [],
+    success: [],
     isLoading: false,
     errors: [],
   },
@@ -51,8 +52,9 @@ const newsSlice = createSlice({
     },
     responsUpdateNews: (state, action) => {
       state.isLoading = false;
-
       const news = action.payload;
+      state.success = [];
+      state.success.push({ _id: news._id, message: `Новость "${news.title}" сохранена` });
 
       state.entities.forEach((item) => {
         if (item._id === news._id) {
@@ -63,6 +65,9 @@ const newsSlice = createSlice({
     requestUpdateNewsError: (state, action) => {
       state.isLoading = false;
       state.errors.push(action.payload);
+    },
+    clearSuccess: (state, action) => {
+      state.success = state.success.filter((item) => item._id !== action.payload);
     },
   },
 });
@@ -81,13 +86,19 @@ const {
   requestRemoveNews,
   responsRemoveNews,
   requestRemoveNewsError,
+  clearSuccess,
 } = actions;
 
 const fetchAllNews = () => async (dispatch) => {
   dispatch(requestNews());
   try {
-    const data = await newsService.fetchAll();
-    dispatch(responseNews(data));
+    const respons = await newsService.fetchAll();
+
+    if (!respons.error) {
+      dispatch(responseNews(respons.data));
+    } else {
+      dispatch(requestNewsError(respons.error));
+    }
   } catch (error) {
     dispatch(requestNewsError(error));
   }
@@ -98,9 +109,10 @@ const updateNews = (news) => async (dispatch) => {
   try {
     const respons = await newsService.saveNews(news);
 
-    const { acknowledged } = respons.data;
-    if (acknowledged) {
+    if (!respons.error) {
       dispatch(responsUpdateNews(news));
+    } else {
+      dispatch(requestUpdateNewsError(respons.error));
     }
   } catch (error) {
     dispatch(requestUpdateNewsError(error));
@@ -112,10 +124,11 @@ const createNews = (news) => async (dispatch) => {
   try {
     const respons = await newsService.saveNews(news);
 
-    const { acknowledged, insertedId } = respons.data;
-    if (acknowledged) {
-      news._id = insertedId;
+    if (!respons.error) {
+      news._id = respons.data.insertedId;
       dispatch(responsCreateNews(news));
+    } else {
+      dispatch(requestCreateNewsError(respons.error));
     }
   } catch (error) {
     dispatch(requestCreateNewsError(error));
@@ -126,17 +139,22 @@ const removeNews = (newsId) => async (dispatch) => {
   dispatch(requestRemoveNews());
   try {
     const respons = await newsService.removeNewsById(newsId);
-    const { data } = respons;
-    if (data.acknowledged) {
+
+    if (!respons.error) {
       dispatch(responsRemoveNews(newsId));
     } else {
-      dispatch(requestRemoveNewsError({ codeError: 400, message: "Remove news failed" }));
+      dispatch(requestRemoveNewsError(respons.error));
     }
   } catch (error) {}
 };
 
+const doClearSuccess = (id) => (dispatch) => {
+  dispatch(clearSuccess(id));
+};
+
 const getNews = () => (state) => state.news.entities;
 const getErrors = () => (state) => state.news.errors;
+const getSuccess = () => (state) => state.news.success;
 const getIsLoading = () => (state) => state.news.isLoading;
 
-export { newsReducer, fetchAllNews, createNews, updateNews, removeNews, getNews, getErrors, getIsLoading };
+export { newsReducer, fetchAllNews, createNews, updateNews, removeNews, getNews, getErrors, getIsLoading, getSuccess, doClearSuccess };

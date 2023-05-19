@@ -25,7 +25,7 @@ const TreeNode = ({ node }) => {
 
   useEffect(() => {
     if (children.length > 0) {
-      categoriesService.fetchByArrayId(children).then((data) => setTreeData(data));
+      categoriesService.fetchByArrayId(children).then((resp) => setTreeData(resp.data));
     }
   }, []);
 

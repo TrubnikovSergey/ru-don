@@ -5,6 +5,7 @@ import { newsReducer } from "./newsSlice";
 import { contactsReducer } from "./contactsSlice";
 import { userReducer } from "./userSlice";
 import { authReducer } from "./authSlice";
+import { sortReducer } from "./sortSlice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     contacts: contactsReducer,
     users: userReducer,
     auth: authReducer,
+    sort: sortReducer,
   },
 });
 

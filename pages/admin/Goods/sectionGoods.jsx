@@ -16,8 +16,9 @@ const SectionGoods = () => {
   const newGoods = {
     title: "Новый товар",
     description: "",
+    images: [],
     categoryId: null,
-    price: 1000,
+    price: 0,
     discountProcent: 0,
     discountCount: 0,
   };

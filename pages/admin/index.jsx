@@ -71,16 +71,16 @@ const Admin = () => {
               <Link href="/admin?section=news">Новости</Link>
             </div>
             <div className={style["left-panel__item"]}>
+              <Link href="/admin?section=contacts">Контакты</Link>
+            </div>
+            <div className={style["left-panel__item"]}>
               <Link href="/admin?section=delivery">Доставка</Link>
             </div>
             <div className={style["left-panel__item"]}>
               <Link href="/admin?section=about">О нас</Link>
             </div>
             <div className={style["left-panel__item"]}>
-              <Link href="/admin?section=contacts">Контакты</Link>
-            </div>
-            <div className={style["left-panel__item"]}>
-              <Link href="/admin?section=users">Пользователи</Link>
+              <Link href="/admin?section=users">Администраторы</Link>
             </div>
           </Card>
           <Card moreStyle={style["right-panel"]}>{renderContent}</Card>

@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import style from "./BlockEditGoods.module.scss";
-import PropTypes from "prop-types";
+import PropTypes, { number } from "prop-types";
 import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
-import { useDispatch } from "react-redux";
-import { updateGoods } from "@/store/goodsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { doClearSuccess, getSuccess, updateGoods } from "@/store/goodsSlice";
 import BlockUploadedImages from "../components/blockUploadedImages";
 import httpService from "@/services/http.service";
 import configJSON from "../../../config.json";
+import useSuccess from "@/hooks/useSuccess";
 
 const HOST = configJSON.HOST;
 
@@ -17,10 +18,13 @@ const BlockEditGoods = ({ item, isEdit }) => {
   const [data, setData] = useState({ ...item, listCategories: [] });
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
+  const successData = useSelector(getSuccess());
+
+  useSuccess(successData, item._id, doClearSuccess);
 
   useEffect(() => {
     categoriesService.fetchAllWithConcreteFields(["_id", "title"]).then((resp) => {
-      setData((prev) => ({ ...prev, listCategories: resp }));
+      setData((prev) => ({ ...prev, listCategories: resp.data }));
       setIsLoading(false);
     });
   }, []);
@@ -49,6 +53,9 @@ const BlockEditGoods = ({ item, isEdit }) => {
 
     if (name === "categoryId") {
       value = value === "" ? null : value;
+    }
+    if (name === "discountProcent" || name === "discountCount" || name === "price") {
+      value = Number(value);
     }
     if (name === "images") {
       const base64Images = [];
@@ -82,20 +89,7 @@ const BlockEditGoods = ({ item, isEdit }) => {
     const sendData = new FormData();
     const newData = { ...data };
     delete newData.listCategories;
-
-    // Object.keys(newData).forEach(async (key) => {
-    //   if (key === "images") {
-    //     for (let i = 0; i < newData[key].length; i++) {
-    //       const image = newData[key][i].image;
-
-    //       sendData.append(`${key}[]`, newData[key][i].image);
-    //     }
-    //   } else {
-    //     sendData.append(`${key}`, newData[key]);
-    //   }
-    // });
-
-    // dispatch(updateGoods(sendData));
+    console.log("++++++++newData", newData);
     dispatch(updateGoods(newData));
   };
 

@@ -2,14 +2,18 @@ import { useState } from "react";
 import style from "./blockEditUser.module.scss";
 import PropTypes from "prop-types";
 import Loading from "@/components/loading";
-import { useDispatch } from "react-redux";
-import { updateUser } from "@/store/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { doClearSuccess, getSuccess, updateUser } from "@/store/userSlice";
 import { useRef } from "react";
 import InputField from "@/components/inputField";
+import useSuccess from "@/hooks/useSuccess";
 
 const BlockEditUser = ({ item, isEdit }) => {
   const [data, setData] = useState({ ...item, password: "" });
   const dispatch = useDispatch();
+  const successData = useSelector(getSuccess());
+
+  useSuccess(successData, item._id, doClearSuccess);
 
   const handlerCancel = () => {
     isEdit(false);
@@ -34,7 +38,7 @@ const BlockEditUser = ({ item, isEdit }) => {
         <div className={style["block-edit-content"]}>
           <InputField label="Имя" type="text" name="title" required={true} onChange={handlerChange} value={data.title} />
           <InputField label="Email" type="email" name="email" required={true} onChange={handlerChange} value={data.email} />
-          <InputField name="password" type="password" label="Пароль" onChange={handlerChange} required={true} value={data.password} />
+          <InputField name="password" type="password" label="Пароль" onChange={handlerChange} value={data.password} />
         </div>
         <div className={style["buttons-save-cancel"]}>
           <button className={style["button"]} type="submit">

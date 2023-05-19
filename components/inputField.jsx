@@ -25,8 +25,8 @@ const InputField = ({ moreStyle = null, type = "", name = "", label = "", requir
   return (
     <div>
       <p>{label}</p>
-      <div className={`${moreStyle} ${style.wrapperInput}`}>
-        <input className={style.input} type={calcType(type)} name={name} required={required} onChange={handlerChange} value={value} />
+      <div className={style.wrapperInput}>
+        <input className={`${moreStyle} ${style.input}`} type={calcType(type)} name={name} required={required} onChange={handlerChange} value={value} />
         {isPassword && (
           <div className={style.wrapperEye} onClick={handleClickShowHide}>
             <img className={style.eye} src={showPassword ? "/images/open_eye.svg" : "/images/close_eye.svg"} alt="" />

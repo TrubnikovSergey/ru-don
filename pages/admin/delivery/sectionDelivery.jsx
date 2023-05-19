@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import Loading from "@/components/loading";
-import style from "./sectionDelivery.module.scss";
 import LayoutSection from "../components/layoutSection";
 import { useState } from "react";
 import deliveryService from "@/services/delivery.service";
+import style from "./sectionDelivery.module.scss";
+import { toast } from "react-toastify";
 
 const SectionDelivery = () => {
   const [data, setDate] = useState(null);
@@ -19,14 +20,17 @@ const SectionDelivery = () => {
     setDate((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlerSave = () => {
-    deliveryService.saveDelivery(data);
+  const handlerSave = async () => {
+    const respons = await deliveryService.saveDelivery(data);
+    if (!respons.error) {
+      toast.success(`Раздел "${data.title}" сохранен`);
+    }
   };
 
   useEffect(() => {
     deliveryService.fetchAll().then((respons) => {
-      if (respons.length > 0) {
-        setDate(respons[0]);
+      if (respons.data.length > 0) {
+        setDate(respons.data[0]);
       } else {
         setDate(newDelivery);
       }
@@ -44,10 +48,9 @@ const SectionDelivery = () => {
       </div>
     </LayoutSection>
   ) : (
-    <>
-      <h2 className={style["section-title"]}>{title}</h2>
+    <LayoutSection titleSection={title}>
       <Loading />
-    </>
+    </LayoutSection>
   );
 };
 

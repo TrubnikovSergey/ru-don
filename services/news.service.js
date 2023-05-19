@@ -4,16 +4,16 @@ import configJSON from "../config.json";
 const newsService = {
   fetchAll: async () => {
     try {
-      const { data } = await http.get(`${configJSON.API_HOST}/news?action=fetchAll`);
-      return data;
+      const respons = await http.get(`${configJSON.API_HOST}/news?action=fetchAll`);
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }
   },
   saveNews: async (news) => {
     try {
-      const data = await http.post(`${configJSON.API_HOST}/news?action=saveNews`, { news });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/news?action=saveNews`, { news });
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }
@@ -21,8 +21,8 @@ const newsService = {
 
   removeNewsById: async (newsId) => {
     try {
-      const data = await http.post(`${configJSON.API_HOST}/news?action=removeNewsById`, { newsId });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/news?action=removeNewsById`, { newsId });
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }

@@ -31,20 +31,29 @@ handler.post(async (req, res) => {
     }
 
     if (action === "saveUser") {
-      const hashPassword = await bcrypt.hash(user.password, 12);
-      user.password = hashPassword;
-
-      let data = null;
       if (user._id) {
-        const dataForUpdate = { ...user };
-        delete dataForUpdate._id;
+        const userBD = await req.db.collection("users").findOne({ _id: new ObjectId(user._id) });
 
-        data = await req.db.collection("users").updateOne({ _id: new ObjectId(user._id) }, { $set: dataForUpdate });
+        if (userBD) {
+          if (user.password) {
+            const hashPassword = await bcrypt.hash(user.password, 12);
+            user.password = hashPassword;
+          } else {
+            user.password = userBD.password;
+          }
+
+          const dataForUpdate = { ...user };
+          delete dataForUpdate._id;
+
+          const data = await req.db.collection("users").updateOne({ _id: new ObjectId(user._id) }, { $set: dataForUpdate });
+          res.status(200).json(data);
+        } else {
+          res.status(500).json({ error: { code: 500, message: `User with name ${user.title} not found` } });
+        }
       } else {
-        data = await req.db.collection("users").insertOne(user);
+        const data = await req.db.collection("users").insertOne(user);
+        res.status(200).json(data);
       }
-
-      res.status(200).json(data);
     }
   } catch (error) {
     res.status(500).json({ error: { code: 500, message: `Error user API (post metod) - ${JSON.stringify(error)}` } });

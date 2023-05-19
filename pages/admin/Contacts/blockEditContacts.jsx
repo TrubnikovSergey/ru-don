@@ -2,12 +2,16 @@ import { useState } from "react";
 import style from "./blockEditContacts.module.scss";
 import PropTypes from "prop-types";
 import Loading from "@/components/loading";
-import { useDispatch } from "react-redux";
-import { updateContacts } from "@/store/contactsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { doClearSuccess, getSuccess, updateContacts } from "@/store/contactsSlice";
+import useSuccess from "@/hooks/useSuccess";
 
 const BlockEditContacts = ({ item, isEdit }) => {
   const [data, setData] = useState(item);
   const dispatch = useDispatch();
+  const successData = useSelector(getSuccess());
+
+  useSuccess(successData, item._id, doClearSuccess);
 
   const handlerCancel = () => {
     isEdit(false);

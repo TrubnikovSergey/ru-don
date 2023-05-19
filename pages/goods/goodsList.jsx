@@ -4,10 +4,10 @@ import Card from "@/components/card";
 import Slider from "@/components/slider";
 import AutoSlider from "@/components/autoSlider";
 
-const GoodsList = ({ goodsList = [] }) => {
+const GoodsList = ({ list = [] }) => {
   return (
     <ul className={style.goods__list}>
-      {goodsList.map((item) => (
+      {list.map((item) => (
         <Card key={item._id}>
           <li className={style.goods__item}>
             <AutoSlider imagesList={item.images.map((item) => ({ imageBase64: item.imageBase64 }))} />

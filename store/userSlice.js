@@ -5,6 +5,7 @@ const userSlice = createSlice({
   name: "users",
   initialState: {
     entities: [],
+    success: [],
     isLoading: false,
     errors: [],
   },
@@ -53,6 +54,8 @@ const userSlice = createSlice({
       state.isLoading = false;
 
       const User = action.payload;
+      state.success = [];
+      state.success.push({ _id: User._id, message: `Администратор "${User.title}" сохранен` });
 
       state.entities.forEach((item) => {
         if (item._id === User._id) {
@@ -63,6 +66,9 @@ const userSlice = createSlice({
     requestUpdateUserError: (state, action) => {
       state.isLoading = false;
       state.errors.push(action.payload);
+    },
+    clearSuccess: (state, action) => {
+      state.success = state.success.filter((item) => item._id !== action.payload);
     },
   },
 });
@@ -81,13 +87,19 @@ const {
   requestRemoveUser,
   responsRemoveUser,
   requestRemoveUserError,
+  clearSuccess,
 } = actions;
 
 const fetchAllUser = () => async (dispatch) => {
   dispatch(requestUser());
   try {
-    const data = await userService.fetchAll();
-    dispatch(responseUser(data));
+    const respons = await userService.fetchAll();
+
+    if (!respons.error) {
+      dispatch(responseUser(respons.data));
+    } else {
+      dispatch(requestUserError(respons.error));
+    }
   } catch (error) {
     dispatch(requestUserError(error));
   }
@@ -97,10 +109,10 @@ const updateUser = (User) => async (dispatch) => {
   dispatch(requestUpdateUser());
   try {
     const respons = await userService.saveUser(User);
-
-    const { acknowledged } = respons.data;
-    if (acknowledged) {
+    if (!respons.error) {
       dispatch(responsUpdateUser(User));
+    } else {
+      dispatch(requestUpdateUserError(respons.error));
     }
   } catch (error) {
     dispatch(requestUpdateUserError(error));
@@ -112,10 +124,11 @@ const createUser = (User) => async (dispatch) => {
   try {
     const respons = await userService.saveUser(User);
 
-    const { acknowledged, insertedId } = respons.data;
-    if (acknowledged) {
-      User._id = insertedId;
+    if (!respons.error) {
+      User._id = respons.data.insertedId;
       dispatch(responsCreateUser(User));
+    } else {
+      dispatch(requestCreateUserError(respons.error));
     }
   } catch (error) {
     dispatch(requestCreateUserError(error));
@@ -126,17 +139,24 @@ const removeUser = (UserId) => async (dispatch) => {
   dispatch(requestRemoveUser());
   try {
     const respons = await userService.removeUserById(UserId);
-    const { data } = respons;
-    if (data.acknowledged) {
+
+    if (!respons.error) {
       dispatch(responsRemoveUser(UserId));
     } else {
-      dispatch(requestRemoveUserError({ codeError: 400, message: "Remove User failed" }));
+      dispatch(requestRemoveUserError(respons.error));
     }
-  } catch (error) {}
+  } catch (error) {
+    dispatch(requestRemoveUserError(error));
+  }
+};
+
+const doClearSuccess = (id) => (dispatch) => {
+  dispatch(clearSuccess(id));
 };
 
 const getUsers = () => (state) => state.users.entities;
 const getErrors = () => (state) => state.users.errors;
+const getSuccess = () => (state) => state.users.success;
 const getIsLoading = () => (state) => state.users.isLoading;
 
-export { userReducer, fetchAllUser, createUser, updateUser, removeUser, getUsers, getErrors, getIsLoading };
+export { userReducer, fetchAllUser, createUser, updateUser, removeUser, getUsers, getErrors, getIsLoading, getSuccess, doClearSuccess };

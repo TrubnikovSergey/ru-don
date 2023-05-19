@@ -5,16 +5,16 @@ import { getResponsError } from "@/utils/errors";
 const userService = {
   fetchAll: async () => {
     try {
-      const data = await http.get(`${configJSON.API_HOST}/user?action=fetchAll`);
-      return data;
+      const respons = await http.get(`${configJSON.API_HOST}/user?action=fetchAll`);
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }
   },
   saveUser: async (user) => {
     try {
-      const data = await http.post(`${configJSON.API_HOST}/user?action=saveUser`, { user });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/user?action=saveUser`, { user });
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }
@@ -22,8 +22,8 @@ const userService = {
 
   removeUserById: async (userId) => {
     try {
-      const data = await http.post(`${configJSON.API_HOST}/user?action=removeUserById`, { userId });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/user?action=removeUserById`, { userId });
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }

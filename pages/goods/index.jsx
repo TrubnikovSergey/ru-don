@@ -1,4 +1,3 @@
-import style from "./goods.module.scss";
 import { MongoClient } from "mongodb";
 import Tree from "@/components/tree";
 import { useRouter } from "next/router";
@@ -6,17 +5,37 @@ import Link from "next/link";
 import GoodsList from "./goodsList";
 import Card from "@/components/card";
 import GoodsPage from "./goodsPage";
+import style from "./goods.module.scss";
+import Search from "@/components/search";
+import { useState } from "react";
+import Sort from "@/components/sort";
+import { useDispatch, useSelector } from "react-redux";
+import { getKindSort, setKindSort } from "@/store/sortSlice";
+import { sortGoods } from "@/utils/sort";
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context) => {
   const mongoURL = process.env.MONGO_URL;
+  const ObjectId = require("mongodb").ObjectId;
+
+  let dataGoods = [];
+  let dataCategories = [];
   const client = new MongoClient(`${mongoURL}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
 
-  const req = client.db("energy");
-  let dataCategories = await req.collection("categories").find({ parent: null }).toArray();
-  let dataGoods = await req.collection("goods").find({}).toArray();
+  const db = client.db("energy");
+  dataCategories = await db.collection("categories").find({ parent: null }).toArray();
+
+  if (context.resolvedUrl === "/goods") {
+    dataGoods = await db.collection("goods").find({}).limit(20).toArray();
+  }
+  if ("categoryId" in context.query) {
+    dataGoods = await db.collection("goods").find({ categoryId: context.query.categoryId }).toArray();
+  }
+  if ("goodsId" in context.query) {
+    dataGoods = await db.collection("goods").findOne({ _id: new ObjectId(context.query.goodsId) });
+  }
 
   client.close();
 
@@ -32,26 +51,47 @@ export const getServerSideProps = async () => {
   };
 };
 
-function filterGoodsByCategory(goodsList, categoryId) {
-  const newList = goodsList.filter((item) => item.categoryId === categoryId);
+function filterGoodsByCategory(goodsList, categoryId, searchValue) {
+  const newList = goodsList.filter((item) => {
+    if (searchValue) {
+      return item.categoryId === categoryId && (String(item.title).includes(searchValue) || String(item.description).includes(searchValue));
+    } else {
+      return item.categoryId === categoryId;
+    }
+  });
 
   return newList;
 }
 
 const MainPage = ({ goods, categories }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const kindSort = useSelector(getKindSort());
   const { categoryId, goodsId } = router.query;
+  const [searchValue, setSearchValue] = useState("");
+  const [toggle, setToggle] = useState(true);
   let goodsList = null;
   let goodsItem = null;
+  let foundGoods = null;
+
+  const handleSearch = (searchData) => {
+    setSearchValue(searchData);
+  };
+
+  const handleClickLink = () => {
+    setToggle((prev) => !prev);
+  };
+
+  const handleChange = (sort) => {
+    dispatch(setKindSort(sort));
+  };
 
   if (goodsId) {
-    goodsItem = goods.find((el) => el._id === goodsId);
-  }
-
-  if (categoryId) {
-    goodsList = filterGoodsByCategory(goods, categoryId);
+    goodsItem = goods;
   } else {
-    goodsList = goods;
+    foundGoods = goods.filter((item) => (searchValue ? String(item.title).includes(searchValue) || String(item.description).includes(searchValue) : true));
+
+    goodsList = sortGoods(foundGoods, kindSort);
   }
 
   return (
@@ -61,21 +101,23 @@ const MainPage = ({ goods, categories }) => {
           <div className={style.container}>
             <h1 className={style.categories__title}>Категории</h1>
             <div className={style["link-all-goods"]}>
-              <Link href="/goods"> Все товары</Link>
+              <Link href="/goods" onClick={handleClickLink}>
+                Все товары
+              </Link>
             </div>
             <Tree treeData={categories} />
           </div>
         </section>
       </Card>
       <section className={style.goods}>
-        <Card moreStyle={style["tools-bar"]}>
-          <div className={style.search}>
-            <input className={style.search__input} type="text" />
-            <button className={style.search__button}>Поиск</button>
+        <Card>
+          <div className={style["tools-bar"]}>
+            <Search onSearch={handleSearch} />
+            <Sort onChange={handleChange} />
           </div>
-          <section className={style.sort}>варианты сортировки</section>
         </Card>
-        {goodsId ? goodsItem && <GoodsPage item={goodsItem} /> : goodsList && <GoodsList goodsList={goodsList} />}
+        {goodsItem && <GoodsPage item={goodsItem} />}
+        {goodsList && <GoodsList list={goodsList} />}
       </section>
     </main>
   );

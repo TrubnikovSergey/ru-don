@@ -4,16 +4,16 @@ import configJSON from "../config.json";
 const contactsService = {
   fetchAll: async () => {
     try {
-      const { data } = await http.get(`${configJSON.API_HOST}/contacts?action=fetchAll`);
-      return data;
+      const respons = await http.get(`${configJSON.API_HOST}/contacts?action=fetchAll`);
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }
   },
   saveContacts: async (contact) => {
     try {
-      const data = await http.post(`${configJSON.API_HOST}/contacts?action=saveContact`, { contact });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/contacts?action=saveContact`, { contact });
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }
@@ -21,8 +21,8 @@ const contactsService = {
 
   removeContactById: async (contactId) => {
     try {
-      const data = await http.post(`${configJSON.API_HOST}/contacts?action=removeContactById`, { contactId });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/contacts?action=removeContactById`, { contactId });
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }

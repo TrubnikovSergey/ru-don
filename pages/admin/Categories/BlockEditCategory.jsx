@@ -5,8 +5,10 @@ import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCategory } from "@/store/categoriesSlice";
+import { doClearSuccess, getSuccess, updateCategory } from "@/store/categoriesSlice";
 import { getResponsError } from "@/utils/errors";
+import { toast } from "react-toastify";
+import useSuccess from "@/hooks/useSuccess";
 
 const createState = (setData, item) => {
   categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {
@@ -33,6 +35,8 @@ const createState = (setData, item) => {
 const BlockEditCategory = ({ item, isEdit }) => {
   const [data, setData] = useState(null);
   const dispatch = useDispatch();
+  const successData = useSelector(getSuccess());
+  useSuccess(successData, item._id, doClearSuccess);
 
   useEffect(() => {
     createState(setData, item);

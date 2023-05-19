@@ -28,6 +28,7 @@ const authSlice = createSlice({
       state.email = "";
       state.name = "";
       console.log(action.payload);
+      state.errors = [];
       state.errors.push(action.payload);
     },
     requestSignOut: (state, action) => {
@@ -54,7 +55,7 @@ const signIn = (authData) => async (dispatch) => {
       dispatch(responsSignInErrors(respons.error));
     }
   } catch (error) {
-    dispatch(responsSignInErrors({ code: 400, message: `signIn throw errro\n${JSON.stringify(error)}` }));
+    dispatch(responsSignInErrors({ code: 400, message: `signIn throw error\n${JSON.stringify(error)}` }));
   }
 };
 

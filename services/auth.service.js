@@ -5,9 +5,9 @@ import { getResponsError } from "@/utils/errors";
 const authService = {
   signIn: async (authData) => {
     try {
-      const data = await http.post(`${configJSON.API_HOST}/login?action=signIn`, authData);
+      const respons = await http.post(`${configJSON.API_HOST}/login?action=signIn`, authData);
 
-      return data;
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }

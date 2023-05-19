@@ -9,7 +9,6 @@ const Slider = ({ imagesList = [] }) => {
 
     return `${style.dot}`;
   };
-
   const handleClickDot = (idx) => {
     setIdxImage(idx);
   };
@@ -47,7 +46,7 @@ const Slider = ({ imagesList = [] }) => {
             &#9658;
           </div>
         </div>
-        <div className={style["dots"]}>{imagesList.length > 0 && imagesList.map((item, idx) => <div className={getClassNameDot(idx)} key={item} onClick={() => handleClickDot(idx)}></div>)}</div>
+        <div className={style["dots"]}>{imagesList.length > 0 && imagesList.map((item, idx) => <div className={getClassNameDot(idx)} key={idx} onClick={() => handleClickDot(idx)}></div>)}</div>
       </div>
     )
   );

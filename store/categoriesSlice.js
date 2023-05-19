@@ -6,6 +6,7 @@ const categoriesSlice = createSlice({
   initialState: {
     entities: [],
     errors: [],
+    success: [],
     isLoading: false,
   },
   reducers: {
@@ -48,11 +49,18 @@ const categoriesSlice = createSlice({
 
     responsUpdateCategory: (state, action) => {
       state.isLoading = false;
-
-      const categories = action.payload;
+      state.success = [];
+      const categories = action.payload.data;
+      const _id = action.payload._id;
+      let listCategories = "";
 
       for (let i = 0; i < categories.length; i++) {
         const category = categories[i];
+        listCategories += category.title;
+
+        if (i < categories.length - 1) {
+          listCategories += ", ";
+        }
 
         state.entities.forEach((item) => {
           if (item._id === category._id) {
@@ -60,11 +68,14 @@ const categoriesSlice = createSlice({
           }
         });
       }
+      state.success.push({ _id, message: `Категория "${listCategories}" сохранена` });
     },
     requestRemoveCategory: (state) => {
       state.isLoading = true;
     },
     responsRemoveCategory: (state, action) => {
+      const removeItem = state.entities.find((item) => item._id === action.payload);
+
       state.entities = state.entities.filter((item) => item._id !== action.payload);
       state.isLoading = false;
     },
@@ -73,8 +84,8 @@ const categoriesSlice = createSlice({
       state.errors.push(action.payload);
       state.isLoading = false;
     },
-    closeError: (state, action) => {
-      state.errors = state.errors.filter((item) => item._id !== action.payload);
+    clearSuccess: (state, action) => {
+      state.success = state.success.filter((item) => item._id !== action.payload);
     },
   },
 });
@@ -93,7 +104,7 @@ const {
   requestRemoveCategory,
   responsRemoveCategory,
   responsRemoveCategoryError,
-  closeError,
+  clearSuccess,
 } = actions;
 
 const updateCategory = (category) => async (dispatch) => {
@@ -102,10 +113,9 @@ const updateCategory = (category) => async (dispatch) => {
     const respons = await categoriesService.saveCategory(category);
 
     if (!respons.error) {
-      const updatedCategory = JSON.parse(respons.config.data);
-      respons.data.changedCategories.push(updatedCategory.category);
+      respons.data.changedCategories.push(category);
 
-      dispatch(responsUpdateCategory(respons.data.changedCategories));
+      dispatch(responsUpdateCategory({ _id: category._id, data: respons.data.changedCategories }));
     } else {
       dispatch(requestUpdateCategoryError(respons.error));
     }
@@ -160,12 +170,13 @@ const createCategory = (category) => async (dispatch) => {
   }
 };
 
-const doCloseError = (_id) => (dispatch) => {
-  dispatch(closeError(_id));
+const doClearSuccess = (id) => (dispatch) => {
+  dispatch(clearSuccess(id));
 };
 
 const getCategories = () => (state) => state.categories.entities;
 const getErrors = () => (state) => state.categories.errors;
+const getSuccess = () => (state) => state.categories.success;
 const getIsLoading = () => (state) => state.categories.isLoading;
 
-export { categoriesReducer, fatchAllCategories, updateCategory, removeCategory, createCategory, doCloseError, getCategories, getIsLoading, getErrors };
+export { categoriesReducer, fatchAllCategories, updateCategory, removeCategory, createCategory, doClearSuccess, getCategories, getIsLoading, getErrors, getSuccess };

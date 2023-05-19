@@ -5,6 +5,7 @@ const contactsSlice = createSlice({
   name: "contacts",
   initialState: {
     entities: [],
+    success: [],
     isLoading: false,
     errors: [],
   },
@@ -18,6 +19,7 @@ const contactsSlice = createSlice({
     },
     requestContactsError: (state, action) => {
       state.isLoading = false;
+      state.errors = [];
       state.errors.push(action.payload);
       state.entities = [];
     },
@@ -31,6 +33,7 @@ const contactsSlice = createSlice({
     },
     requestCreateContactsError: (state, action) => {
       state.isLoading = false;
+      state.errors = [];
       state.errors.push(action.payload);
     },
 
@@ -43,6 +46,7 @@ const contactsSlice = createSlice({
     },
     requestRemoveContactsError: (state, action) => {
       state.isLoading = false;
+      state.errors = [];
       state.errors.push(error);
     },
 
@@ -53,6 +57,8 @@ const contactsSlice = createSlice({
       state.isLoading = false;
 
       const contacts = action.payload;
+      state.success = [];
+      state.success.push({ _id: contacts._id, message: `Новость "${contacts.title}" сохранена` });
 
       state.entities.forEach((item) => {
         if (item._id === contacts._id) {
@@ -62,7 +68,11 @@ const contactsSlice = createSlice({
     },
     requestUpdateContactsError: (state, action) => {
       state.isLoading = false;
+      state.errors = [];
       state.errors.push(action.payload);
+    },
+    clearSuccess: (state, action) => {
+      state.success = state.success.filter((item) => item._id !== action.payload);
     },
   },
 });
@@ -81,14 +91,19 @@ const {
   requestRemoveContacts,
   responsRemoveContacts,
   requestRemoveContactsError,
+  clearSuccess,
 } = actions;
 
 const fetchAllContacts = () => async (dispatch) => {
   dispatch(requestContacts());
   try {
-    const data = await contactsService.fetchAll();
+    const respons = await contactsService.fetchAll();
 
-    dispatch(responseContacts(data));
+    if (!respons.error) {
+      dispatch(responseContacts(respons.data));
+    } else {
+      dispatch(requestContactsError(respons.error));
+    }
   } catch (error) {
     dispatch(requestContactsError(error));
   }
@@ -99,9 +114,10 @@ const updateContacts = (contacts) => async (dispatch) => {
   try {
     const respons = await contactsService.saveContacts(contacts);
 
-    const { acknowledged } = respons.data;
-    if (acknowledged) {
+    if (!respons.error) {
       dispatch(responsUpdateContacts(contacts));
+    } else {
+      dispatch(requestUpdateContactsError(respons.error));
     }
   } catch (error) {
     dispatch(requestUpdateContactsError(error));
@@ -113,10 +129,11 @@ const createContacts = (contacts) => async (dispatch) => {
   try {
     const respons = await contactsService.saveContacts(contacts);
 
-    const { acknowledged, insertedId } = respons.data;
-    if (acknowledged) {
-      contacts._id = insertedId;
+    if (!respons.error) {
+      contacts._id = respons.data.insertedId;
       dispatch(responsCreateContacts(contacts));
+    } else {
+      dispatch(requestCreateContactsError(respons.error));
     }
   } catch (error) {
     dispatch(requestCreateContactsError(error));
@@ -127,17 +144,24 @@ const removeContacts = (contactsId) => async (dispatch) => {
   dispatch(requestRemoveContacts());
   try {
     const respons = await contactsService.removeContactById(contactsId);
-    const { data } = respons;
-    if (data.acknowledged) {
+
+    if (!respons.error) {
       dispatch(responsRemoveContacts(contactsId));
     } else {
-      dispatch(requestRemoveContactsError({ codeError: 400, message: "Remove contact failed" }));
+      dispatch(requestRemoveContactsError(respons.error));
     }
-  } catch (error) {}
+  } catch (error) {
+    dispatch(requestRemoveContactsError(error));
+  }
+};
+
+const doClearSuccess = (id) => (dispatch) => {
+  dispatch(clearSuccess(id));
 };
 
 const getContacts = () => (state) => state.contacts.entities;
 const getErrors = () => (state) => state.contacts.errors;
+const getSuccess = () => (state) => state.contacts.success;
 const getIsLoading = () => (state) => state.contacts.isLoading;
 
-export { contactsReducer, fetchAllContacts, createContacts, updateContacts, removeContacts, getContacts, getErrors, getIsLoading };
+export { contactsReducer, fetchAllContacts, createContacts, updateContacts, removeContacts, getContacts, getErrors, getIsLoading, getSuccess, doClearSuccess };

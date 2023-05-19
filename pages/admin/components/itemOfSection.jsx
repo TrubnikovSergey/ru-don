@@ -5,8 +5,8 @@ import { useState } from "react";
 import BlockEditCategory from "../Categories/BlockEditCategory";
 import BlockEditGoods from "../Goods/BlockEditGoods";
 import BlockEditNews from "../News/blockEditNews";
-import BlockEditContacts from "../Contacts/blockEditContacts";
 import BlockEditUser from "../Users/blockEditUser";
+import BlockEditContacts from "../Contacts/blockEditContacts";
 
 const ItemOfSection = ({ item = {}, handlerDel, children, errors = [] }) => {
   const [isEdit, setIsEdit] = useState(false);

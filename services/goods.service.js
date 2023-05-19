@@ -4,33 +4,33 @@ import configJSON from "../config.json";
 const goodsService = {
   fetchAll: async () => {
     try {
-      const { data } = await http.get(`${configJSON.API_HOST}/goods?action=fetchAll`);
+      const respons = await http.get(`${configJSON.API_HOST}/goods?action=fetchAll`);
 
-      return data;
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }
   },
   fetchAllWithConcreteFields: async (arrayFields) => {
     try {
-      const { data } = await http.post(`${configJSON.API_HOST}/goods?action=fetchAllWithConcreteFields`, { arrayFields });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/goods?action=fetchAllWithConcreteFields`, { arrayFields });
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }
   },
   fetchByArrayId: async (arrayId) => {
     try {
-      const { data } = await http.post(`${configJSON.API_HOST}/goods?action=fetchByArrayId`, { arrayId });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/goods?action=fetchByArrayId`, { arrayId });
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }
   },
   getGoodsById: async (goodsId) => {
     try {
-      const data = await http.post(`${configJSON.API_HOST}/goods?action=getGoodsById`, { goodsId });
-      return data;
+      const respons = await http.post(`${configJSON.API_HOST}/goods?action=getGoodsById`, { goodsId });
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }
@@ -47,9 +47,9 @@ const goodsService = {
 
   removeGoodsById: async (goodsId) => {
     try {
-      const { data } = await http.post(`${configJSON.API_HOST}/goods?action=removeGoodsById`, { goodsId });
+      const respons = await http.post(`${configJSON.API_HOST}/goods?action=removeGoodsById`, { goodsId });
 
-      return data;
+      return respons;
     } catch (error) {
       return getResponsError(error);
     }
