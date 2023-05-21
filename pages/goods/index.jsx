@@ -35,7 +35,12 @@ export const getServerSideProps = async (context) => {
     dataGoods = await db.collection("goods").find({ categoryId: context.query.categoryId }).toArray();
   }
   if ("goodsId" in context.query) {
-    dataGoods = await db.collection("goods").findOne({ _id: new ObjectId(context.query.goodsId) });
+    console.log(context.query);
+    if (context.query.goodsId === "all") {
+      dataGoods = await db.collection("goods").find({}).limit(20).toArray();
+    } else {
+      dataGoods = await db.collection("goods").findOne({ _id: new ObjectId(context.query.goodsId) });
+    }
   }
 
   client.close();
@@ -71,14 +76,14 @@ const MainPage = ({ goods, categories }) => {
     const end = () => {
       setLoading(false);
     };
-    // router.events.on("routeChangeStart", start);
-    // router.events.on("routeChangeComplete", end);
-    // router.events.on("routeChangeError", end);
-    // return () => {
-    //   router.events.off("routeChangeStart", start);
-    //   router.events.off("routeChangeComplete", end);
-    //   router.events.off("routeChangeError", end);
-    // };
+    router.events.on("routeChangeStart", start);
+    router.events.on("routeChangeComplete", end);
+    router.events.on("routeChangeError", end);
+    return () => {
+      router.events.off("routeChangeStart", start);
+      router.events.off("routeChangeComplete", end);
+      router.events.off("routeChangeError", end);
+    };
   }, []);
 
   const handleSearch = (searchData) => {
@@ -93,7 +98,7 @@ const MainPage = ({ goods, categories }) => {
     dispatch(setKindSort(sort));
   };
 
-  if (goodsId) {
+  if (goodsId && goodsId !== "all") {
     goodsItem = goods;
   } else {
     foundGoods = filterGoodsBySearchValue(goods, searchValue);
@@ -108,7 +113,7 @@ const MainPage = ({ goods, categories }) => {
           <div className={style.container}>
             <h1 className={style.categories__title}>Категории</h1>
             <div className={style["link-all-goods"]}>
-              <Link href="/goods" onClick={handleClickLink}>
+              <Link href="/goods?goodsId=all" onClick={handleClickLink}>
                 Все товары
               </Link>
             </div>
