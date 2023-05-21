@@ -1,7 +1,13 @@
 $color_foxy: #e9672b;
 
+.wrapper-slider{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 .slider{
-    height: 40%;
+    height: 300px;
     width: 90%;
 }
 

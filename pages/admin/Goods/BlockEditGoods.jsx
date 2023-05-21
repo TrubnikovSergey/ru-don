@@ -20,7 +20,7 @@ const BlockEditGoods = ({ item, isEdit }) => {
   const dispatch = useDispatch();
   const successData = useSelector(getSuccess());
 
-  useSuccess(successData, item._id, doClearSuccess);
+  useSuccess(successData, item?._id, doClearSuccess);
 
   useEffect(() => {
     categoriesService.fetchAllWithConcreteFields(["_id", "title"]).then((resp) => {

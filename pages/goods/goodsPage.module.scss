@@ -12,7 +12,7 @@
 }
 
 .conteiner{
-    height: calc(100vh - 326px);
+    // height: calc(100vh - 326px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -32,6 +32,7 @@
     white-space: pre-wrap;
     padding: 10px 0px;
     width: 100%;
+
 }
 
 .button-back{

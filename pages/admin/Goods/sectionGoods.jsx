@@ -1,16 +1,22 @@
-import style from "../styles/section.module.scss";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Loading from "../../../components/loading";
 import { useDispatch, useSelector } from "react-redux";
 import LayoutSection from "../components/layoutSection";
 import { createGoods, fatchAllGoods, getErrors, getGoods, getIsLoading, removeGoods } from "../../../store/goodsSlice";
 import ListItemsOfSection from "../components/listItemsOfSection";
 import BlockEditGoods from "./BlockEditGoods";
+import Search from "@/components/search";
+import { filterGoodsByCategoryId, filterGoodsBySearchValue } from "@/utils/filterGoods";
+import CategorySelection from "@/components/categorySelection";
+import styleSectionGoods from "./sectionGoods.module.scss";
+import style from "../styles/section.module.scss";
 
 const SectionGoods = () => {
   const dispatch = useDispatch();
-  const goods = useSelector(getGoods());
+  let goods = useSelector(getGoods());
   const errors = useSelector(getErrors());
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const isLoading = useSelector(getIsLoading());
   const title = "Товары";
   const newGoods = {
@@ -27,18 +33,38 @@ const SectionGoods = () => {
     dispatch(fatchAllGoods());
   }, []);
 
+  if (searchValue) {
+    goods = filterGoodsBySearchValue(goods, searchValue);
+  }
+
+  if (selectedCategory) {
+    goods = filterGoodsByCategoryId(goods, null, selectedCategory);
+  }
+
   const handlerDeleteGoods = (id) => {
     dispatch(removeGoods(id));
+  };
+
+  const handleSearch = (data) => {
+    setSearchValue(data);
   };
 
   const handlerCreateGoods = () => {
     dispatch(createGoods(newGoods));
   };
 
+  const handleSelectedCategory = (categoryId) => {
+    setSelectedCategory(categoryId);
+  };
+
   let renderGoods = null;
   if (goods.length > 0) {
     renderGoods = (
       <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
+        <div className={styleSectionGoods["tools-bar"]}>
+          <Search onSearch={handleSearch} />
+          <CategorySelection onChange={handleSelectedCategory} />
+        </div>
         <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
           <BlockEditGoods />
         </ListItemsOfSection>
@@ -53,7 +79,14 @@ const SectionGoods = () => {
         </>
       );
     } else {
-      renderGoods = <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}></LayoutSection>;
+      renderGoods = (
+        <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
+          <Search onSearch={handleSearch} />
+          <div className={styleSectionGoods["tools-bar"]}>
+            <CategorySelection onChange={handleSelectedCategory} />
+          </div>
+        </LayoutSection>
+      );
     }
   }
 

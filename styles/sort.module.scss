@@ -1,3 +1,5 @@
+$color_gray: #747374;
+
 .sort{
     margin: 15px;
     display: flex;
@@ -8,5 +10,6 @@
 
 .selected-list{
     height: 30px;
-    
+    font-weight: bold;
+    color:$color_gray ;
 }

@@ -11,7 +11,7 @@ const BlockEditContacts = ({ item, isEdit }) => {
   const dispatch = useDispatch();
   const successData = useSelector(getSuccess());
 
-  useSuccess(successData, item._id, doClearSuccess);
+  useSuccess(successData, item?._id, doClearSuccess);
 
   const handlerCancel = () => {
     isEdit(false);

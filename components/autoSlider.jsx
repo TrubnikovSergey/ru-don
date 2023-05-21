@@ -3,7 +3,7 @@ import style from "../styles/autoSlider.module.scss";
 import { useEffect } from "react";
 import { useRef } from "react";
 
-const AutoSlider = ({ imagesList, moreStyle }) => {
+const AutoSlider = ({ imagesList, moreStyle, title }) => {
   const [toggle, setToggle] = useState(true);
   const idxImageRef = useRef(0);
   const intervalRef = useRef(null);
@@ -19,7 +19,7 @@ const AutoSlider = ({ imagesList, moreStyle }) => {
     }
   };
   const handleMouseEnter = () => {
-    intervalRef.current = setInterval(calculateIdxImage, 1000);
+    intervalRef.current = setInterval(calculateIdxImage, 700);
   };
 
   const handleMouseLeave = () => {
@@ -29,10 +29,11 @@ const AutoSlider = ({ imagesList, moreStyle }) => {
   };
 
   return (
-    <div className={style.wrapper}>
-      {imagesList.length > 0 && (
-        <img className={style.image} src={imagesList[idxImageRef.current].imageBase64} alt="Изображение товара" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}></img>
-      )}
+    <div className={style.wrapper} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <div className={style.goods__wrapperImage}>{imagesList.length > 0 && <img className={style.image} src={imagesList[idxImageRef.current].imageBase64} alt="Изображение товара"></img>}</div>
+      <div className={style.goods__wrapperTitle}>
+        <p className={style.goods__title}>{title}</p>
+      </div>
     </div>
   );
 };

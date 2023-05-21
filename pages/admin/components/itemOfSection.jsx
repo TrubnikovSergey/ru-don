@@ -20,7 +20,6 @@ const ItemOfSection = ({ item = {}, handlerDel, children, errors = [] }) => {
     <>
       <div className={style.item}>
         {title}
-        {errors.map((el) => el._id === item._id && <ErrorBlock error={el} />)}
         <div className={style["item-buttons"]}>
           <div className={style["button"]} onClick={handlerEdit}>
             <img className={style["button-img"]} src="/images/edit.svg" alt="Редактировать" />

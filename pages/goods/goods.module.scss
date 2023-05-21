@@ -5,6 +5,10 @@
     align-items: center;
 }
 
+.tools-search{
+    margin: 15px;
+}
+
 .main{
     display: flex;
     justify-content: space-between;
@@ -28,7 +32,22 @@
     text-align: center;
 }
 
+.loadingGoodsContent{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.goodsContent{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .goods{
     flex: 3;  
-    height: fit-content;  
+    height: 100%;
+
 }

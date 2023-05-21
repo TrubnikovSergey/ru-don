@@ -1,6 +1,6 @@
 import nextConnect from "next-connect";
 import middleware from "../../middleware/database";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 const handler = nextConnect();
 
@@ -62,7 +62,6 @@ handler.post(async (req, res) => {
 
     if (action === "saveCategory") {
       const { category } = req.body;
-
       let result = null;
       let changedCategories = [];
       if (category._id) {
@@ -102,8 +101,8 @@ async function checkParentReferens(category) {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-
   const req = client.db("energy");
+
   const categoryFromBD = await req.collection("categories").findOne({ _id: new ObjectId(category._id) });
 
   const changedCategories = [];

@@ -1,3 +1,5 @@
+$color_gray: #747374;
+
 .menu__list{
     display: flex;
     justify-content: center;
@@ -22,6 +24,6 @@
 .menu__sep{
     font-size: 20px;   
     margin: 0px 15px;    
-    color: rgb(177, 177, 177);
+    color: $color_gray;
 }
 

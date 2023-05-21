@@ -26,7 +26,7 @@ const Menu = () => {
         </Link>
       </li>
       <li className={style.menu__item}>
-        <Link className={style.menu__link} href="aboutAs">
+        <Link className={style.menu__link} href="aboutUs">
           О нас
         </Link>
       </li>

@@ -5,18 +5,19 @@ import Link from "next/link";
 import GoodsList from "./goodsList";
 import Card from "@/components/card";
 import GoodsPage from "./goodsPage";
-import style from "./goods.module.scss";
 import Search from "@/components/search";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sort from "@/components/sort";
 import { useDispatch, useSelector } from "react-redux";
 import { getKindSort, setKindSort } from "@/store/sortSlice";
 import { sortGoods } from "@/utils/sort";
+import Loading from "@/components/loading";
+import { filterGoodsBySearchValue } from "@/utils/filterGoods";
+import style from "./goods.module.scss";
 
 export const getServerSideProps = async (context) => {
   const mongoURL = process.env.MONGO_URL;
   const ObjectId = require("mongodb").ObjectId;
-
   let dataGoods = [];
   let dataCategories = [];
   const client = new MongoClient(`${mongoURL}`, {
@@ -51,18 +52,6 @@ export const getServerSideProps = async (context) => {
   };
 };
 
-function filterGoodsByCategory(goodsList, categoryId, searchValue) {
-  const newList = goodsList.filter((item) => {
-    if (searchValue) {
-      return item.categoryId === categoryId && (String(item.title).includes(searchValue) || String(item.description).includes(searchValue));
-    } else {
-      return item.categoryId === categoryId;
-    }
-  });
-
-  return newList;
-}
-
 const MainPage = ({ goods, categories }) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -73,6 +62,24 @@ const MainPage = ({ goods, categories }) => {
   let goodsList = null;
   let goodsItem = null;
   let foundGoods = null;
+
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const start = () => {
+      setLoading(true);
+    };
+    const end = () => {
+      setLoading(false);
+    };
+    // router.events.on("routeChangeStart", start);
+    // router.events.on("routeChangeComplete", end);
+    // router.events.on("routeChangeError", end);
+    // return () => {
+    //   router.events.off("routeChangeStart", start);
+    //   router.events.off("routeChangeComplete", end);
+    //   router.events.off("routeChangeError", end);
+    // };
+  }, []);
 
   const handleSearch = (searchData) => {
     setSearchValue(searchData);
@@ -89,7 +96,7 @@ const MainPage = ({ goods, categories }) => {
   if (goodsId) {
     goodsItem = goods;
   } else {
-    foundGoods = goods.filter((item) => (searchValue ? String(item.title).includes(searchValue) || String(item.description).includes(searchValue) : true));
+    foundGoods = filterGoodsBySearchValue(goods, searchValue);
 
     goodsList = sortGoods(foundGoods, kindSort);
   }
@@ -112,12 +119,20 @@ const MainPage = ({ goods, categories }) => {
       <section className={style.goods}>
         <Card>
           <div className={style["tools-bar"]}>
-            <Search onSearch={handleSearch} />
+            <Search onSearch={handleSearch} moreStyle={style["tools-search"]} />
             <Sort onChange={handleChange} />
           </div>
         </Card>
-        {goodsItem && <GoodsPage item={goodsItem} />}
-        {goodsList && <GoodsList list={goodsList} />}
+        {loading ? (
+          <div className={style.loadingGoodsContent}>
+            <Loading />
+          </div>
+        ) : (
+          <>
+            {goodsItem && <GoodsPage item={goodsItem} />}
+            {goodsList && <GoodsList list={goodsList} />}
+          </>
+        )}
       </section>
     </main>
   );

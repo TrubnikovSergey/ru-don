@@ -24,12 +24,12 @@ $color_foxy: #e9672b;
 
 body{
   font-family: 'Roboto Bold';
-  color: $color_black;
+  color: $color_gray;
   background: $color_foxy;
 }
 
 a{
-  color: $color_black;
+  color: $color_gray;
   text-decoration: none;
   &:hover{
     color: $color_foxy;

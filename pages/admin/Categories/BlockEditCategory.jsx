@@ -36,7 +36,7 @@ const BlockEditCategory = ({ item, isEdit }) => {
   const [data, setData] = useState(null);
   const dispatch = useDispatch();
   const successData = useSelector(getSuccess());
-  useSuccess(successData, item._id, doClearSuccess);
+  useSuccess(successData, item?._id, doClearSuccess);
 
   useEffect(() => {
     createState(setData, item);

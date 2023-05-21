@@ -1,18 +1,40 @@
 $color_foxy: #e9672b;
 
+@font-face {
+    font-family: 'Roboto';
+    src: url('../public/fonts/Roboto-Regular.ttf') format('truetype');
+  }
+
+
 .wrapper{
     width: 100%;
-    height: 60%;
-    padding: 5px;
+    height: 100%;
+    // padding: 5px;
 }
 
 .image{
     width: 100%;
     height: 100%;
     object-fit: contain;
-    border: 2px solid #fff;
-    border-radius: 5px;
-    &:hover{
-        border: 2px solid $color_foxy;
-    }
+}
+
+.goods__title{
+    text-align: center;
+    font-size: 12px;
+}
+
+.goods__wrapperImage{
+    width: 100%;
+    height: 150px;
+    padding: 5px;
+}
+
+.goods__wrapperTitle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    height: calc(100% - 150px);
+    font-size: 14px;
+    font-family: "Roboto";
 }

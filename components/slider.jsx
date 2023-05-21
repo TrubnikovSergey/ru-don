@@ -31,22 +31,24 @@ const Slider = ({ imagesList = [] }) => {
 
   return (
     imagesList.length > 0 && (
-      <div className={style.slider}>
-        <div className={style["images"]}>
-          <div className={style["arrow-left"]} onClick={handleClickLeftArrow}>
-            &#9668;
-          </div>
-          {imagesList.length > 0 && (
-            <div className={style["image-block"]}>
-              <img className={style["image"]} src={imagesList[idxImage].imageBase64} alt="Изображение товара" />
+      <div className={style["wrapper-slider"]}>
+        <div className={style.slider}>
+          <div className={style["images"]}>
+            <div className={style["arrow-left"]} onClick={handleClickLeftArrow}>
+              &#9668;
             </div>
-          )}
+            {imagesList.length > 0 && (
+              <div className={style["image-block"]}>
+                <img className={style["image"]} src={imagesList[idxImage].imageBase64} alt="Изображение товара" />
+              </div>
+            )}
 
-          <div className={style["arrow-right"]} onClick={handleClickRightArrow}>
-            &#9658;
+            <div className={style["arrow-right"]} onClick={handleClickRightArrow}>
+              &#9658;
+            </div>
           </div>
+          <div className={style["dots"]}>{imagesList.length > 0 && imagesList.map((item, idx) => <div className={getClassNameDot(idx)} key={idx} onClick={() => handleClickDot(idx)}></div>)}</div>
         </div>
-        <div className={style["dots"]}>{imagesList.length > 0 && imagesList.map((item, idx) => <div className={getClassNameDot(idx)} key={idx} onClick={() => handleClickDot(idx)}></div>)}</div>
       </div>
     )
   );
