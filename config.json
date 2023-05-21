@@ -1,11 +1,11 @@
 {
-    "API_HOST":"http://localhost:3000/api",
+    "API_HOST_2":"http://localhost:3000/api",
     "API_HOST_1":"http://45.8.249.62:3000/api",
-    "API_HOST_2":"http://81.163.30.240:3000/api",
-    "MONGO_URL":"mongodb://energy2:QDh2YVZ5hcc0WywLXoYs@82.148.29.252:707/energy",
-    "MONGO_URL_1":"mongodb://82.148.28.101:27017",
+    "API_HOST":"http://81.163.30.240:3000/api",
+    "MONGO_URL_1":"mongodb://energy2:QDh2YVZ5hcc0WywLXoYs@82.148.29.252:707/energy",
+    "MONGO_URL":"mongodb://energy:bG2oOt9B7lYRx5EKmxG9F0LPmTB9AcbdAYKOsXwwZ6t5fWEJoX@82.148.28.101:707/energy",
     "MONGO_URL_2":"mongodb://127.0.0.1:27017",
-    "HOST":"http://localhost:3000",
+    "HOST_2":"http://localhost:3000",
     "HOST_1":"http://45.8.249.62:3000",
-    "HOST_2":"http://81.163.30.240:3000"
+    "HOST":"http://81.163.30.240:3000"
 }
