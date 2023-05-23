@@ -38,7 +38,7 @@ const SectionGoods = () => {
   }
 
   if (selectedCategory) {
-    goods = filterGoodsByCategoryId(goods, null, selectedCategory);
+    goods = filterGoodsByCategoryId(goods, selectedCategory);
   }
 
   const handlerDeleteGoods = (id) => {
