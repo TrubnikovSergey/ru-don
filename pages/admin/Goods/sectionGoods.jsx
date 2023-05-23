@@ -81,8 +81,8 @@ const SectionGoods = () => {
     } else {
       renderGoods = (
         <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
-          <Search onSearch={handleSearch} />
           <div className={styleSectionGoods["tools-bar"]}>
+            <Search onSearch={handleSearch} />
             <CategorySelection onChange={handleSelectedCategory} />
           </div>
         </LayoutSection>
