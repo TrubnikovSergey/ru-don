@@ -2,9 +2,9 @@ import http from "./http.service";
 import configJSON from "../config.json";
 
 const goodsService = {
-  fetchAll: async () => {
+  fetchAll: async (option) => {
     try {
-      const respons = await http.get(`${configJSON.API_HOST}/goods?action=fetchAll`);
+      const respons = await http.get(`${configJSON.API_HOST}/goods?action=fetchAll&limit=${option.limit}&page=${option.page}`);
 
       return respons;
     } catch (error) {

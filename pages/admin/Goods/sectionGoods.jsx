@@ -10,6 +10,7 @@ import { filterGoodsByCategoryId, filterGoodsBySearchValue } from "@/utils/filte
 import CategorySelection from "@/components/categorySelection";
 import styleSectionGoods from "./sectionGoods.module.scss";
 import style from "../styles/section.module.scss";
+import Pagination from "@/components/pagination";
 
 const SectionGoods = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const SectionGoods = () => {
   const errors = useSelector(getErrors());
   const [searchValue, setSearchValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const isLoading = useSelector(getIsLoading());
   const title = "Товары";
   const newGoods = {
@@ -30,8 +32,8 @@ const SectionGoods = () => {
   };
 
   useEffect(() => {
-    dispatch(fatchAllGoods());
-  }, []);
+    dispatch(fatchAllGoods(currentPage));
+  }, [currentPage]);
 
   if (searchValue) {
     goods = filterGoodsBySearchValue(goods, searchValue);
@@ -65,9 +67,11 @@ const SectionGoods = () => {
           <Search onSearch={handleSearch} />
           <CategorySelection onChange={handleSelectedCategory} />
         </div>
-        <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
-          <BlockEditGoods />
-        </ListItemsOfSection>
+        <Pagination currentPage={currentPage} onChangePage={setCurrentPage}>
+          <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
+            <BlockEditGoods />
+          </ListItemsOfSection>
+        </Pagination>
       </LayoutSection>
     );
   } else {

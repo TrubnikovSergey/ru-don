@@ -1,0 +1,45 @@
+$color_foxy: #e9672b;
+
+.wrapper-paginate{
+    width: 100%;
+}
+
+.pagination-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.list-numbers{
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.item{
+    margin: 0px 5px;
+    cursor: pointer;
+    &:hover{
+        color: $color_foxy;
+    }
+}
+
+.active{
+    color: $color_foxy;
+}
+
+.arrow-left{
+    cursor: pointer;
+    &:hover{
+        color: $color_foxy;
+    }
+}
+
+.arrow-right{
+    cursor: pointer;
+    &:hover{
+        color: $color_foxy;
+    }
+
+}

@@ -7,12 +7,15 @@ const goodsSlice = createSlice({
     entities: [],
     errors: [],
     success: [],
+    pageSize: 10,
+    totalCount: 0,
     isLoading: false,
   },
   reducers: {
     requestCreateGoods: (state, action) => {},
     responsCreateGoods: (state, action) => {
       state.entities.unshift(action.payload);
+      state.totalCount += 1;
     },
     responsCreateGoodsError: (state, action) => {
       state.errors = [];
@@ -30,7 +33,8 @@ const goodsSlice = createSlice({
     },
 
     responsFetchAll: (state, action) => {
-      state.entities = action.payload;
+      state.entities = action.payload.dataPaginate;
+      state.totalCount = action.payload.totalCount;
       state.isLoading = false;
     },
 
@@ -60,6 +64,7 @@ const goodsSlice = createSlice({
     },
     responsRemoveGoods: (state, action) => {
       state.entities = state.entities.filter((item) => item._id !== action.payload);
+      state.totalCount -= 1;
       state.isLoading = false;
     },
     responsRemoveGoodsError: (state, action) => {
@@ -120,10 +125,13 @@ const removeGoods = (goodsId) => async (dispatch) => {
   }
 };
 
-const fatchAllGoods = () => async (dispatch) => {
+const fatchAllGoods = (pageNumber) => async (dispatch, getState) => {
   dispatch(requestFetchAll());
   try {
-    const respons = await goodsService.fetchAll();
+    const limit = getState().goods.pageSize;
+    const page = pageNumber ? pageNumber : 1;
+
+    const respons = await goodsService.fetchAll({ limit, page });
 
     if (!respons.error) {
       dispatch(responsFetchAll(respons.data));
@@ -157,8 +165,10 @@ const doClearSuccess = (id) => (dispatch) => {
 };
 
 const getGoods = () => (state) => state.goods.entities;
+const getGoodsTotalCount = () => (state) => state.goods.totalCount;
+const getGoodsPageSize = () => (state) => state.goods.pageSize;
 const getErrors = () => (state) => state.goods.errors;
 const getSuccess = () => (state) => state.goods.success;
 const getIsLoading = () => (state) => state.goods.isLoading;
 
-export { goodsReducer, fatchAllGoods, updateGoods, removeGoods, createGoods, getGoods, getIsLoading, getErrors, getSuccess, doClearSuccess };
+export { goodsReducer, fatchAllGoods, updateGoods, removeGoods, createGoods, getGoods, getIsLoading, getErrors, getSuccess, doClearSuccess, getGoodsTotalCount, getGoodsPageSize };

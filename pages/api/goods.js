@@ -8,12 +8,17 @@ const handler = nextConnect();
 handler.use(middleware);
 
 handler.get(async (req, res) => {
-  const { action } = req.query;
+  const { action, limit, page } = req.query;
 
   try {
     if (action === "fetchAll") {
-      let data = await req.db.collection("goods").find({}).toArray();
-      res.status(200).json(data);
+      const totalCount = await req.db.collection("goods").count();
+      const skip = (Number(page) - 1) * Number(limit);
+      let dataPaginate = await req.db.collection("goods").find().skip(skip).limit(Number(limit)).toArray();
+
+      res.status(200).json({ dataPaginate, totalCount });
+      // let data = await req.db.collection("goods").find().toArray();
+      // res.status(200).json(data);
     }
   } catch (error) {
     res.status(500).json({ error: { code: 500, message: `Error goods API (get metod) - ${JSON.stringify(error)}` } });
