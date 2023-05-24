@@ -1,26 +1,40 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
-import { getGoodsPageSize, getGoodsTotalCount } from "@/store/goodsSlice";
+import { fatchAllGoods, getGoodsPageSize, getGoodsTotalCount } from "@/store/goodsSlice";
 import style from "../styles/pagination.module.scss";
+import { useState } from "react";
+import { useEffect } from "react";
 
-const Pagination = ({ currentPage, onChangePage, children }) => {
+const Pagination = ({ searchValue, categoryId, children }) => {
+  const dispatch = useDispatch();
   const totalCount = useSelector(getGoodsTotalCount());
   const pageSize = useSelector(getGoodsPageSize());
+  const [currentPage, setCurrentPage] = useState(1);
 
   const countPages = Math.ceil(totalCount / pageSize);
   const arrayPagesNumber = _.range(1, countPages + 1);
 
+  console.log("---------{ searchValue, categoryId}", { searchValue, categoryId });
+  useEffect(() => {
+    changePage(1);
+  }, [searchValue, categoryId]);
+
+  const changePage = (numberPage) => {
+    setCurrentPage(numberPage);
+    dispatch(fatchAllGoods({ numberPage, searchValue, categoryId }));
+  };
+
   const handleChangePage = (e) => {
-    onChangePage(Number(e.target.value));
+    changePage(Number(e.target.value));
   };
 
   const handleLeftClick = () => {
     const newNumber = Number(currentPage) - 1;
-    if (newNumber > 0) onChangePage(newNumber);
+    if (newNumber > 0) changePage(newNumber);
   };
   const handleRightClick = () => {
     const newNumber = Number(currentPage) + 1;
-    if (newNumber <= countPages) onChangePage(newNumber);
+    if (newNumber <= countPages) changePage(newNumber);
   };
 
   return (

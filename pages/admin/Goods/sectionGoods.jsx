@@ -18,7 +18,6 @@ const SectionGoods = () => {
   const errors = useSelector(getErrors());
   const [searchValue, setSearchValue] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const isLoading = useSelector(getIsLoading());
   const title = "Товары";
   const newGoods = {
@@ -32,7 +31,7 @@ const SectionGoods = () => {
   };
 
   useEffect(() => {
-    dispatch(fatchAllGoods(currentPage));
+    dispatch(fatchAllGoods(1));
   }, []);
 
   if (searchValue) {
@@ -59,45 +58,25 @@ const SectionGoods = () => {
     setSelectedCategory(categoryId);
   };
 
-  const handleChangePage = (page) => {
-    dispatch(fatchAllGoods(page));
-    setCurrentPage(page);
-  };
-
   let renderGoods = null;
-  if (goods.length > 0) {
-    renderGoods = (
-      <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
-        <div className={styleSectionGoods["tools-bar"]}>
-          <Search onSearch={handleSearch} />
-          <CategorySelection onChange={handleSelectedCategory} />
-        </div>
-        <Pagination currentPage={currentPage} onChangePage={handleChangePage}>
+
+  renderGoods = (
+    <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
+      <div className={styleSectionGoods["tools-bar"]}>
+        <Search onSearch={handleSearch} />
+        <CategorySelection onChange={handleSelectedCategory} />
+      </div>
+      <Pagination searchValue={searchValue} categoryId={selectedCategory}>
+        {isLoading ? (
+          <Loading />
+        ) : (
           <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
             <BlockEditGoods />
           </ListItemsOfSection>
-        </Pagination>
-      </LayoutSection>
-    );
-  } else {
-    if (isLoading) {
-      renderGoods = (
-        <>
-          <h2 className={style["section-title"]}>{title}</h2>
-          <Loading />
-        </>
-      );
-    } else {
-      renderGoods = (
-        <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
-          <div className={styleSectionGoods["tools-bar"]}>
-            <Search onSearch={handleSearch} />
-            <CategorySelection onChange={handleSelectedCategory} />
-          </div>
-        </LayoutSection>
-      );
-    }
-  }
+        )}
+      </Pagination>
+    </LayoutSection>
+  );
 
   return renderGoods;
 };

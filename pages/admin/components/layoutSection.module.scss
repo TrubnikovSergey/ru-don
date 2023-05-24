@@ -15,16 +15,16 @@
 
 .section-content{
     width: 100%;
-    overflow-y: auto;
-    height: calc(100vh - 320px);
+    // overflow-y: auto;
+    // height: calc(100vh - 320px);
 }
 
-.section-content::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-    background-color: #e9672b;
-    border-radius: 20px;
-  }
+// .section-content::-webkit-scrollbar-thumb {
+//     border-radius: 5px;
+//     background-color: #e9672b;
+//     border-radius: 20px;
+//   }
 
-.section-content::-webkit-scrollbar {
-    width: 15px;
-}
+// .section-content::-webkit-scrollbar {
+//     width: 15px;
+// }

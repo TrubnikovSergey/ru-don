@@ -125,14 +125,15 @@ const removeGoods = (goodsId) => async (dispatch) => {
   }
 };
 
-const fatchAllGoods = (pageNumber) => async (dispatch, getState) => {
+const fatchAllGoods = (data) => async (dispatch, getState) => {
   dispatch(requestFetchAll());
   try {
+    const { numberPage, searchValue, categoryId } = data;
     const limit = getState().goods.pageSize;
-    const page = pageNumber ? pageNumber : 1;
+    const page = numberPage ? numberPage : 1;
 
-    const respons = await goodsService.fetchAll({ limit, page });
-
+    const respons = await goodsService.fetchAll({ limit, page, searchValue, categoryId });
+    console.log("-------------Slice", { numberPage, searchValue, categoryId });
     if (!respons.error) {
       dispatch(responsFetchAll(respons.data));
     } else {

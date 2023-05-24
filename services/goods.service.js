@@ -4,7 +4,9 @@ import configJSON from "../config.json";
 const goodsService = {
   fetchAll: async (option) => {
     try {
-      const respons = await http.get(`${configJSON.API_HOST}/goods?action=fetchAll&limit=${option.limit}&page=${option.page}`);
+      const search = option.searchValue ? `&search=${option.searchValue}` : ``;
+      const categoryId = option.categoryId ? `&categoryId=${option.categoryId}` : ``;
+      const respons = await http.get(`${configJSON.API_HOST}/goods?action=fetchAll&limit=${option.limit}&page=${option.page}${search}${categoryId}`);
 
       return respons;
     } catch (error) {

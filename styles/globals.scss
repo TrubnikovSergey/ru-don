@@ -26,6 +26,17 @@ body{
   font-family: 'Roboto Bold';
   color: $color_gray;
   background: $color_foxy;
+  overflow-y: auto;
+}
+
+body::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #ffffff;
+  border-radius: 20px;
+}
+
+body::-webkit-scrollbar {
+  width: 15px;
 }
 
 a{
