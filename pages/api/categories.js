@@ -12,16 +12,16 @@ handler.get(async (req, res) => {
     if (action === "fetchAll") {
       let data = await req.db.collection("categories").find({}).toArray();
 
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
 
     if (action === "fetchRootCategories") {
       let data = await req.db.collection("categories").find({ parent: null }).toArray();
 
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
   } catch (error) {
-    res.status(500).json({ error: { code: 500, message: `Error categories API (get metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error categories API (get metod) - ${JSON.stringify(error)}` } });
   }
 });
 
@@ -39,9 +39,9 @@ handler.post(async (req, res) => {
           .find({ _id: { $in: arrayObjectId } })
           .toArray();
 
-        res.status(200).json(data);
+        return res.status(200).json(data);
       } else {
-        res.status(200).json([]);
+        return res.status(200).json([]);
       }
     }
 
@@ -52,11 +52,11 @@ handler.post(async (req, res) => {
       if (goodsWithCategory > 0 || categoriesWithCategory > 0) {
         const message = `Категория не может быт удалена! \n На категорию есть ссылки: (${goodsWithCategory}) в товарах , (${categoriesWithCategory}) в категориях`;
 
-        res.status(409).json({ error: { code: 409, message } });
+        return res.status(409).json({ _id: categoryId, error: { code: 409, message } });
       } else {
         const data = await req.db.collection("categories").deleteOne({ _id: new ObjectId(categoryId) });
 
-        res.status(200).json(data);
+        return res.status(200).json(data);
       }
     }
 
@@ -74,24 +74,24 @@ handler.post(async (req, res) => {
         result = await req.db.collection("categories").insertOne(category);
       }
 
-      res.status(200).json({ category: result, changedCategories });
+      return res.status(200).json({ category: result, changedCategories });
     }
 
     if (action === "getCategoryById") {
       const { categoryId } = req.body;
       const data = await req.db.collection("categories").findOne({ _id: new ObjectId(categoryId) });
 
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
 
     if (action === "fetchAllWithConcreteFields") {
       const selectionFilds = fields.map((item) => ({ [item]: 1 })).reduce((item, acc) => ({ ...acc, ...item }), {});
       const data = await req.db.collection("categories").find({}).project(selectionFilds).toArray();
 
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
   } catch (error) {
-    res.status(500).json({ error: { code: 500, message: `Error categories API (post metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error categories API (post metod) - ${JSON.stringify(error)}` } });
   }
 });
 

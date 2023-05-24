@@ -7,7 +7,6 @@ import Loading from "@/components/loading";
 import { useDispatch, useSelector } from "react-redux";
 import { doClearSuccess, getSuccess, updateCategory } from "@/store/categoriesSlice";
 import { getResponsError } from "@/utils/errors";
-import { toast } from "react-toastify";
 import useSuccess from "@/hooks/useSuccess";
 
 const createState = (setData, item) => {

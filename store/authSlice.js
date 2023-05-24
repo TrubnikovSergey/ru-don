@@ -27,7 +27,6 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.email = "";
       state.name = "";
-      console.log(action.payload);
       state.errors = [];
       state.errors.push(action.payload);
     },

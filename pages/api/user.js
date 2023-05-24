@@ -13,10 +13,10 @@ handler.get(async (req, res) => {
   try {
     if (action === "fetchAll") {
       let data = await req.db.collection("users").find({}).toArray();
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
   } catch (error) {
-    res.status(500).json({ error: { code: 500, message: `Error user API (get metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error user API (get metod) - ${JSON.stringify(error)}` } });
   }
 });
 
@@ -27,7 +27,7 @@ handler.post(async (req, res) => {
 
     if (action === "removeUserById") {
       const data = await req.db.collection("users").deleteOne({ _id: new ObjectId(userId) });
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
 
     if (action === "saveUser") {
@@ -46,17 +46,17 @@ handler.post(async (req, res) => {
           delete dataForUpdate._id;
 
           const data = await req.db.collection("users").updateOne({ _id: new ObjectId(user._id) }, { $set: dataForUpdate });
-          res.status(200).json(data);
+          return res.status(200).json(data);
         } else {
-          res.status(500).json({ error: { code: 500, message: `User with name ${user.title} not found` } });
+          return res.status(500).json({ error: { code: 500, message: `User with name ${user.title} not found` } });
         }
       } else {
         const data = await req.db.collection("users").insertOne(user);
-        res.status(200).json(data);
+        return res.status(200).json(data);
       }
     }
   } catch (error) {
-    res.status(500).json({ error: { code: 500, message: `Error user API (post metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error user API (post metod) - ${JSON.stringify(error)}` } });
   }
 });
 

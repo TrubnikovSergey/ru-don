@@ -12,10 +12,10 @@ handler.get(async (req, res) => {
   try {
     if (action === "fetchAll") {
       let data = await req.db.collection("contacts").find({}).toArray();
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
   } catch (error) {
-    res.status(500).json({ error: { code: 500, message: `Error contacts API (get metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error contacts API (get metod) - ${JSON.stringify(error)}` } });
   }
 });
 
@@ -26,7 +26,7 @@ handler.post(async (req, res) => {
 
     if (action === "removeContactById") {
       const data = await req.db.collection("contacts").deleteOne({ _id: new ObjectId(contactId) });
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
 
     if (action === "saveContact") {
@@ -40,10 +40,10 @@ handler.post(async (req, res) => {
         data = await req.db.collection("contacts").insertOne(contact);
       }
 
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
   } catch (error) {
-    res.status(500).json({ error: { code: 500, message: `Error contacts API (post metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error contacts API (post metod) - ${JSON.stringify(error)}` } });
   }
 });
 

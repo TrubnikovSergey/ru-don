@@ -16,12 +16,12 @@ handler.get(async (req, res) => {
       const skip = (Number(page) - 1) * Number(limit);
       let dataPaginate = await req.db.collection("goods").find().skip(skip).limit(Number(limit)).toArray();
 
-      res.status(200).json({ dataPaginate, totalCount });
+      return res.status(200).json({ dataPaginate, totalCount });
       // let data = await req.db.collection("goods").find().toArray();
       // res.status(200).json(data);
     }
   } catch (error) {
-    res.status(500).json({ error: { code: 500, message: `Error goods API (get metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error goods API (get metod) - ${JSON.stringify(error)}` } });
   }
 });
 
@@ -39,9 +39,9 @@ handler.post(async (req, res) => {
           .find({ _id: { $in: arrayObjectId } })
           .toArray();
 
-        res.status(200).json(data);
+        return res.status(200).json(data);
       } else {
-        res.status(200).json([]);
+        return res.status(200).json([]);
       }
     }
 
@@ -49,7 +49,7 @@ handler.post(async (req, res) => {
       const { goodsId } = req.body;
 
       const data = await req.db.collection("goods").deleteOne({ _id: new ObjectId(goodsId) });
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
     if (action === "saveGoods") {
       const { goods } = req.body;
@@ -64,14 +64,14 @@ handler.post(async (req, res) => {
         data = await req.db.collection("goods").insertOne(goods);
       }
 
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
 
     if (action === "getGoodsById") {
       const { goodsId } = req.body;
       const data = await req.db.collection("goods").findOne({ _id: new ObjectId(goodsId) });
 
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
 
     if (action === "fetchAllWithConcreteFields") {
@@ -79,11 +79,10 @@ handler.post(async (req, res) => {
       const selectionFields = arrayFields.map((item) => ({ [item]: 1 })).reduce((item, acc) => ({ ...acc, ...item }), {});
       const data = await req.db.collection("goods").find({}).project(selectionFields).toArray();
 
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
   } catch (error) {
-    console.log("Error", error);
-    res.status(500).json({ error: { code: 500, message: `Error goods API (post metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error goods API (post metod) - ${JSON.stringify(error)}` } });
   }
 });
 

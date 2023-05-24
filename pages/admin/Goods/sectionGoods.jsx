@@ -33,7 +33,7 @@ const SectionGoods = () => {
 
   useEffect(() => {
     dispatch(fatchAllGoods(currentPage));
-  }, [currentPage]);
+  }, []);
 
   if (searchValue) {
     goods = filterGoodsBySearchValue(goods, searchValue);
@@ -59,6 +59,11 @@ const SectionGoods = () => {
     setSelectedCategory(categoryId);
   };
 
+  const handleChangePage = (page) => {
+    dispatch(fatchAllGoods(page));
+    setCurrentPage(page);
+  };
+
   let renderGoods = null;
   if (goods.length > 0) {
     renderGoods = (
@@ -67,7 +72,7 @@ const SectionGoods = () => {
           <Search onSearch={handleSearch} />
           <CategorySelection onChange={handleSelectedCategory} />
         </div>
-        <Pagination currentPage={currentPage} onChangePage={setCurrentPage}>
+        <Pagination currentPage={currentPage} onChangePage={handleChangePage}>
           <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
             <BlockEditGoods />
           </ListItemsOfSection>

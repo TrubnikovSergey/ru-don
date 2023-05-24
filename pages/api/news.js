@@ -12,10 +12,10 @@ handler.get(async (req, res) => {
   try {
     if (action === "fetchAll") {
       let data = await req.db.collection("news").find({}).toArray();
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
   } catch (error) {
-    res.status(500).json({ error: { code: 500, message: `Error news API (get metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error news API (get metod) - ${JSON.stringify(error)}` } });
   }
 });
 
@@ -26,7 +26,7 @@ handler.post(async (req, res) => {
 
     if (action === "removeNewsById") {
       const data = await req.db.collection("news").deleteOne({ _id: new ObjectId(newsId) });
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
 
     if (action === "saveNews") {
@@ -40,10 +40,10 @@ handler.post(async (req, res) => {
         data = await req.db.collection("news").insertOne(news);
       }
 
-      res.status(200).json(data);
+      return res.status(200).json(data);
     }
   } catch (error) {
-    res.status(500).json({ error: { code: 500, message: `Error news API (post metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error news API (post metod) - ${JSON.stringify(error)}` } });
   }
 });
 

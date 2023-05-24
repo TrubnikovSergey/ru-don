@@ -2,7 +2,7 @@ import style from "../styles/section.module.scss";
 import { useEffect } from "react";
 import Loading from "../../../components/loading";
 import { useDispatch, useSelector } from "react-redux";
-import { createCategory, fatchAllCategories, getCategories, getErrors, getIsLoading, removeCategory } from "../../../store/categoriesSlice";
+import { createCategory, doClearError, fatchAllCategories, getCategories, getErrors, getIsLoading, removeCategory } from "../../../store/categoriesSlice";
 import LayoutSection from "../components/layoutSection";
 import ListItemsOfSection from "../components/listItemsOfSection";
 import BlockEditCategory from "./BlockEditCategory";
@@ -22,7 +22,12 @@ const SectionCategories = () => {
 
   useEffect(() => {
     if (errors.length > 0) {
-      toast.error(errors[0].message);
+      for (let i = 0; i < errors.length; i++) {
+        toast.error(errors[i].message);
+      }
+      for (let i = 0; i < errors.length; i++) {
+        dispatch(doClearError(errors[i]._id));
+      }
     }
   }, [errors]);
 

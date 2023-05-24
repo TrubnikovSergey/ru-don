@@ -35,7 +35,6 @@ export const getServerSideProps = async (context) => {
     dataGoods = await db.collection("goods").find({ categoryId: context.query.categoryId }).toArray();
   }
   if ("goodsId" in context.query) {
-    console.log(context.query);
     if (context.query.goodsId === "all") {
       dataGoods = await db.collection("goods").find({}).limit(20).toArray();
     } else {

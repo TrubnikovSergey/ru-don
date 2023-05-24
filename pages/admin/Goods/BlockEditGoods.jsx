@@ -89,7 +89,7 @@ const BlockEditGoods = ({ item, isEdit }) => {
     const sendData = new FormData();
     const newData = { ...data };
     delete newData.listCategories;
-    console.log("++++++++newData", newData);
+    
     dispatch(updateGoods(newData));
   };
 
