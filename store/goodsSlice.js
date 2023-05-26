@@ -133,7 +133,7 @@ const fatchAllGoods = (data) => async (dispatch, getState) => {
     const page = numberPage ? numberPage : 1;
 
     const respons = await goodsService.fetchAll({ limit, page, searchValue, categoryId });
-    console.log("-------------Slice", { numberPage, searchValue, categoryId });
+    
     if (!respons.error) {
       dispatch(responsFetchAll(respons.data));
     } else {

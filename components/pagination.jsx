@@ -14,7 +14,6 @@ const Pagination = ({ searchValue, categoryId, children }) => {
   const countPages = Math.ceil(totalCount / pageSize);
   const arrayPagesNumber = _.range(1, countPages + 1);
 
-  console.log("---------{ searchValue, categoryId}", { searchValue, categoryId });
   useEffect(() => {
     changePage(1);
   }, [searchValue, categoryId]);

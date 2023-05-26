@@ -10,7 +10,6 @@ handler.use(middleware);
 handler.get(async (req, res) => {
   const { action, limit, page, search, categoryId } = req.query;
 
-  console.log("----------------{ action, limit, page, search, categoryId }", { action, limit, page, search, categoryId });
   try {
     if (action === "fetchAll") {
       let dataPaginate = [];
@@ -18,7 +17,7 @@ handler.get(async (req, res) => {
       let skip = (Number(page) - 1) * Number(limit);
 
       if (search && categoryId) {
-        console.log("++++++++if (search && categoryId)");
+        
         const regExpSearch = new RegExp(`${search}`, "i");
         dataPaginate = await req.db
           .collection("goods")
@@ -30,7 +29,7 @@ handler.get(async (req, res) => {
           .collection("goods")
           .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }], categoryId })
           .count();
-        console.log("++++++++if (search && categoryId)", dataPaginate);
+        
       } else if (search) {
         const regExpSearch = new RegExp(`${search}`, "i");
         dataPaginate = await req.db
@@ -43,18 +42,18 @@ handler.get(async (req, res) => {
           .collection("goods")
           .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }] })
           .count();
-        console.log("++++++++else if (search)", dataPaginate);
+        
       } else if (categoryId) {
-        console.log("++++++++} else if (categoryId) {");
+        
         dataPaginate = await req.db.collection("goods").find({ categoryId }).skip(skip).limit(Number(limit)).toArray();
         totalCount = await req.db.collection("goods").find({ categoryId }).count();
-        console.log("++++++++} else if (categoryId) {", dataPaginate);
+        
       } else {
-        console.log("++++++++} else {");
+        
         totalCount = await req.db.collection("goods").count();
 
         dataPaginate = await req.db.collection("goods").find().skip(skip).limit(Number(limit)).toArray();
-        console.log("++++++++} else {", dataPaginate);
+        
       }
 
       return res.status(200).json({ dataPaginate, totalCount });

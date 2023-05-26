@@ -60,23 +60,50 @@ const SectionGoods = () => {
 
   let renderGoods = null;
 
-  renderGoods = (
-    <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
-      <div className={styleSectionGoods["tools-bar"]}>
-        <Search onSearch={handleSearch} />
-        <CategorySelection onChange={handleSelectedCategory} />
-      </div>
-      <Pagination searchValue={searchValue} categoryId={selectedCategory}>
-        {isLoading ? (
-          <Loading />
-        ) : (
+  if (goods.length > 0) {
+    renderGoods = (
+      <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
+        <div className={styleSectionGoods["tools-bar"]}>
+          <Search onSearch={handleSearch} />
+          <CategorySelection onChange={handleSelectedCategory} />
+        </div>
+        <Pagination searchValue={searchValue} categoryId={selectedCategory}>
           <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
             <BlockEditGoods />
           </ListItemsOfSection>
-        )}
-      </Pagination>
-    </LayoutSection>
-  );
+        </Pagination>
+      </LayoutSection>
+    );
+  } else {
+    if (isLoading) {
+      renderGoods = (
+        <>
+          <h2 className={style["section-title"]}>{title}</h2>
+          <Loading />
+        </>
+      );
+    } else {
+      renderGoods = <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}></LayoutSection>;
+    }
+  }
+
+  // renderGoods = (
+  //   <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
+  //     <div className={styleSectionGoods["tools-bar"]}>
+  //       <Search onSearch={handleSearch} />
+  //       <CategorySelection onChange={handleSelectedCategory} />
+  //     </div>
+  //     <Pagination searchValue={searchValue} categoryId={selectedCategory}>
+  //       {isLoading ? (
+  //         <Loading />
+  //       ) : (
+  //         <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
+  //           <BlockEditGoods />
+  //         </ListItemsOfSection>
+  //       )}
+  //     </Pagination>
+  //   </LayoutSection>
+  // );
 
   return renderGoods;
 };
