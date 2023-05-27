@@ -4,13 +4,13 @@ import { fatchAllGoods, getGoodsPageSize, getGoodsTotalCount } from "@/store/goo
 import style from "../styles/pagination.module.scss";
 import { useState } from "react";
 import { useEffect } from "react";
+import { getIsLoading } from "@/store/categoriesSlice";
 
 const Pagination = ({ searchValue, categoryId, children }) => {
   const dispatch = useDispatch();
   const totalCount = useSelector(getGoodsTotalCount());
   const pageSize = useSelector(getGoodsPageSize());
   const [currentPage, setCurrentPage] = useState(1);
-
   const countPages = Math.ceil(totalCount / pageSize);
   const arrayPagesNumber = _.range(1, countPages + 1);
 

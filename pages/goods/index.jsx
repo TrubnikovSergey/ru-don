@@ -14,6 +14,7 @@ import { sortGoods } from "@/utils/sort";
 import Loading from "@/components/loading";
 import { filterGoodsBySearchValue } from "@/utils/filterGoods";
 import style from "./goods.module.scss";
+import Pagination from "@/components/pagination";
 
 export const getServerSideProps = async (context) => {
   const mongoURL = process.env.MONGO_URL;
@@ -134,7 +135,11 @@ const MainPage = ({ goods, categories }) => {
         ) : (
           <>
             {goodsItem && <GoodsPage item={goodsItem} />}
-            {goodsList && <GoodsList list={goodsList} />}
+            {goodsList && (
+              // <Pagination searchValue={searchValue}>
+              <GoodsList list={goodsList} />
+              // </Pagination>
+            )}
           </>
         )}
       </section>

@@ -9,6 +9,7 @@ const goodsSlice = createSlice({
     success: [],
     pageSize: 10,
     totalCount: 0,
+    isSaving: false,
     isLoading: false,
   },
   reducers: {
@@ -39,16 +40,19 @@ const goodsSlice = createSlice({
     },
 
     requestUpdateGoods: (state, action) => {
-      state.isLoading = true;
+      // state.isLoading = true;
+      state.isSaving = true;
     },
     requestUpdateGoodsError: (state, action) => {
-      state.isLoading = false;
+      // state.isLoading = false;
+      state.isSaving = false;
       state.errors = [];
       state.errors.push(action.payload);
     },
 
     responsUpdateGoods: (state, action) => {
-      state.isLoading = false;
+      // state.isLoading = false;
+      state.isSaving = false;
       const goods = action.payload;
       state.success = [];
       state.success.push({ _id: goods._id, message: `Товар "${goods.title}" сохранен` });
@@ -133,7 +137,7 @@ const fatchAllGoods = (data) => async (dispatch, getState) => {
     const page = numberPage ? numberPage : 1;
 
     const respons = await goodsService.fetchAll({ limit, page, searchValue, categoryId });
-    
+
     if (!respons.error) {
       dispatch(responsFetchAll(respons.data));
     } else {
@@ -171,5 +175,6 @@ const getGoodsPageSize = () => (state) => state.goods.pageSize;
 const getErrors = () => (state) => state.goods.errors;
 const getSuccess = () => (state) => state.goods.success;
 const getIsLoading = () => (state) => state.goods.isLoading;
+const getIsSaving = () => (state) => state.goods.isSaving;
 
-export { goodsReducer, fatchAllGoods, updateGoods, removeGoods, createGoods, getGoods, getIsLoading, getErrors, getSuccess, doClearSuccess, getGoodsTotalCount, getGoodsPageSize };
+export { goodsReducer, fatchAllGoods, updateGoods, removeGoods, createGoods, getGoods, getIsLoading, getErrors, getSuccess, doClearSuccess, getGoodsTotalCount, getGoodsPageSize, getIsSaving };

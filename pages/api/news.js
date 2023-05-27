@@ -15,7 +15,7 @@ handler.get(async (req, res) => {
       return res.status(200).json(data);
     }
   } catch (error) {
-    return res.status(500).json({ error: { code: 500, message: `Error news API (get metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error news API (get metod) action (${action}) - ${JSON.stringify(error)}` } });
   }
 });
 

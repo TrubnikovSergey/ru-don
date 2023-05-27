@@ -2,8 +2,9 @@ import Card from "@/components/card";
 import { MongoClient } from "mongodb";
 import newsService from "../services/news.service";
 import style from "../styles/index.module.scss";
+import Slider from "@/components/slider";
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context) => {
   const mongoURL = process.env.MONGO_URL;
   const client = new MongoClient(`${mongoURL}`, {
     useNewUrlParser: true,
@@ -26,32 +27,50 @@ export const getServerSideProps = async () => {
 };
 
 const Index = ({ news }) => {
+  const nowDate = Date.now();
+
+  const imagesForSlider = news.reduce((acc, item) => {
+    const itemDate = new Date(item.atDate).getTime();
+    if (itemDate <= nowDate && item.forSlider) {
+      return [...acc, ...item.images];
+    }
+    return acc;
+  }, []);
+  const newsWithoutSlider = news.filter((item) => {
+    const itemDate = new Date(item.atDate).getTime();
+    return itemDate <= nowDate && !item.forSlider;
+  });
+
   return (
     <Card>
       <main>
-        <section className={style["slider-wrapper"]}>
-          <div className={style.slider}>
-            <div className={style.slider__content}>слайдер</div>
-          </div>
-        </section>
+        {imagesForSlider.length > 0 && (
+          <section className={style["slider-wrapper"]}>
+            <div className={style.slider}>
+              <div className={style["slider-content"]}>
+                <Slider imagesList={imagesForSlider.map((item) => ({ imageBase64: item.imageBase64 }))} />
+              </div>
+            </div>
+          </section>
+        )}
         <section className={style["section-news"]}>
           <div className={style["section-news-content"]}>
             <h1 className={style["section-news-title"]}>Новости</h1>
             <ul className={style["news-list"]}>
-              {news &&
-                news.map((item) => {
+              {newsWithoutSlider &&
+                newsWithoutSlider.map((item) => {
                   let { atDate, title } = item;
                   atDate = atDate && new Date(atDate).toLocaleDateString();
 
                   return (
                     <li className={style["news-item"]} key={item._id}>
                       <div className={style["item-title"]}>
-                        <h3>{title}</h3>
+                        <p>{title}</p>
                         <div className={style["item-atDate"]}>
-                          <h3>{atDate}</h3>
+                          <p>{atDate}</p>
                         </div>
                       </div>
-                      <pre className={style["item-description"]}>{item.description}</pre>
+                      <div className={style["item-description"]}>{item.description}</div>
                     </li>
                   );
                 })}

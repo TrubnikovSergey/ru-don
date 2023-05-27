@@ -6,17 +6,20 @@ import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
 import { useDispatch, useSelector } from "react-redux";
-import { doClearSuccess, getSuccess, updateGoods } from "@/store/goodsSlice";
+import { doClearSuccess, getIsLoading, getIsSaving, getSuccess, updateGoods } from "@/store/goodsSlice";
 import BlockUploadedImages from "../components/blockUploadedImages";
 import httpService from "@/services/http.service";
 import configJSON from "../../../config.json";
 import useSuccess from "@/hooks/useSuccess";
+import ButtonSave from "@/components/buttonSave";
+import { fileToBase64 } from "@/utils/files";
 
 const HOST = configJSON.HOST;
 
-const BlockEditGoods = ({ item, isEdit }) => {
+const BlockEditGoods = ({ item }) => {
   const [data, setData] = useState({ ...item, listCategories: [] });
   const [isLoading, setIsLoading] = useState(true);
+  const isSaving = useSelector(getIsSaving());
   const dispatch = useDispatch();
   const successData = useSelector(getSuccess());
 
@@ -28,25 +31,6 @@ const BlockEditGoods = ({ item, isEdit }) => {
       setIsLoading(false);
     });
   }, []);
-
-  const handlerCancel = () => {
-    isEdit(false);
-  };
-
-  function fileToBase64(file) {
-    return new Promise((res, rej) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-
-      reader.onload = function () {
-        res(reader.result);
-      };
-
-      reader.onerror = function () {
-        rej(reader.error);
-      };
-    });
-  }
 
   const handlerChange = async (e) => {
     let { name, value, files } = e.target;
@@ -89,7 +73,7 @@ const BlockEditGoods = ({ item, isEdit }) => {
     const sendData = new FormData();
     const newData = { ...data };
     delete newData.listCategories;
-    
+
     dispatch(updateGoods(newData));
   };
 
@@ -135,14 +119,7 @@ const BlockEditGoods = ({ item, isEdit }) => {
             <p>(размер изображения не более 200 кб)</p>
           </div>
         </div>
-        <div className={style["buttons-save-cancel"]}>
-          <button className={style["button"]} type="submit">
-            Сохранить
-          </button>
-          <button className={style["button"]} type="button" onClick={handlerCancel}>
-            Отмена
-          </button>
-        </div>
+        <ButtonSave isSaving={isSaving} />
       </form>
     </div>
   ) : (

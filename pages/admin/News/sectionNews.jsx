@@ -16,7 +16,10 @@ const SectionNews = () => {
   const title = "Новости";
   const newNews = {
     title: "Новая новость",
-    description: "Содержимое новости",
+    images: [],
+    forSlider: false,
+    description: "Содержание новости",
+    atDate: new Date(),
   };
 
   useEffect(() => {

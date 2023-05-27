@@ -3,13 +3,15 @@ import style from "./blockEditContacts.module.scss";
 import PropTypes from "prop-types";
 import Loading from "@/components/loading";
 import { useDispatch, useSelector } from "react-redux";
-import { doClearSuccess, getSuccess, updateContacts } from "@/store/contactsSlice";
+import { doClearSuccess, getIsLoading, getSuccess, updateContacts } from "@/store/contactsSlice";
 import useSuccess from "@/hooks/useSuccess";
+import ButtonSave from "@/components/buttonSave";
 
 const BlockEditContacts = ({ item, isEdit }) => {
   const [data, setData] = useState(item);
   const dispatch = useDispatch();
   const successData = useSelector(getSuccess());
+  const isLoading = useSelector(getIsLoading());
 
   useSuccess(successData, item?._id, doClearSuccess);
 
@@ -43,14 +45,7 @@ const BlockEditContacts = ({ item, isEdit }) => {
             <textarea className={style.textarea} rows="10" name="description" onChange={handlerChange} value={data.description}></textarea>
           </div>
         </div>
-        <div className={style["buttons-save-cancel"]}>
-          <button className={style["button"]} type="submit">
-            Сохранить
-          </button>
-          <button className={style["button"]} type="button" onClick={handlerCancel}>
-            Отмена
-          </button>
-        </div>
+        <ButtonSave isSaving={isLoading} />
       </form>
     </div>
   ) : (

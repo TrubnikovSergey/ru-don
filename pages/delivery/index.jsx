@@ -32,7 +32,7 @@ const SectionDelivery = ({ delivery }) => {
     <Card>
       <main className={style.delivery}>
         <h1 className={style.title}>{data.title}</h1>
-        <pre className={style.description}>{data.description}</pre>
+        <div className={style.description}>{data.description}</div>
       </main>
     </Card>
   );

@@ -33,9 +33,9 @@ const Contacts = ({ contacts }) => {
             <div className={style.content}>
               {contacts &&
                 contacts.map((item) => (
-                  <pre className={style.description} key={item._id}>
+                  <div className={style.description} key={item._id}>
                     {item.description}
-                  </pre>
+                  </div>
                 ))}
             </div>
           </section>

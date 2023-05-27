@@ -5,9 +5,10 @@ import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
 import Loading from "@/components/loading";
 import { useDispatch, useSelector } from "react-redux";
-import { doClearSuccess, getSuccess, updateCategory } from "@/store/categoriesSlice";
+import { doClearSuccess, getIsLoading, getSuccess, updateCategory } from "@/store/categoriesSlice";
 import { getResponsError } from "@/utils/errors";
 import useSuccess from "@/hooks/useSuccess";
+import ButtonSave from "@/components/buttonSave";
 
 const createState = (setData, item) => {
   categoriesService.fetchAllWithConcreteFields(["title", "_id"]).then((response) => {
@@ -35,6 +36,7 @@ const BlockEditCategory = ({ item, isEdit }) => {
   const [data, setData] = useState(null);
   const dispatch = useDispatch();
   const successData = useSelector(getSuccess());
+  const isLoading = useSelector(getIsLoading());
   useSuccess(successData, item?._id, doClearSuccess);
 
   useEffect(() => {
@@ -98,14 +100,15 @@ const BlockEditCategory = ({ item, isEdit }) => {
             </div>
           </div>
         </div>
-        <div className={style["buttons-save-cancel"]}>
+        <ButtonSave isSaving={isLoading} />
+        {/* <div className={style["buttons-save-cancel"]}>
           <button className={style["button"]} type="submit">
             Сохранить
           </button>
           <button className={style["button"]} type="button" onClick={handlerCancel}>
             Отмена
           </button>
-        </div>
+        </div> */}
       </form>
     </div>
   ) : (

@@ -48,3 +48,14 @@ margin-bottom: 15px;
 .multiselect-subcategories{
   width: 50%;
 }
+
+.slider-news{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.btn-upload{
+  width: 120px;
+}

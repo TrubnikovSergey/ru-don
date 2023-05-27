@@ -68,7 +68,7 @@ const SectionGoods = () => {
           <CategorySelection onChange={handleSelectedCategory} />
         </div>
         <Pagination searchValue={searchValue} categoryId={selectedCategory}>
-          <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
+          <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors} isLoading={isLoading}>
             <BlockEditGoods />
           </ListItemsOfSection>
         </Pagination>
@@ -94,13 +94,13 @@ const SectionGoods = () => {
   //       <CategorySelection onChange={handleSelectedCategory} />
   //     </div>
   //     <Pagination searchValue={searchValue} categoryId={selectedCategory}>
-  //       {isLoading ? (
-  //         <Loading />
-  //       ) : (
-  //         <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
-  //           <BlockEditGoods />
-  //         </ListItemsOfSection>
-  //       )}
+  // {isLoading ? (
+  //   <Loading />
+  // ) : (
+  //   <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
+  //     <BlockEditGoods />
+  //   </ListItemsOfSection>
+  // )}
   //     </Pagination>
   //   </LayoutSection>
   // );

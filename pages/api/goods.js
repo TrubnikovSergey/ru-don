@@ -17,7 +17,6 @@ handler.get(async (req, res) => {
       let skip = (Number(page) - 1) * Number(limit);
 
       if (search && categoryId) {
-        
         const regExpSearch = new RegExp(`${search}`, "i");
         dataPaginate = await req.db
           .collection("goods")
@@ -29,7 +28,6 @@ handler.get(async (req, res) => {
           .collection("goods")
           .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }], categoryId })
           .count();
-        
       } else if (search) {
         const regExpSearch = new RegExp(`${search}`, "i");
         dataPaginate = await req.db
@@ -42,25 +40,18 @@ handler.get(async (req, res) => {
           .collection("goods")
           .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }] })
           .count();
-        
       } else if (categoryId) {
-        
         dataPaginate = await req.db.collection("goods").find({ categoryId }).skip(skip).limit(Number(limit)).toArray();
         totalCount = await req.db.collection("goods").find({ categoryId }).count();
-        
       } else {
-        
         totalCount = await req.db.collection("goods").count();
 
         dataPaginate = await req.db.collection("goods").find().skip(skip).limit(Number(limit)).toArray();
-        
       }
 
       return res.status(200).json({ dataPaginate, totalCount });
     }
   } catch (error) {
-    console.log("////////////////////\n");
-    console.log(error);
     return res.status(500).json({ error: { code: 500, message: `Error goods API (get metod) - ${JSON.stringify(error)}` } });
   }
 });

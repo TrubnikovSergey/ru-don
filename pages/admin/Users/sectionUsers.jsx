@@ -12,7 +12,7 @@ const SectionUsers = () => {
   const dispatch = useDispatch();
   const users = useSelector(getUsers());
   const errors = useSelector(getErrors());
-  const isLoading = false;
+  const isLoading = useSelector(getIsLoading());
   const title = "Администраторы";
   const newUser = {
     title: "Новый администратор",

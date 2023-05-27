@@ -32,7 +32,7 @@ const ItemOfSection = ({ item = {}, handlerDel, children, errors = [] }) => {
       {isEdit &&
         React.Children.map(children, (child) => {
           if (child.type === BlockEditCategory || child.type === BlockEditGoods || child.type === BlockEditNews || child.type === BlockEditContacts || child.type === BlockEditUser) {
-            return React.cloneElement(child, { item, isEdit: setIsEdit });
+            return React.cloneElement(child, { item });
           }
           return child;
         })}
