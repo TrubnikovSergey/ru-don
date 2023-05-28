@@ -27,14 +27,15 @@ const Contacts = ({ contacts }) => {
   return (
     <Card moreStyle={style.main}>
       <main>
-        <h1 className={style.title}>Контакты</h1>
+        <h1 className={style["title-section"]}>Контакты</h1>
         <div className={style.content}>
-          <section className={style["list-contacts"]}>
-            <div className={style.content}>
+          <section className={style["wrapper-list"]}>
+            <div className={style["list-contacts"]}>
               {contacts &&
                 contacts.map((item) => (
-                  <div className={style.description} key={item._id}>
-                    {item.description}
+                  <div className={style["item-contact"]} key={item._id}>
+                    <p className={style.title}>{item.title}</p>
+                    <p className={style.description}>{item.description}</p>
                   </div>
                 ))}
             </div>
