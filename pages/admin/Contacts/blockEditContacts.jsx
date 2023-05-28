@@ -1,11 +1,11 @@
 import { useState } from "react";
-import style from "./blockEditContacts.module.scss";
 import PropTypes from "prop-types";
 import Loading from "@/components/loading";
 import { useDispatch, useSelector } from "react-redux";
 import { doClearSuccess, getIsLoading, getSuccess, updateContacts } from "@/store/contactsSlice";
 import useSuccess from "@/hooks/useSuccess";
 import ButtonSave from "@/components/buttonSave";
+import style from "./blockEditContacts.module.scss";
 
 const BlockEditContacts = ({ item, isEdit }) => {
   const [data, setData] = useState(item);
@@ -43,6 +43,19 @@ const BlockEditContacts = ({ item, isEdit }) => {
           <div>
             <p>Описание котакта</p>
             <textarea className={style.textarea} rows="10" name="description" onChange={handlerChange} value={data.description}></textarea>
+          </div>
+          <div className={style.location}>
+            <p>Координаты контакта для Yandex карты</p>
+            <div className={style.coordinates}>
+              <div className={style.latitude}>
+                <p>широта:</p>
+                <input className={style["input-latitude"]} type="text" name="latitude" required={true} onChange={handlerChange} value={data.latitude} />
+              </div>
+              <div className={style.longitude}>
+                <p>долгота:</p>
+                <input className={style["input-longitude"]} type="text" name="longitude" required={true} onChange={handlerChange} value={data.longitude} />
+              </div>
+            </div>
           </div>
         </div>
         <ButtonSave isSaving={isLoading} />

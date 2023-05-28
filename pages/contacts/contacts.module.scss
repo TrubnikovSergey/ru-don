@@ -5,7 +5,7 @@
 
 .main{
     width: 100%;
-    padding: 15px;
+    padding: 50px;
 }
 
 .content{
@@ -19,18 +19,14 @@
 }
 
 .map{
-    flex: 2;
-    height: 500px;
-
-    background: #e9672b;
     display: flex;
     justify-content: center;
     align-items: center;
 
+    flex: 2;
+    height: 500px;
     font-size: 36px;
     color: #fff;
-
-    margin-bottom: 25px;
 }
 
 .wrapper-list{
@@ -58,4 +54,9 @@
     white-space: pre-wrap;
     font-family: "Robot";
     padding-left: 15px;
+}
+
+.yandex-map{
+    width: 100%;
+    height: 100%;
 }

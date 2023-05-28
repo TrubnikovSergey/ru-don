@@ -17,6 +17,8 @@ const SectionContacts = () => {
   const newContact = {
     title: "Новый контакт",
     description: "Описание контакта",
+    latitude: 0,
+    longitude: 0,
   };
 
   useEffect(() => {

@@ -29,14 +29,16 @@ export const getServerSideProps = async (context) => {
   const db = client.db("energy");
   dataCategories = await db.collection("categories").find({ parent: null }).toArray();
 
-  if (context.resolvedUrl === "/goods") {
+  const { resolvedUrl, query } = context;
+
+  if (resolvedUrl === "/goods") {
     dataGoods = await db.collection("goods").find({}).limit(20).toArray();
   }
-  if ("categoryId" in context.query) {
-    dataGoods = await db.collection("goods").find({ categoryId: context.query.categoryId }).toArray();
+  if ("categoryId" in query) {
+    dataGoods = await db.collection("goods").find({ categoryId: query.categoryId }).toArray();
   }
-  if ("goodsId" in context.query) {
-    if (context.query.goodsId === "all") {
+  if ("goodsId" in query) {
+    if (query.goodsId === "all") {
       dataGoods = await db.collection("goods").find({}).limit(20).toArray();
     } else {
       dataGoods = await db.collection("goods").findOne({ _id: new ObjectId(context.query.goodsId) });
@@ -127,6 +129,9 @@ const MainPage = ({ goods, categories }) => {
             <Search onSearch={handleSearch} moreStyle={style["tools-search"]} />
             <Sort onChange={handleChange} />
           </div>
+          <div className={style["wrapper-pagination"]}>
+            <Pagination searchValue={searchValue} />
+          </div>
         </Card>
         {loading ? (
           <div className={style.loadingGoodsContent}>
@@ -135,11 +140,7 @@ const MainPage = ({ goods, categories }) => {
         ) : (
           <>
             {goodsItem && <GoodsPage item={goodsItem} />}
-            {goodsList && (
-              // <Pagination searchValue={searchValue}>
-              <GoodsList list={goodsList} />
-              // </Pagination>
-            )}
+            {goodsList && <GoodsList list={goodsList} />}
           </>
         )}
       </section>

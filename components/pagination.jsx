@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
 import { fatchAllGoods, getGoodsPageSize, getGoodsTotalCount } from "@/store/goodsSlice";
-import style from "../styles/pagination.module.scss";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getIsLoading } from "@/store/categoriesSlice";
+import style from "../styles/pagination.module.scss";
 
 const Pagination = ({ searchValue, categoryId, children }) => {
   const dispatch = useDispatch();
