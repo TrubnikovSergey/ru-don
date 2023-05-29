@@ -45,7 +45,7 @@ const Pagination = ({ searchValue, categoryId, children }) => {
               &#9668;
             </li>
             {arrayPagesNumber.map((item) => {
-              const classLi = `${style.item} ${item === currentPage && style.active}`;
+              const classLi = `${style.item} ${item === currentPage ? style.active : ""}`;
 
               return (
                 <li key={item} className={classLi} onClick={handleChangePage} value={item}>

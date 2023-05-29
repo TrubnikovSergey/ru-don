@@ -1,5 +1,6 @@
 import goodsService from "../services/goods.service";
 import { createSlice } from "@reduxjs/toolkit";
+import configJSON from "../config.json";
 
 const goodsSlice = createSlice({
   name: "goods",
@@ -7,7 +8,7 @@ const goodsSlice = createSlice({
     entities: [],
     errors: [],
     success: [],
-    pageSize: 10,
+    pageSize: configJSON.pageSize,
     totalCount: 0,
     isSaving: false,
     isLoading: false,

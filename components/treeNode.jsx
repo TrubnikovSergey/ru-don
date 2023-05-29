@@ -52,7 +52,7 @@ const TreeNode = ({ node }) => {
     <>
       <div className={style.treeNode}>
         {isChildren ? expand : noExpand}
-        <Link href={`/goods?categoryId=${_id}`}>{title}</Link>
+        <Link href={`/goods?categoryId=${_id}&page=1`}>{title}</Link>
       </div>
       {renderChildren}
     </>

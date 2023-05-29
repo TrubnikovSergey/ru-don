@@ -13,14 +13,20 @@ import { getKindSort, setKindSort } from "@/store/sortSlice";
 import { sortGoods } from "@/utils/sort";
 import Loading from "@/components/loading";
 import { filterGoodsBySearchValue } from "@/utils/filterGoods";
+import PaginationWithLink from "@/components/paginationWithLink";
+import configJSON from "../../config.json";
 import style from "./goods.module.scss";
-import Pagination from "@/components/pagination";
 
 export const getServerSideProps = async (context) => {
   const mongoURL = process.env.MONGO_URL;
   const ObjectId = require("mongodb").ObjectId;
+  const pageSize = Number(process.env.pageSize);
   let dataGoods = [];
   let dataCategories = [];
+  let totalCount = 0;
+  let page = 1;
+  let skip = 0;
+
   const client = new MongoClient(`${mongoURL}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -30,19 +36,26 @@ export const getServerSideProps = async (context) => {
   dataCategories = await db.collection("categories").find({ parent: null }).toArray();
 
   const { resolvedUrl, query } = context;
-
-  if (resolvedUrl === "/goods") {
-    dataGoods = await db.collection("goods").find({}).limit(20).toArray();
-  }
+  console.log("----------query", query);
   if ("categoryId" in query) {
-    dataGoods = await db.collection("goods").find({ categoryId: query.categoryId }).toArray();
-  }
-  if ("goodsId" in query) {
+    page = Number(query.page);
+    skip = (page - 1) * pageSize;
+
+    dataGoods = await db.collection("goods").find({ categoryId: query.categoryId }).skip(skip).limit(pageSize).toArray();
+    totalCount = await db.collection("goods").find({ categoryId: query.categoryId }).count();
+  } else if ("goodsId" in query) {
     if (query.goodsId === "all") {
-      dataGoods = await db.collection("goods").find({}).limit(20).toArray();
+      dataGoods = await db.collection("goods").find({}).limit(pageSize).toArray();
+      totalCount = await db.collection("goods").find({}).count();
     } else {
       dataGoods = await db.collection("goods").findOne({ _id: new ObjectId(context.query.goodsId) });
     }
+  } else {
+    page = Number(query.page);
+    skip = (page - 1) * pageSize;
+
+    dataGoods = await db.collection("goods").find({}).skip(skip).limit(pageSize).toArray();
+    totalCount = await db.collection("goods").find({}).count();
   }
 
   client.close();
@@ -55,11 +68,25 @@ export const getServerSideProps = async (context) => {
     props: {
       categories: JSON.parse(JSON.stringify(dataCategories)),
       goods: JSON.parse(JSON.stringify(dataGoods)),
+      baseUrl: resolvedUrl,
+      totalCount,
+      pageSize,
     },
   };
 };
 
-const MainPage = ({ goods, categories }) => {
+function createBaseUrl(url) {
+  const objURL = new URL(`${configJSON.HOST}/${url}`);
+  objURL.searchParams.delete("page");
+  const pathName = objURL.pathname;
+  const search = objURL.search;
+
+  const resultUrl = `${pathName}${search}`.replace("//", "/");
+
+  return resultUrl;
+}
+
+const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const kindSort = useSelector(getKindSort());
@@ -115,7 +142,7 @@ const MainPage = ({ goods, categories }) => {
           <div className={style.container}>
             <h1 className={style.categories__title}>Категории</h1>
             <div className={style["link-all-goods"]}>
-              <Link href="/goods?goodsId=all" onClick={handleClickLink}>
+              <Link href="/goods?page=1" onClick={handleClickLink}>
                 Все товары
               </Link>
             </div>
@@ -130,7 +157,7 @@ const MainPage = ({ goods, categories }) => {
             <Sort onChange={handleChange} />
           </div>
           <div className={style["wrapper-pagination"]}>
-            <Pagination searchValue={searchValue} />
+            <PaginationWithLink baseUrl={createBaseUrl(baseUrl)} searchValue={searchValue} totalCount={totalCount} sizePage={pageSize} />
           </div>
         </Card>
         {loading ? (

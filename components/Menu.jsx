@@ -11,12 +11,12 @@ const Menu = () => {
       </li>
       <li className={style.menu__sep}>|</li>
       <li className={style.menu__item}>
-        <Link className={style.menu__link} href="/goods">
+        <Link className={style.menu__link} href="/goods?page=1">
           Товары и услуги
         </Link>
       </li>
       <li className={style.menu__item}>
-        <Link className={style.menu__link} href="/contacts">
+        <Link className={style.menu__link} href="contacts">
           Контакты
         </Link>
       </li>
