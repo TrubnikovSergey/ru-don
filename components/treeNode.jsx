@@ -5,9 +5,14 @@ import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
 import Loading from "./loading";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { getSearchValue, setSearchValue } from "@/store/searchSlice";
+import { deleteURLParams } from "@/utils/url";
 
 const TreeNode = ({ node }) => {
   const { children, title, _id } = node;
+  const searchValue = useSelector(getSearchValue());
+  const dispatch = useDispatch();
   const [treeData, setTreeData] = useState([]);
   const [showChildren, setShowChildren] = useState(false);
   const isChildren = children.length > 0;
@@ -33,7 +38,9 @@ const TreeNode = ({ node }) => {
     setShowChildren(!showChildren);
   }
 
-  function handlerClickNode() {}
+  function handlerClickNode() {
+    dispatch(setSearchValue(""));
+  }
 
   let renderChildren = null;
   if (showChildren) {
@@ -48,11 +55,19 @@ const TreeNode = ({ node }) => {
     }
   }
 
+  let href = `/goods?categoryId=${_id}&page=1`;
+  const newURL = deleteURLParams(href, "search");
+  if (searchValue) {
+    href = `${newURL}&search=${searchValue}`;
+  }
+
   return (
     <>
       <div className={style.treeNode}>
         {isChildren ? expand : noExpand}
-        <Link href={`/goods?categoryId=${_id}&page=1`}>{title}</Link>
+        <Link href={href} onClick={handlerClickNode}>
+          {title}
+        </Link>
       </div>
       {renderChildren}
     </>

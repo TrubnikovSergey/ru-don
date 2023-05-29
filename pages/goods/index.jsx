@@ -9,13 +9,14 @@ import Search from "@/components/search";
 import { useEffect, useState } from "react";
 import Sort from "@/components/sort";
 import { useDispatch, useSelector } from "react-redux";
-import { getKindSort, setKindSort } from "@/store/sortSlice";
+import { getSearchValue, setSearchValue } from "@/store/searchSlice";
 import { sortGoods } from "@/utils/sort";
 import Loading from "@/components/loading";
 import { filterGoodsBySearchValue } from "@/utils/filterGoods";
 import PaginationWithLink from "@/components/paginationWithLink";
 import configJSON from "../../config.json";
 import style from "./goods.module.scss";
+import { deleteURLParams } from "@/utils/url";
 
 export const getServerSideProps = async (context) => {
   const mongoURL = process.env.MONGO_URL;
@@ -37,6 +38,7 @@ export const getServerSideProps = async (context) => {
 
   const { resolvedUrl, query } = context;
   console.log("----------query", query);
+
   if ("categoryId" in query) {
     page = Number(query.page);
     skip = (page - 1) * pageSize;
@@ -51,10 +53,12 @@ export const getServerSideProps = async (context) => {
       dataGoods = await db.collection("goods").findOne({ _id: new ObjectId(context.query.goodsId) });
     }
   } else {
+    console.log("----------else");
     page = Number(query.page);
     skip = (page - 1) * pageSize;
 
     dataGoods = await db.collection("goods").find({}).skip(skip).limit(pageSize).toArray();
+    console.log("----------dataGoods", dataGoods);
     totalCount = await db.collection("goods").find({}).count();
   }
 
@@ -76,22 +80,18 @@ export const getServerSideProps = async (context) => {
 };
 
 function createBaseUrl(url) {
-  const objURL = new URL(`${configJSON.HOST}/${url}`);
-  objURL.searchParams.delete("page");
-  const pathName = objURL.pathname;
-  const search = objURL.search;
-
-  const resultUrl = `${pathName}${search}`.replace("//", "/");
-
+  let resultUrl = deleteURLParams(url, "page");
+  resultUrl = deleteURLParams(resultUrl, "search");
+  console.log("---------resultUrl", resultUrl);
   return resultUrl;
 }
 
 const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const kindSort = useSelector(getKindSort());
+  const searchValue = useSelector(getSearchValue());
   const { categoryId, goodsId } = router.query;
-  const [searchValue, setSearchValue] = useState("");
+  const [kindSort, setKindSort] = useState("");
   const [toggle, setToggle] = useState(true);
   let goodsList = null;
   let goodsItem = null;
@@ -112,27 +112,32 @@ const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
       router.events.off("routeChangeStart", start);
       router.events.off("routeChangeComplete", end);
       router.events.off("routeChangeError", end);
+      dispatch(setSearchValue(""));
     };
   }, []);
 
   const handleSearch = (searchData) => {
-    setSearchValue(searchData);
+    dispatch(setSearchValue(searchData));
   };
 
   const handleClickLink = () => {
     setToggle((prev) => !prev);
   };
 
-  const handleChange = (sort) => {
-    dispatch(setKindSort(sort));
+  const handleChangeSort = (sort) => {
+    setKindSort(sort);
   };
 
-  if (goodsId && goodsId !== "all") {
-    goodsItem = goods;
+  if (!goodsId) {
+    goodsList = goods;
   } else {
-    foundGoods = filterGoodsBySearchValue(goods, searchValue);
+    goodsItem = goods;
+  }
 
-    goodsList = sortGoods(foundGoods, kindSort);
+  let hrefAll = `/goods?&page=1`;
+  const newURL = deleteURLParams(hrefAll, "search");
+  if (searchValue) {
+    hrefAll = `${newURL}&search=${searchValue}`;
   }
 
   return (
@@ -142,7 +147,7 @@ const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
           <div className={style.container}>
             <h1 className={style.categories__title}>Категории</h1>
             <div className={style["link-all-goods"]}>
-              <Link href="/goods?page=1" onClick={handleClickLink}>
+              <Link href={hrefAll} onClick={handleClickLink}>
                 Все товары
               </Link>
             </div>
@@ -154,7 +159,7 @@ const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
         <Card>
           <div className={style["tools-bar"]}>
             <Search onSearch={handleSearch} moreStyle={style["tools-search"]} />
-            <Sort onChange={handleChange} />
+            <Sort onChange={handleChangeSort} />
           </div>
           <div className={style["wrapper-pagination"]}>
             <PaginationWithLink baseUrl={createBaseUrl(baseUrl)} searchValue={searchValue} totalCount={totalCount} sizePage={pageSize} />

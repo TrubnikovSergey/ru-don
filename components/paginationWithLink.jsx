@@ -2,6 +2,7 @@ import _ from "lodash";
 import style from "../styles/pagination.module.scss";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { deleteURLParams } from "@/utils/url";
 
 const PaginationWithdiv = ({ baseUrl, totalCount, sizePage, searchValue }) => {
   const router = useRouter();
@@ -15,7 +16,7 @@ const PaginationWithdiv = ({ baseUrl, totalCount, sizePage, searchValue }) => {
     if (searchValue) {
       url += `&search=${searchValue}`;
     }
-    console.log("-------------url", url);
+
     router.push(url);
   }, [currentPage, searchValue]);
 
