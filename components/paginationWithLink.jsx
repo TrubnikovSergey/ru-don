@@ -1,14 +1,22 @@
 import _ from "lodash";
-import style from "../styles/pagination.module.scss";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { deleteURLParams } from "@/utils/url";
+import { calculatePaginateRange } from "@/utils/pagination";
+import configJSON from "../config.json";
+import style from "../styles/pagination.module.scss";
+import { useSelector } from "react-redux";
+import { getGoodsPageSize } from "@/store/goodsSlice";
 
 const PaginationWithdiv = ({ baseUrl, totalCount, sizePage, searchValue }) => {
   const router = useRouter();
-  const countPages = Math.ceil(totalCount / sizePage);
-  const arrayNumber = _.range(1, countPages + 1);
   const [currentPage, setCurrentPage] = useState(1);
+  const paginationSize = configJSON.paginationSize;
+  const pageSize = useSelector(getGoodsPageSize());
+  const countPages = Math.ceil(totalCount / pageSize);
+  const { start, end } = calculatePaginateRange(currentPage, paginationSize, countPages);
+  const arrayPagesNumber = _.range(start, end);
+  // const arrayNumber = _.range(1, countPages + 1);
 
   useEffect(() => {
     let url = baseUrl.includes("?") ? `${baseUrl}&page=${currentPage}` : `${baseUrl}?page=${currentPage}`;
@@ -37,10 +45,11 @@ const PaginationWithdiv = ({ baseUrl, totalCount, sizePage, searchValue }) => {
         <div className={style["wrapper-paginate"]}>
           <div className={style["pagination-container"]}>
             <ul className={style["list-numbers"]}>
+              {currentPage > paginationSize && "..."}
               <li className={style["arrow-left"]} onClick={() => handleClickArrow(-1)}>
                 &#9668;
               </li>
-              {arrayNumber.map((item) => {
+              {arrayPagesNumber.map((item) => {
                 const classLi = `${style.item} ${item === currentPage ? style.active : ""}`;
 
                 return (
@@ -49,9 +58,10 @@ const PaginationWithdiv = ({ baseUrl, totalCount, sizePage, searchValue }) => {
                   </li>
                 );
               })}
-              <div className={style["arrow-right"]} onClick={() => handleClickArrow(1)}>
+              <li className={style["arrow-right"]} onClick={() => handleClickArrow(1)}>
                 &#9658;
-              </div>
+              </li>
+              {currentPage < countPages && countPages > paginationSize && "..."}
             </ul>
           </div>
         </div>
