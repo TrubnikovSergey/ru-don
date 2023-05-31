@@ -6,6 +6,7 @@ import { contactsReducer } from "./contactsSlice";
 import { userReducer } from "./userSlice";
 import { authReducer } from "./authSlice";
 import { searchReducer } from "./searchSlice";
+import { sortReducer } from "./sortSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     users: userReducer,
     auth: authReducer,
     search: searchReducer,
+    sort: sortReducer,
   },
 });
 

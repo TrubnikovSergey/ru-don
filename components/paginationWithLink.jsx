@@ -11,7 +11,7 @@ const PaginationWithdiv = ({ baseUrl, totalCount, sizePage, searchValue }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    let url = `${baseUrl}?page=${currentPage}`;
+    let url = baseUrl.includes("?") ? `${baseUrl}&page=${currentPage}` : `${baseUrl}?page=${currentPage}`;
 
     if (searchValue) {
       url += `&search=${searchValue}`;
@@ -33,27 +33,29 @@ const PaginationWithdiv = ({ baseUrl, totalCount, sizePage, searchValue }) => {
 
   return (
     <>
-      <div className={style["wrapper-paginate"]}>
-        <div className={style["pagination-container"]}>
-          <ul className={style["list-numbers"]}>
-            <li className={style["arrow-left"]} onClick={() => handleClickArrow(-1)}>
-              &#9668;
-            </li>
-            {arrayNumber.map((item) => {
-              const classLi = `${style.item} ${item === currentPage ? style.active : ""}`;
+      {countPages > 0 && (
+        <div className={style["wrapper-paginate"]}>
+          <div className={style["pagination-container"]}>
+            <ul className={style["list-numbers"]}>
+              <li className={style["arrow-left"]} onClick={() => handleClickArrow(-1)}>
+                &#9668;
+              </li>
+              {arrayNumber.map((item) => {
+                const classLi = `${style.item} ${item === currentPage ? style.active : ""}`;
 
-              return (
-                <li key={item} className={classLi} value={item} onClick={() => handleClickItem(item)}>
-                  {item}
-                </li>
-              );
-            })}
-            <div className={style["arrow-right"]} onClick={() => handleClickArrow(1)}>
-              &#9658;
-            </div>
-          </ul>
+                return (
+                  <li key={item} className={classLi} value={item} onClick={() => handleClickItem(item)}>
+                    {item}
+                  </li>
+                );
+              })}
+              <div className={style["arrow-right"]} onClick={() => handleClickArrow(1)}>
+                &#9658;
+              </div>
+            </ul>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

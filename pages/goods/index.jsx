@@ -17,7 +17,161 @@ import PaginationWithLink from "@/components/paginationWithLink";
 import configJSON from "../../config.json";
 import style from "./goods.module.scss";
 import { deleteURLParams } from "@/utils/url";
+import { getKindSort, setUpKindSort } from "@/store/sortSlice";
 
+const getSortSplit = (str) => {
+  const arraySort = str.split("-");
+  const field = arraySort[0];
+  const sort = arraySort[1] === "asc" ? 1 : -1;
+
+  return { field, sort };
+};
+
+const searchAndSortForCategory = async (db, query, skip, pageSize) => {
+  const regExpSearch = new RegExp(`${query.search}`, "i");
+  const { field, sort } = getSortSplit(query.sort);
+
+  const dataGoods = await db
+    .collection("goods")
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }], categoryId: query.categoryId })
+    .skip(skip)
+    .limit(Number(pageSize))
+    .sort({ [field]: sort })
+    .toArray();
+  const totalCount = await db
+    .collection("goods")
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }], categoryId: query.categoryId })
+    .count();
+
+  return { dataGoods, totalCount };
+};
+
+const searchForCategory = async (db, query, skip, pageSize) => {
+  const regExpSearch = new RegExp(`${query.search}`, "i");
+  const dataGoods = await db
+    .collection("goods")
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }], categoryId: query.categoryId })
+    .skip(skip)
+    .limit(Number(pageSize))
+    .toArray();
+  const totalCount = await db
+    .collection("goods")
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }], categoryId: query.categoryId })
+    .count();
+
+  return { dataGoods, totalCount };
+};
+
+const sortForCategory = async (db, query, skip, pageSize) => {
+  const { field, sort } = getSortSplit(query.sort);
+  const dataGoods = await db
+    .collection("goods")
+    .find({ categoryId: query.categoryId })
+    .skip(skip)
+    .limit(pageSize)
+    .sort({ [field]: sort })
+    .toArray();
+  const totalCount = await db.collection("goods").find({ categoryId: query.categoryId }).count();
+
+  return { dataGoods, totalCount };
+};
+
+const searchAndSortForGoods = async (db, query, skip, pageSize) => {
+  const regExpSearch = new RegExp(`${query.search}`, "i");
+  const { field, sort } = getSortSplit(query.sort);
+
+  const dataGoods = await db
+    .collection("goods")
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }] })
+    .skip(skip)
+    .limit(Number(pageSize))
+    .sort({ [field]: sort })
+    .toArray();
+  const totalCount = await db
+    .collection("goods")
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }] })
+    .count();
+
+  return { dataGoods, totalCount };
+};
+
+const searchForGoods = async (db, query, skip, pageSize) => {
+  const regExpSearch = new RegExp(`${query.search}`, "i");
+  const dataGoods = await db
+    .collection("goods")
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }] })
+    .skip(skip)
+    .limit(Number(pageSize))
+    .toArray();
+  const totalCount = await db
+    .collection("goods")
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }] })
+    .count();
+
+  return { dataGoods, totalCount };
+};
+
+const sortForGoods = async (db, query, skip, pageSize) => {
+  const { field, sort } = getSortSplit(query.sort);
+  const dataGoods = await db
+    .collection("goods")
+    .find({})
+    .skip(skip)
+    .limit(Number(pageSize))
+    .sort({ [field]: sort })
+    .toArray();
+  const totalCount = await db.collection("goods").find({}).count();
+
+  return { dataGoods, totalCount };
+};
+
+const getDataForGoods = async (db, query, skip, pageSize) => {
+  let dataGoods = [];
+  let totalCount = 0;
+
+  if ("search" in query && "sort" in query) {
+    const result = await searchAndSortForGoods(db, query, skip, pageSize);
+    dataGoods = result.dataGoods;
+    totalCount = result.totalCount;
+  } else if ("search" in query) {
+    const result = await searchForGoods(db, query, skip, pageSize);
+    dataGoods = result.dataGoods;
+    totalCount = result.totalCount;
+  } else if ("sort" in query) {
+    const result = await sortForGoods(db, query, skip, pageSize);
+    dataGoods = result.dataGoods;
+    totalCount = result.totalCount;
+  } else {
+    dataGoods = await db.collection("goods").find({}).skip(skip).limit(Number(pageSize)).toArray();
+    totalCount = await db.collection("goods").find({}).count();
+  }
+
+  return { dataGoods, totalCount };
+};
+
+const getDataForCategory = async (db, query, skip, pageSize) => {
+  let dataGoods = [];
+  let totalCount = 0;
+
+  if ("search" in query && "sort" in query) {
+    const result = await searchAndSortForCategory(db, query, skip, pageSize);
+    dataGoods = result.dataGoods;
+    totalCount = result.totalCount;
+  } else if ("search" in query) {
+    const result = await searchForCategory(db, query, skip, pageSize);
+    dataGoods = result.dataGoods;
+    totalCount = result.totalCount;
+  } else if ("sort" in query) {
+    const result = await sortForCategory(db, query, skip, pageSize);
+    dataGoods = result.dataGoods;
+    totalCount = result.totalCount;
+  } else {
+    dataGoods = await db.collection("goods").find({ categoryId: query.categoryId }).skip(skip).limit(pageSize).toArray();
+    totalCount = await db.collection("goods").find({ categoryId: query.categoryId }).count();
+  }
+
+  return { dataGoods, totalCount };
+};
 export const getServerSideProps = async (context) => {
   const mongoURL = process.env.MONGO_URL;
   const ObjectId = require("mongodb").ObjectId;
@@ -37,29 +191,23 @@ export const getServerSideProps = async (context) => {
   dataCategories = await db.collection("categories").find({ parent: null }).toArray();
 
   const { resolvedUrl, query } = context;
-  console.log("----------query", query);
 
   if ("categoryId" in query) {
     page = Number(query.page);
     skip = (page - 1) * pageSize;
 
-    dataGoods = await db.collection("goods").find({ categoryId: query.categoryId }).skip(skip).limit(pageSize).toArray();
-    totalCount = await db.collection("goods").find({ categoryId: query.categoryId }).count();
+    const result = await getDataForCategory(db, query, skip, pageSize);
+    dataGoods = result.dataGoods;
+    totalCount = result.totalCount;
   } else if ("goodsId" in query) {
-    if (query.goodsId === "all") {
-      dataGoods = await db.collection("goods").find({}).limit(pageSize).toArray();
-      totalCount = await db.collection("goods").find({}).count();
-    } else {
-      dataGoods = await db.collection("goods").findOne({ _id: new ObjectId(context.query.goodsId) });
-    }
+    dataGoods = await db.collection("goods").findOne({ _id: new ObjectId(context.query.goodsId) });
   } else {
-    console.log("----------else");
     page = Number(query.page);
     skip = (page - 1) * pageSize;
 
-    dataGoods = await db.collection("goods").find({}).skip(skip).limit(pageSize).toArray();
-    console.log("----------dataGoods", dataGoods);
-    totalCount = await db.collection("goods").find({}).count();
+    const result = await getDataForGoods(db, query, skip, pageSize);
+    dataGoods = result.dataGoods;
+    totalCount = result.totalCount;
   }
 
   client.close();
@@ -82,18 +230,17 @@ export const getServerSideProps = async (context) => {
 function createBaseUrl(url) {
   let resultUrl = deleteURLParams(url, "page");
   resultUrl = deleteURLParams(resultUrl, "search");
-  console.log("---------resultUrl", resultUrl);
   return resultUrl;
 }
 
 const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
   const router = useRouter();
+
   const dispatch = useDispatch();
   const searchValue = useSelector(getSearchValue());
   const { categoryId, goodsId } = router.query;
-  const [kindSort, setKindSort] = useState("");
-  const [toggle, setToggle] = useState(true);
-  let goodsList = null;
+  const kindSort = useSelector(getKindSort());
+  let goodsList = [];
   let goodsItem = null;
   let foundGoods = null;
 
@@ -112,32 +259,28 @@ const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
       router.events.off("routeChangeStart", start);
       router.events.off("routeChangeComplete", end);
       router.events.off("routeChangeError", end);
-      dispatch(setSearchValue(""));
     };
   }, []);
 
-  const handleSearch = (searchData) => {
-    dispatch(setSearchValue(searchData));
-  };
-
-  const handleClickLink = () => {
-    setToggle((prev) => !prev);
-  };
+  useEffect(() => {
+    dispatch(setSearchValue(""));
+    dispatch(setUpKindSort("title-asc"));
+  }, [categoryId]);
 
   const handleChangeSort = (sort) => {
-    setKindSort(sort);
+    dispatch(setUpKindSort(sort));
+
+    const { asPath } = router;
+    let newPath = deleteURLParams(asPath, "sort");
+    newPath += newPath.includes("?") ? `&sort=${sort}` : `?sort=${sort}`;
+
+    router.push(newPath);
   };
 
   if (!goodsId) {
     goodsList = goods;
   } else {
     goodsItem = goods;
-  }
-
-  let hrefAll = `/goods?&page=1`;
-  const newURL = deleteURLParams(hrefAll, "search");
-  if (searchValue) {
-    hrefAll = `${newURL}&search=${searchValue}`;
   }
 
   return (
@@ -147,9 +290,7 @@ const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
           <div className={style.container}>
             <h1 className={style.categories__title}>Категории</h1>
             <div className={style["link-all-goods"]}>
-              <Link href={hrefAll} onClick={handleClickLink}>
-                Все товары
-              </Link>
+              <Link href={`/goods?page=1`}>Все товары</Link>
             </div>
             <Tree treeData={categories} />
           </div>
@@ -158,9 +299,10 @@ const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
       <section className={style.goods}>
         <Card>
           <div className={style["tools-bar"]}>
-            <Search onSearch={handleSearch} moreStyle={style["tools-search"]} />
-            <Sort onChange={handleChangeSort} />
+            <Search moreStyle={style["tools-search"]} value={searchValue} />
+            <Sort onChange={handleChangeSort} value={kindSort} />
           </div>
+
           <div className={style["wrapper-pagination"]}>
             <PaginationWithLink baseUrl={createBaseUrl(baseUrl)} searchValue={searchValue} totalCount={totalCount} sizePage={pageSize} />
           </div>
@@ -172,7 +314,7 @@ const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
         ) : (
           <>
             {goodsItem && <GoodsPage item={goodsItem} />}
-            {goodsList && <GoodsList list={goodsList} />}
+            {goodsList.length > 0 && <GoodsList list={goodsList} />}
           </>
         )}
       </section>

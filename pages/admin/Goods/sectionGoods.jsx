@@ -11,12 +11,14 @@ import CategorySelection from "@/components/categorySelection";
 import styleSectionGoods from "./sectionGoods.module.scss";
 import style from "../styles/section.module.scss";
 import Pagination from "@/components/pagination";
+import { getSearchValue, setSearchValue } from "@/store/searchSlice";
 
 const SectionGoods = () => {
   const dispatch = useDispatch();
   let goods = useSelector(getGoods());
+  // let goodsList = [...goods];
   const errors = useSelector(getErrors());
-  const [searchValue, setSearchValue] = useState("");
+  const searchValue = useSelector(getSearchValue());
   const [selectedCategory, setSelectedCategory] = useState("");
   const isLoading = useSelector(getIsLoading());
   const title = "Товары";
@@ -29,25 +31,20 @@ const SectionGoods = () => {
     discountProcent: 0,
     discountCount: 0,
   };
-
   useEffect(() => {
-    dispatch(fatchAllGoods(1));
-  }, []);
-
-  if (searchValue) {
-    goods = filterGoodsBySearchValue(goods, searchValue);
-  }
+    dispatch(fatchAllGoods({ numberPage: 1, searchValue, categoryId: selectedCategory }));
+  }, [searchValue, selectedCategory]);
 
   if (selectedCategory) {
     goods = filterGoodsByCategoryId(goods, selectedCategory);
   }
 
+  if (searchValue) {
+    goods = filterGoodsBySearchValue(goods, searchValue);
+  }
+
   const handlerDeleteGoods = (id) => {
     dispatch(removeGoods(id));
-  };
-
-  const handleSearch = (data) => {
-    setSearchValue(data);
   };
 
   const handlerCreateGoods = () => {
@@ -64,8 +61,8 @@ const SectionGoods = () => {
     renderGoods = (
       <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
         <div className={styleSectionGoods["tools-bar"]}>
-          <Search onSearch={handleSearch} />
-          <CategorySelection onChange={handleSelectedCategory} />
+          <Search />
+          <CategorySelection onChange={handleSelectedCategory} value={selectedCategory} />
         </div>
         <Pagination searchValue={searchValue} categoryId={selectedCategory}>
           <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors} isLoading={isLoading}>
@@ -75,35 +72,16 @@ const SectionGoods = () => {
       </LayoutSection>
     );
   } else {
-    if (isLoading) {
-      renderGoods = (
-        <>
-          <h2 className={style["section-title"]}>{title}</h2>
-          <Loading />
-        </>
-      );
-    } else {
-      renderGoods = <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}></LayoutSection>;
-    }
-  }
 
-  // renderGoods = (
-  //   <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
-  //     <div className={styleSectionGoods["tools-bar"]}>
-  //       <Search onSearch={handleSearch} />
-  //       <CategorySelection onChange={handleSelectedCategory} />
-  //     </div>
-  //     <Pagination searchValue={searchValue} categoryId={selectedCategory}>
-  // {isLoading ? (
-  //   <Loading />
-  // ) : (
-  //   <ListItemsOfSection listItems={goods} handlerDel={handlerDeleteGoods} errors={errors}>
-  //     <BlockEditGoods />
-  //   </ListItemsOfSection>
-  // )}
-  //     </Pagination>
-  //   </LayoutSection>
-  // );
+    renderGoods = (
+      <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
+        <div className={styleSectionGoods["tools-bar"]}>
+          <Search />
+          <CategorySelection onChange={handleSelectedCategory} value={selectedCategory} />
+        </div>
+      </LayoutSection>
+    );
+  }
 
   return renderGoods;
 };

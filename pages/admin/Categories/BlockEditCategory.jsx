@@ -82,7 +82,7 @@ const BlockEditCategory = ({ item, isEdit }) => {
           </div>
           <div>
             <p>Родительская категория</p>
-            <select className={style.input} name="parent" onChange={handlerChange} onFocus={handlerFocus} defaultValue={data.parent ? data.parent : ""}>
+            <select className={style.input} name="parent" onChange={handlerChange} onFocus={handlerFocus} value={data.parent ? data.parent : ""}>
               <option value=""></option>
               {data.listCategories.map((item) => (
                 <option key={item._id} value={item._id}>

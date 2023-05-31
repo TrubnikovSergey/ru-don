@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Tree from "./tree";
-import style from "../styles/treeNode.module.scss";
 import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
 import Loading from "./loading";
@@ -8,8 +7,12 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { getSearchValue, setSearchValue } from "@/store/searchSlice";
 import { deleteURLParams } from "@/utils/url";
+import { setUpKindSort } from "@/store/sortSlice";
+import { useRouter } from "next/router";
+import style from "../styles/treeNode.module.scss";
 
 const TreeNode = ({ node }) => {
+  const router = useRouter();
   const { children, title, _id } = node;
   const searchValue = useSelector(getSearchValue());
   const dispatch = useDispatch();
@@ -18,6 +21,7 @@ const TreeNode = ({ node }) => {
   const isChildren = children.length > 0;
   const className = isChildren ? "expand-symbol" : "";
   const noExpand = <span>&nbsp;&nbsp;&nbsp;</span>;
+
   const expand = showChildren ? (
     <div className={style[className]} onClick={handlerExpand}>
       -&nbsp;
@@ -38,10 +42,6 @@ const TreeNode = ({ node }) => {
     setShowChildren(!showChildren);
   }
 
-  function handlerClickNode() {
-    dispatch(setSearchValue(""));
-  }
-
   let renderChildren = null;
   if (showChildren) {
     if (treeData.length > 0) {
@@ -55,19 +55,11 @@ const TreeNode = ({ node }) => {
     }
   }
 
-  let href = `/goods?categoryId=${_id}&page=1`;
-  const newURL = deleteURLParams(href, "search");
-  if (searchValue) {
-    href = `${newURL}&search=${searchValue}`;
-  }
-
   return (
     <>
       <div className={style.treeNode}>
         {isChildren ? expand : noExpand}
-        <Link href={href} onClick={handlerClickNode}>
-          {title}
-        </Link>
+        <Link href={`/goods?categoryId=${_id}&page=1`}>{title}</Link>
       </div>
       {renderChildren}
     </>

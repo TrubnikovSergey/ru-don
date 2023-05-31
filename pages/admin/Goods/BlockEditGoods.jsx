@@ -91,7 +91,7 @@ const BlockEditGoods = ({ item }) => {
           </div>
           <div>
             <p>Категория товара</p>
-            <select className={style.input} name="categoryId" onChange={handlerChange} defaultValue={data.categoryId ? data.categoryId : ""}>
+            <select className={style.input} name="categoryId" onChange={handlerChange} value={data.categoryId ? data.categoryId : ""}>
               <option value=""></option>
               {data.listCategories.map((item) => (
                 <option key={item._id} value={item._id}>
