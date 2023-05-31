@@ -7,6 +7,7 @@ import Loading from "@/components/loading";
 import Card from "@/components/card";
 import httpService from "@/services/http.service";
 import Slider from "../../components/slider";
+import Button from "@/components/button";
 
 const GoodsPage = ({ item }) => {
   const router = useRouter();
@@ -24,7 +25,8 @@ const GoodsPage = ({ item }) => {
     <Card moreStyle={style.wrapper}>
       <div className={style.conteiner}>
         <div className={style["button-back"]}>
-          <button onClick={handlerBack}>Назад</button>
+          {/* <button onClick={handlerBack}>Назад</button> */}
+          <Button onClick={handlerBack}>&lt;</Button>
         </div>
         <div className={style["title"]}>
           <h1>{data.title}</h1>

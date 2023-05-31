@@ -14,6 +14,7 @@ import { isAuth } from "@/store/authSlice";
 import { useEffect } from "react";
 import configJSON from "../../config.json";
 import style from "./admin.module.scss";
+import NavLink from "@/components/navLink";
 
 const Admin = () => {
   const route = useRouter();
@@ -62,25 +63,25 @@ const Admin = () => {
           <Card moreStyle={style["left-panel"]}>
             <h2 className={style["left-panel__title"]}>Разделы</h2>
             <div className={style["left-panel__item"]}>
-              <Link href="/admin?section=categories">Категории товаров</Link>
+              <NavLink href="/admin?section=categories">Категории товаров</NavLink>
             </div>
             <div className={style["left-panel__item"]}>
-              <Link href="/admin?section=goods">Товары</Link>
+              <NavLink href="/admin?section=goods">Товары</NavLink>
             </div>
             <div className={style["left-panel__item"]}>
-              <Link href="/admin?section=news">Новости</Link>
+              <NavLink href="/admin?section=news">Новости</NavLink>
             </div>
             <div className={style["left-panel__item"]}>
-              <Link href="/admin?section=contacts">Контакты</Link>
+              <NavLink href="/admin?section=contacts">Контакты</NavLink>
             </div>
             <div className={style["left-panel__item"]}>
-              <Link href="/admin?section=delivery">Доставка</Link>
+              <NavLink href="/admin?section=delivery">Доставка</NavLink>
             </div>
             <div className={style["left-panel__item"]}>
-              <Link href="/admin?section=about">О нас</Link>
+              <NavLink href="/admin?section=about">О нас</NavLink>
             </div>
             <div className={style["left-panel__item"]}>
-              <Link href="/admin?section=users">Администраторы</Link>
+              <NavLink href="/admin?section=users">Администраторы</NavLink>
             </div>
           </Card>
           <Card moreStyle={style["right-panel"]}>{renderContent}</Card>

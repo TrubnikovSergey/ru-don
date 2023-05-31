@@ -1,7 +1,6 @@
 import { MongoClient } from "mongodb";
 import Tree from "@/components/tree";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import GoodsList from "./goodsList";
 import Card from "@/components/card";
 import GoodsPage from "./goodsPage";
@@ -18,6 +17,7 @@ import configJSON from "../../config.json";
 import style from "./goods.module.scss";
 import { deleteURLParams } from "@/utils/url";
 import { getKindSort, setUpKindSort } from "@/store/sortSlice";
+import NavLink from "@/components/navLink";
 
 const getSortSplit = (str) => {
   const arraySort = str.split("-");
@@ -290,7 +290,7 @@ const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
           <div className={style.container}>
             <h1 className={style.categories__title}>Категории</h1>
             <div className={style["link-all-goods"]}>
-              <Link href={`/goods?page=1`}>Все товары</Link>
+              <NavLink href={`/goods?page=1`}>Все товары</NavLink>
             </div>
             <Tree treeData={categories} />
           </div>

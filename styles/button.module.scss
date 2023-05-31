@@ -1,0 +1,23 @@
+$color_foxy: #e9672b;
+
+.wrapper-button{
+    background: $color_foxy;
+    color: #fff;
+    border: 1px solid $color_foxy;
+    border-radius: 50px;
+    font-size: 30px;
+    cursor: pointer;
+    &:hover{
+        background: #fff;
+        color: $color_foxy;    
+        border: 1px solid $color_foxy;
+    }
+}
+
+.container-button{
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

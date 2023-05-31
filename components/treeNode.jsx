@@ -3,13 +3,13 @@ import Tree from "./tree";
 import { useEffect } from "react";
 import categoriesService from "@/services/categories.service";
 import Loading from "./loading";
-import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { getSearchValue, setSearchValue } from "@/store/searchSlice";
 import { deleteURLParams } from "@/utils/url";
 import { setUpKindSort } from "@/store/sortSlice";
 import { useRouter } from "next/router";
 import style from "../styles/treeNode.module.scss";
+import NavLink from "./navLink";
 
 const TreeNode = ({ node }) => {
   const router = useRouter();
@@ -59,7 +59,7 @@ const TreeNode = ({ node }) => {
     <>
       <div className={style.treeNode}>
         {isChildren ? expand : noExpand}
-        <Link href={`/goods?categoryId=${_id}&page=1`}>{title}</Link>
+        <NavLink href={`/goods?categoryId=${_id}&page=1`}>{title}</NavLink>
       </div>
       {renderChildren}
     </>
