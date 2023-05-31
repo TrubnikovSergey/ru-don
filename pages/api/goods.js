@@ -104,6 +104,25 @@ handler.post(async (req, res) => {
 
       return res.status(200).json(data);
     }
+    if (action === "getChainCategories") {
+      let { categoryId } = req.body;
+      const arrayCategories = [];
+
+      if (categoryId) {
+        while (true) {
+          const category = await req.db.collection("categories").findOne({ _id: new ObjectId(categoryId) });
+          arrayCategories.push(category);
+
+          if (!category.parent) {
+            break;
+          } else {
+            categoryId = category.parent;
+          }
+        }
+      }
+
+      return res.status(200).json(arrayCategories);
+    }
 
     if (action === "fetchAllWithConcreteFields") {
       const { arrayFields } = req.body;

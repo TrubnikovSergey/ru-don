@@ -32,7 +32,7 @@ function isActive(router, href, className, children, categoriesList, goodsList) 
         const categoryURL = new URL(`${configJSON.HOST}${href}`);
         categoryId = categoryURL.searchParams.get("categoryId");
 
-        if (categoryId && categoryId === goods.categoryId) {
+        if (categoryId && goods && categoryId === goods.categoryId) {
           return `${className} ${style.active}`;
         }
         return `${className}`;

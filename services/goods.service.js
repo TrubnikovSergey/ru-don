@@ -37,6 +37,22 @@ const goodsService = {
       return getResponsError(error);
     }
   },
+  getChainCategories: async (categoryId) => {
+    try {
+      const respons = await http.post(`${configJSON.API_HOST}/goods?action=getChainCategories`, { categoryId });
+      return respons;
+    } catch (error) {
+      return getResponsError(error);
+    }
+  },
+  getGoodsById: async (goodsId) => {
+    try {
+      const respons = await http.post(`${configJSON.API_HOST}/goods?action=getGoodsById`, { goodsId });
+      return respons;
+    } catch (error) {
+      return getResponsError(error);
+    }
+  },
   saveGoods: async (goods) => {
     try {
       const respons = await http.post(`${configJSON.API_HOST}/goods?action=saveGoods`, { goods });
