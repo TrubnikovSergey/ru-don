@@ -31,20 +31,18 @@ const GoodsPage = ({ item }) => {
   if (chainCategories) {
     if (chainCategories.length > 0) {
       let newChain = chainCategories.map((item) => (
-        <Link href={`/goods?categoryId=${item._id}&page=1`} key={item._id}>
-          {item.title}
-        </Link>
+        <span>
+          <Link href={`/goods?categoryId=${item._id}&page=1`} key={item._id}>
+            {item.title}
+          </Link>
+        </span>
       ));
       newChain.reverse();
 
-      renderChain = (
-        <div className={style.chain}>
-          {newChain.map((item, idx, arr) => {
-            const renderItem = arr.length - 1 > idx ? <span>{item}&nbsp;/&nbsp;</span> : item;
-            return renderItem;
-          })}
-        </div>
-      );
+      renderChain = newChain.map((item, idx, arr) => {
+        const renderItem = arr.length - 1 > idx ? <span>{item}&nbsp;/&nbsp;</span> : item;
+        return renderItem;
+      });
 
       // renderChain = newChain.reduce((acc, item, idx, arr)=>{
       //   if(arr.length - 1 > idx){
@@ -60,10 +58,12 @@ const GoodsPage = ({ item }) => {
   return data && chainCategories ? (
     <Card moreStyle={style.wrapper}>
       <div className={style.conteiner}>
-        {renderChain}
-        <div className={style["button-back"]}>
-          <Button onClick={handlerBack}>&lt;</Button>
+        <div className={style["chain-wrapper"]}>
+          <div className={style["chain-container"]}>{renderChain}</div>
         </div>
+        {/* <div className={style["button-back"]}>
+          <Button onClick={handlerBack}>&lt;</Button>
+        </div> */}
         <div className={style["title"]}>
           <h1>{data.title}</h1>
         </div>
