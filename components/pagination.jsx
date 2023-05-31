@@ -14,10 +14,6 @@ const Pagination = ({ searchValue, categoryId, children }) => {
   const countPages = Math.ceil(totalCount / pageSize);
   const arrayPagesNumber = _.range(1, countPages + 1);
 
-  // useEffect(() => {
-  //   changePage(1);
-  // }, [searchValue, categoryId]);
-
   const changePage = (numberPage) => {
     setCurrentPage(numberPage);
     dispatch(fatchAllGoods({ numberPage, searchValue, categoryId }));
