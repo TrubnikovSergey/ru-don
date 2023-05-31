@@ -1,8 +1,12 @@
 import Link from "next/link";
-import style from "../styles/navLink.module.scss";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { getCategories } from "@/store/categoriesSlice";
+import { getGoods } from "@/store/goodsSlice";
+import configJSON from "../config.json";
+import style from "../styles/navLink.module.scss";
 
-function isActive(router, href, className, children) {
+function isActive(router, href, className, children, categoriesList, goodsList) {
   let classForLink = router.asPath === href ? `${className} ${style.active}` : `${className}`;
   let { categoryId, goodsId } = router.query;
   const { pathname } = router;
@@ -23,12 +27,16 @@ function isActive(router, href, className, children) {
         }
       } else if (isCategory) {
         return `${className} ${style.active}`;
-      } // else if (isGoods) {
-      //   const goods = await goodsService.getGoodsById(router.query.goodsId);
-      //   if (router.query.categoryId && router.query.categoryId === goods.categoryId) {
-      //     return `${className} ${style.active}`;
-      //   }
-      // }
+      } else if (isGoods) {
+        const goods = goodsList.find((item) => item._id === goodsId);
+        const categoryURL = new URL(`${configJSON.HOST}${href}`);
+        categoryId = categoryURL.searchParams.get("categoryId");
+
+        if (categoryId && categoryId === goods.categoryId) {
+          return `${className} ${style.active}`;
+        }
+        return `${className}`;
+      }
     }
   }
 
@@ -37,7 +45,9 @@ function isActive(router, href, className, children) {
 
 const NavLink = ({ href, children, className, ...props }) => {
   const router = useRouter();
-  const classLink = isActive(router, href, className, children);
+  const categoriesList = useSelector(getCategories());
+  const goodsList = useSelector(getGoods());
+  const classLink = isActive(router, href, className, children, categoriesList, goodsList);
 
   return (
     <Link href={href} className={classLink} {...props} onClick={() => console.log("---------------", { router, href })}>

@@ -90,6 +90,9 @@ const categoriesSlice = createSlice({
     clearError: (state, action) => {
       state.errors = state.errors.filter((item) => item._id !== action.payload);
     },
+    setCategories: (state, action) => {
+      state.entities = action.payload;
+    },
   },
 });
 
@@ -109,6 +112,7 @@ const {
   responsRemoveCategoryError,
   clearSuccess,
   clearError,
+  setCategories,
 } = actions;
 
 const updateCategory = (category) => async (dispatch) => {
@@ -141,6 +145,10 @@ const removeCategory = (categoryId) => async (dispatch) => {
   } catch (error) {
     dispatch(responsRemoveCategoryError(JSON.stringify(error)));
   }
+};
+
+const setUpCategories = (data) => (dispatch) => {
+  dispatch(setCategories(data));
 };
 
 const fatchAllCategories = () => async (dispatch) => {
@@ -183,8 +191,23 @@ const doClearError = (id) => (dispatch) => {
 };
 
 const getCategories = () => (state) => state.categories.entities;
+const getCategoryById = (id) => (state) => state.categories.entities.find((item) => item._id === id);
 const getErrors = () => (state) => state.categories.errors;
 const getSuccess = () => (state) => state.categories.success;
 const getIsLoading = () => (state) => state.categories.isLoading;
 
-export { categoriesReducer, fatchAllCategories, updateCategory, removeCategory, createCategory, doClearSuccess, doClearError, getCategories, getIsLoading, getErrors, getSuccess };
+export {
+  categoriesReducer,
+  fatchAllCategories,
+  updateCategory,
+  removeCategory,
+  createCategory,
+  doClearSuccess,
+  doClearError,
+  getCategories,
+  getCategoryById,
+  getIsLoading,
+  getErrors,
+  getSuccess,
+  setUpCategories,
+};

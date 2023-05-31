@@ -18,6 +18,8 @@ import style from "./goods.module.scss";
 import { deleteURLParams } from "@/utils/url";
 import { getKindSort, setUpKindSort } from "@/store/sortSlice";
 import NavLink from "@/components/navLink";
+import { setUpGoods } from "@/store/goodsSlice";
+import { setUpCategories } from "@/store/categoriesSlice";
 
 const getSortSplit = (str) => {
   const arraySort = str.split("-");
@@ -266,6 +268,11 @@ const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
     dispatch(setSearchValue(""));
     dispatch(setUpKindSort("title-asc"));
   }, [categoryId]);
+
+  useEffect(() => {
+    dispatch(setUpGoods(goods));
+    dispatch(setUpCategories(categories));
+  }, [goods]);
 
   const handleChangeSort = (sort) => {
     dispatch(setUpKindSort(sort));

@@ -80,6 +80,9 @@ const goodsSlice = createSlice({
     clearSuccess: (state, action) => {
       state.success = state.success.filter((item) => item._id !== action.payload);
     },
+    setGoods: (state, action) => {
+      state.entities = Array.isArray(action.payload) ? action.payload : [action.payload];
+    },
   },
 });
 
@@ -98,6 +101,7 @@ const {
   responsRemoveGoods,
   responsRemoveGoodsError,
   clearSuccess,
+  setGoods,
 } = actions;
 
 const updateGoods = (goods) => async (dispatch) => {
@@ -128,6 +132,10 @@ const removeGoods = (goodsId) => async (dispatch) => {
   } catch (error) {
     dispatch(responsRemoveGoodsError(error));
   }
+};
+
+const setUpGoods = (data) => (dispatch) => {
+  dispatch(setGoods(data));
 };
 
 const fatchAllGoods = (data) => async (dispatch, getState) => {
@@ -171,6 +179,7 @@ const doClearSuccess = (id) => (dispatch) => {
 };
 
 const getGoods = () => (state) => state.goods.entities;
+const getGoodsById = (id) => (state) => state.goods.entities.find((item) => item._id === id);
 const getGoodsTotalCount = () => (state) => state.goods.totalCount;
 const getGoodsPageSize = () => (state) => state.goods.pageSize;
 const getErrors = () => (state) => state.goods.errors;
@@ -178,4 +187,20 @@ const getSuccess = () => (state) => state.goods.success;
 const getIsLoading = () => (state) => state.goods.isLoading;
 const getIsSaving = () => (state) => state.goods.isSaving;
 
-export { goodsReducer, fatchAllGoods, updateGoods, removeGoods, createGoods, getGoods, getIsLoading, getErrors, getSuccess, doClearSuccess, getGoodsTotalCount, getGoodsPageSize, getIsSaving };
+export {
+  goodsReducer,
+  fatchAllGoods,
+  updateGoods,
+  removeGoods,
+  createGoods,
+  getGoods,
+  getGoodsById,
+  getIsLoading,
+  getErrors,
+  getSuccess,
+  doClearSuccess,
+  getGoodsTotalCount,
+  getGoodsPageSize,
+  getIsSaving,
+  setUpGoods,
+};
