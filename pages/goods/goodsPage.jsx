@@ -37,7 +37,7 @@ const GoodsPage = ({ item }) => {
       newChain.reverse();
 
       renderChain = newChain.map((item, idx, arr) => {
-        const renderItem = arr.length - 1 > idx ? <span>{item}&nbsp;/&nbsp;</span> : item;
+        const renderItem = arr.length - 1 > idx ? <span key={item._id}>{item}&nbsp;/&nbsp;</span> : <span key={item._id}>{item}</span>;
         return renderItem;
       });
     } else {
