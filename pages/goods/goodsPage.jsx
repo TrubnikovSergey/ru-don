@@ -24,9 +24,6 @@ const GoodsPage = ({ item }) => {
     goodsService.getChainCategories(item.categoryId).then((respons) => setChainCategories(respons.data));
   }, []);
 
-  console.log("----------chainCategories", chainCategories);
-  console.log("----------data", data);
-
   let renderChain = null;
   if (chainCategories) {
     if (chainCategories.length > 0) {
@@ -43,13 +40,6 @@ const GoodsPage = ({ item }) => {
         const renderItem = arr.length - 1 > idx ? <span>{item}&nbsp;/&nbsp;</span> : item;
         return renderItem;
       });
-
-      // renderChain = newChain.reduce((acc, item, idx, arr)=>{
-      //   if(arr.length - 1 > idx){
-
-      //     acc += `/goods?categoryId=${item._id}&page=1`
-      //   }
-      // },``);
     } else {
       renderChain = <Link href={`/goods?page=1`}>Все товары</Link>;
     }
@@ -61,15 +51,12 @@ const GoodsPage = ({ item }) => {
         <div className={style["chain-wrapper"]}>
           <div className={style["chain-container"]}>{renderChain}</div>
         </div>
-        {/* <div className={style["button-back"]}>
-          <Button onClick={handlerBack}>&lt;</Button>
-        </div> */}
         <div className={style["title"]}>
           <h1>{data.title}</h1>
         </div>
         {data.images.length > 0 && <Slider imagesList={data.images.map((item) => ({ imageBase64: item.imageBase64 }))} />}
         <div className={style["price"]}>
-          <h1>{data.price} р.</h1>
+          <h1>{Number(data.price).toFixed(2)} р.</h1>
         </div>
 
         <div className={style["description"]}>

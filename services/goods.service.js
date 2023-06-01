@@ -1,5 +1,6 @@
 import http from "./http.service";
 import configJSON from "../config.json";
+import { getResponsError } from "@/utils/errors";
 
 const goodsService = {
   fetchAll: async (option) => {
@@ -56,7 +57,6 @@ const goodsService = {
   saveGoods: async (goods) => {
     try {
       const respons = await http.post(`${configJSON.API_HOST}/goods?action=saveGoods`, { goods });
-
       return respons;
     } catch (error) {
       return getResponsError(error);

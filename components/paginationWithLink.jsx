@@ -16,7 +16,6 @@ const PaginationWithdiv = ({ baseUrl, totalCount, sizePage, searchValue }) => {
   const countPages = Math.ceil(totalCount / pageSize);
   const { start, end } = calculatePaginateRange(currentPage, paginationSize, countPages);
   const arrayPagesNumber = _.range(start, end);
-  // const arrayNumber = _.range(1, countPages + 1);
 
   useEffect(() => {
     let url = baseUrl.includes("?") ? `${baseUrl}&page=${currentPage}` : `${baseUrl}?page=${currentPage}`;

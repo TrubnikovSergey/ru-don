@@ -1,31 +1,59 @@
 import { useState } from "react";
 import style from "../styles/slider.module.scss";
+import { useEffect } from "react";
+import { useRef } from "react";
 
-const Slider = ({ imagesList = [] }) => {
+const Slider = ({ imagesList = [], autoslide = false }) => {
   const [idxImage, setIdxImage] = useState(0);
+  const idxImageRef = useRef(idxImage);
+
+  useEffect(() => {
+    const autoSlide = setInterval(() => {
+      if (idxImageRef.current + 1 < imagesList.length) {
+        setIdxImage((prev) => {
+          idxImageRef.current = prev + 1;
+          return prev + 1;
+        });
+      } else {
+        setIdxImage(0);
+        idxImageRef.current = 0;
+      }
+    }, 1000);
+
+    return () => clearInterval(autoSlide);
+  }, []);
 
   const getClassNameDot = (idx) => {
     if (idx === idxImage) return `${style.dot} ${style["dot-active"]}`;
 
     return `${style.dot}`;
   };
+
   const handleClickDot = (idx) => {
     setIdxImage(idx);
   };
 
   const handleClickRightArrow = () => {
     if (idxImage + 1 < imagesList.length) {
-      setIdxImage((prev) => prev + 1);
+      setIdxImage((prev) => {
+        idxImageRef.current = prev + 1;
+        return prev + 1;
+      });
     } else {
       setIdxImage(0);
+      idxImageRef.current = 0;
     }
   };
 
   const handleClickLeftArrow = () => {
     if (idxImage - 1 >= 0) {
-      setIdxImage((prev) => prev - 1);
+      setIdxImage((prev) => {
+        idxImageRef.current = prev - 1;
+        return prev - 1;
+      });
     } else {
       setIdxImage(imagesList.length - 1);
+      idxImageRef.current = 0;
     }
   };
 
@@ -39,7 +67,7 @@ const Slider = ({ imagesList = [] }) => {
             </div>
             {imagesList.length > 0 && (
               <div className={style["image-block"]}>
-                <img className={style["image"]} src={imagesList[idxImage].imageBase64} alt="Изображение товара" />
+                <img className={style["image"]} src={idxImage < imagesList.length ? imagesList[idxImage].imageBase64 : imagesList[0].imageBase64} alt="Изображение товара" />
               </div>
             )}
 

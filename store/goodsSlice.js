@@ -80,6 +80,9 @@ const goodsSlice = createSlice({
     clearSuccess: (state, action) => {
       state.success = state.success.filter((item) => item._id !== action.payload);
     },
+    clearError: (state, action) => {
+      state.errors = state.errors.filter((item) => item._id !== action.payload);
+    },
     setGoods: (state, action) => {
       state.entities = Array.isArray(action.payload) ? action.payload : [action.payload];
     },
@@ -101,6 +104,7 @@ const {
   responsRemoveGoods,
   responsRemoveGoodsError,
   clearSuccess,
+  clearError,
   setGoods,
 } = actions;
 
@@ -178,6 +182,10 @@ const doClearSuccess = (id) => (dispatch) => {
   dispatch(clearSuccess(id));
 };
 
+const doClearError = (id) => (dispatch) => {
+  dispatch(clearError(id));
+};
+
 const getGoods = () => (state) => state.goods.entities;
 const getGoodsById = (id) => (state) => state.goods.entities.find((item) => item._id === id);
 const getGoodsTotalCount = () => (state) => state.goods.totalCount;
@@ -199,6 +207,7 @@ export {
   getErrors,
   getSuccess,
   doClearSuccess,
+  doClearError,
   getGoodsTotalCount,
   getGoodsPageSize,
   getIsSaving,

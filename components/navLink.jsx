@@ -15,8 +15,6 @@ function isActive(router, href, className, children, categoriesList, goodsList) 
   let isCategory = Boolean(categoryId) && href.includes(categoryId);
   const isGoods = Boolean(goodsId);
 
-  //   router.pathname === href ? `${className} ${style.active}` : `${className}`;
-
   if (pathname === "/goods") {
     if (titleLink === "Товары и услуги") {
       return `${className} ${style.active}`;
@@ -50,7 +48,7 @@ const NavLink = ({ href, children, className, ...props }) => {
   const classLink = isActive(router, href, className, children, categoriesList, goodsList);
 
   return (
-    <Link href={href} className={classLink} {...props} onClick={() => console.log("---------------", { router, href })}>
+    <Link href={href} className={classLink} {...props}>
       {children}
     </Link>
   );

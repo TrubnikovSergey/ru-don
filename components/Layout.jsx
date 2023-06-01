@@ -43,7 +43,7 @@ const Layout = ({ children }) => {
           ) : (
             children
           )}
-          <footer className={style.footer}>footer</footer>
+          <footer className={style.footer}></footer>
         </div>
       </div>
     </>

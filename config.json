@@ -6,9 +6,9 @@
     "HOST_1":"http://80.249.145.139:8080",
     "API_HOST_1":"http://80.249.145.139:8080/api",        
     
-    "HOST_2":"http://81.163.30.240:3000",
-    "API_HOST_2":"http://81.163.30.240:3000/api",
-    "MONGO_URL_2":"mongodb://energy:bG2oOt9B7lYRx5EKmxG9F0LPmTB9AcbdAYKOsXwwZ6t5fWEJoX@82.148.28.101:707/energy",
+    "HOST_":"http://81.163.30.240:8080",
+    "API_HOST_":"http://81.163.30.240:8080/api",
+    "MONGO_URL_":"mongodb://energy:bG2oOt9B7lYRx5EKmxG9F0LPmTB9AcbdAYKOsXwwZ6t5fWEJoX@82.148.28.101:707/energy",
 
     "pageSize":12,
     "paginationSize":5

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Loading from "../../../components/loading";
 import { useDispatch, useSelector } from "react-redux";
 import LayoutSection from "../components/layoutSection";
-import { createGoods, fatchAllGoods, getErrors, getGoods, getIsLoading, removeGoods } from "../../../store/goodsSlice";
+import { createGoods, doClearError, fatchAllGoods, getErrors, getGoods, getIsLoading, removeGoods } from "../../../store/goodsSlice";
 import ListItemsOfSection from "../components/listItemsOfSection";
 import BlockEditGoods from "./BlockEditGoods";
 import Search from "@/components/search";
@@ -12,11 +12,11 @@ import styleSectionGoods from "./sectionGoods.module.scss";
 import style from "../styles/section.module.scss";
 import Pagination from "@/components/pagination";
 import { getSearchValue, setSearchValue } from "@/store/searchSlice";
+import { toast } from "react-toastify";
 
 const SectionGoods = () => {
   const dispatch = useDispatch();
   let goods = useSelector(getGoods());
-  // let goodsList = [...goods];
   const errors = useSelector(getErrors());
   const searchValue = useSelector(getSearchValue());
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -34,6 +34,17 @@ const SectionGoods = () => {
   useEffect(() => {
     dispatch(fatchAllGoods({ numberPage: 1, searchValue, categoryId: selectedCategory }));
   }, [searchValue, selectedCategory]);
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      for (let i = 0; i < errors.length; i++) {
+        toast.error(errors[i].message);
+      }
+      for (let i = 0; i < errors.length; i++) {
+        dispatch(doClearError(errors[i]._id));
+      }
+    }
+  }, [errors]);
 
   if (selectedCategory) {
     goods = filterGoodsByCategoryId(goods, selectedCategory);
@@ -72,7 +83,6 @@ const SectionGoods = () => {
       </LayoutSection>
     );
   } else {
-
     renderGoods = (
       <LayoutSection onCreateNewElement={handlerCreateGoods} titleButtonCreate="Создать товар" titleSection={title}>
         <div className={styleSectionGoods["tools-bar"]}>

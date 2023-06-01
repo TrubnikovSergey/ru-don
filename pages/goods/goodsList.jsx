@@ -14,7 +14,7 @@ const GoodsList = ({ list = [] }) => {
               <AutoSlider title={item.title} imagesList={item.images.map((item) => ({ imageBase64: item.imageBase64 }))} />
             </NavLink>
             <div className={style["wrapper-price"]}>
-              <p className={style.price}>{item.price} р.</p>
+              <p className={style.price}>{Number(item.price).toFixed(2)} р.</p>
             </div>
           </li>
         </Card>
