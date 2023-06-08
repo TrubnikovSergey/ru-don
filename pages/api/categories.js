@@ -97,11 +97,12 @@ handler.post(async (req, res) => {
 
 async function checkParentReferens(category) {
   const mongoURL = process.env.MONGO_URL;
+  const dbName = process.env.DBName;
   const client = new MongoClient(`${mongoURL}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  const req = client.db("energy");
+  const req = client.db(dbName);
 
   const categoryFromBD = await req.collection("categories").findOne({ _id: new ObjectId(category._id) });
 

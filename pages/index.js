@@ -6,12 +6,13 @@ import Slider from "@/components/slider";
 
 export const getServerSideProps = async (context) => {
   const mongoURL = process.env.MONGO_URL;
+  const dbName = process.env.DBName;
   const client = new MongoClient(`${mongoURL}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
 
-  const req = client.db("energy");
+  const req = client.db(dbName);
   let dataNews = await req.collection("news").find({}).toArray();
   dataNews = dataNews.map((item) => ({ ...item, _id: String(item._id) }));
 

@@ -176,6 +176,7 @@ const getDataForCategory = async (db, query, skip, pageSize) => {
 };
 export const getServerSideProps = async (context) => {
   const mongoURL = process.env.MONGO_URL;
+  const dbName = process.env.DBName;
   const ObjectId = require("mongodb").ObjectId;
   const pageSize = Number(process.env.pageSize);
   let dataGoods = [];
@@ -189,7 +190,7 @@ export const getServerSideProps = async (context) => {
     useUnifiedTopology: true,
   });
 
-  const db = client.db("energy");
+  const db = client.db(dbName);
   dataCategories = await db.collection("categories").find({ parent: null }).toArray();
 
   const { resolvedUrl, query } = context;

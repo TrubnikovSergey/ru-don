@@ -1,5 +1,5 @@
 import Login from "./login";
-import Menu from "./menu";
+import Menu from "./Menu";
 import style from "../styles/navBar.module.scss";
 
 const Navbar = () => {

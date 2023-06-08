@@ -5,12 +5,13 @@ import style from "./contacts.module.scss";
 
 export const getServerSideProps = async () => {
   const mongoURL = process.env.MONGO_URL;
+  const dbName = process.env.DBName;
   const client = new MongoClient(`${mongoURL}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
 
-  const req = client.db("energy");
+  const req = client.db(dbName);
   let dataContacts = await req.collection("contacts").find({}).toArray();
 
   client.close();

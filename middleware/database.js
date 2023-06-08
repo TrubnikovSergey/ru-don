@@ -3,6 +3,7 @@ import nextConnect from "next-connect";
 import cors from "cors";
 
 const mongoURL = process.env.MONGO_URL;
+const dbName = process.env.DBName;
 const client = new MongoClient(`${mongoURL}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -11,7 +12,7 @@ const client = new MongoClient(`${mongoURL}`, {
 async function database(req, res, next) {
   if (!client) await client.connect();
   req.dbClient = client;
-  req.db = client.db("energy");
+  req.db = client.db(dbName);
   return next();
 }
 

@@ -4,12 +4,13 @@ import Card from "@/components/card";
 
 export const getServerSideProps = async () => {
   const mongoURL = process.env.MONGO_URL;
+  const dbName = process.env.DBName;
   const client = new MongoClient(`${mongoURL}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
 
-  const req = client.db("energy");
+  const req = client.db(dbName);
   let dataAbout = await req.collection("about").find({}).toArray();
 
   client.close();

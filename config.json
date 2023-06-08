@@ -1,7 +1,11 @@
 {
-    "HOST":"http://localhost:8080",
-    "API_HOST":"http://localhost:8080/api",
-    "MONGO_URL":"mongodb://127.0.0.1:27017",
+    "HOST_2":"http://localhost:8080",
+    "API_HOST_2":"http://localhost:8080/api",
+    "MONGO_URL_2":"mongodb://127.0.0.1:707/energy",
+
+    "HOST":"http://37.228.117.222:8080",
+    "API_HOST":"http://37.228.117.222:8080/api",
+    "MONGO_URL":"mongodb://rudon:bG2oOt9B7lYRx5EKmxG9F0LPmTB9AcbdAYKOsXwwZ6t5fWEJoX@127.0.0.1:707/rudon",
 
     "HOST_1":"http://80.249.145.139:8080",
     "API_HOST_1":"http://80.249.145.139:8080/api",        
@@ -11,5 +15,6 @@
     "MONGO_URL_":"mongodb://energy:bG2oOt9B7lYRx5EKmxG9F0LPmTB9AcbdAYKOsXwwZ6t5fWEJoX@82.148.28.101:707/energy",
 
     "pageSize":12,
-    "paginationSize":5
+    "paginationSize":5,
+    "DBName":"rudon"
 }
