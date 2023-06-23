@@ -54,8 +54,13 @@ const SectionGoods = () => {
     goods = filterGoodsBySearchValue(goods, searchValue);
   }
 
-  const handlerDeleteGoods = (id) => {
-    dispatch(removeGoods(id));
+  const handlerDeleteGoods = (item) => {
+    const { _id, title } = item;
+    const isConfirm = confirm(`Удалить товар "${title}" ?`);
+
+    if (isConfirm) {
+      dispatch(removeGoods(_id));
+    }
   };
 
   const handlerCreateGoods = () => {

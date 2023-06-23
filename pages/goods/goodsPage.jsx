@@ -28,8 +28,8 @@ const GoodsPage = ({ item }) => {
   if (chainCategories) {
     if (chainCategories.length > 0) {
       let newChain = chainCategories.map((item) => (
-        <span>
-          <Link href={`/goods?categoryId=${item._id}&page=1`} key={item._id}>
+        <span key={item._id}>
+          <Link href={`/goods?categoryId=${item._id}&page=1`}>
             {item.title}
           </Link>
         </span>
@@ -47,21 +47,25 @@ const GoodsPage = ({ item }) => {
 
   return data && chainCategories ? (
     <Card moreStyle={style.wrapper}>
-      <div className={style.conteiner}>
+      <div className={style.conteiner} itemScope="" itemType="http://schema.org/Product">
         <div className={style["chain-wrapper"]}>
           <div className={style["chain-container"]}>{renderChain}</div>
         </div>
-        <div className={style["title"]}>
+        <div itemProp="name" className={style["title"]}>
           <h1>{data.title}</h1>
         </div>
-        {data.images.length > 0 && <Slider imagesList={data.images.map((item) => ({ imageBase64: item.imageBase64 }))} />}
-        <div className={style["price"]}>
-          <h1>{Number(data.price).toFixed(2)} р.</h1>
-        </div>
+        <span itemProp="image">{data.images.length > 0 && <Slider imagesList={data.images.map((item) => ({ imageBase64: item.imageBase64 }))} />}</span>
+        <div itemProp="offers" itemScope="" itemType="http://schema.org/Offer">
+          <div className={style["price"]}>
+            <meta itemProp="price" content={Number(data.price).toFixed(2)} />
+            <meta itemProp="priceCurrency" content="RUB" />
+            <h1>{Number(data.price).toFixed(2)} р.</h1>
+          </div>
 
-        <div className={style["description"]}>
-          <h1 className={style["description-title"]}>Описание</h1>
-          <div className={style["description-content"]}>{data.description}</div>
+          <div itemProp="description" className={style["description"]}>
+            <h1 className={style["description-title"]}>Описание</h1>
+            <div className={style["description-content"]}>{data.description}</div>
+          </div>
         </div>
       </div>
     </Card>

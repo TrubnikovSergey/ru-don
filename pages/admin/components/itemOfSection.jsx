@@ -24,7 +24,7 @@ const ItemOfSection = ({ item = {}, handlerDel, children, errors = [] }) => {
           <div className={style["button"]} onClick={handlerEdit}>
             <img className={style["button-img"]} src="/images/edit.svg" alt="Редактировать" />
           </div>
-          <div className={style["button"]} onClick={() => handlerDel(_id)}>
+          <div className={style["button"]} onClick={() => handlerDel(item)}>
             <img className={style["button-img"]} src="/images/delete.svg" alt="Удалить" />
           </div>
         </div>

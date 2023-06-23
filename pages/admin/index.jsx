@@ -66,7 +66,7 @@ const Admin = () => {
               <NavLink href="/admin?section=categories">Категории товаров</NavLink>
             </div>
             <div className={style["left-panel__item"]}>
-              <NavLink href="/admin?section=goods">Товары</NavLink>
+              <NavLink href="/admin?section=goods">Товары и услуги</NavLink>
             </div>
             <div className={style["left-panel__item"]}>
               <NavLink href="/admin?section=news">Новости</NavLink>

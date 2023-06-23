@@ -27,8 +27,12 @@ const SectionUsers = () => {
   const handlerCreateUser = () => {
     dispatch(createUser(newUser));
   };
-  const handlerDeleteUser = (id) => {
-    dispatch(removeUser(id));
+  const handlerDeleteUser = (item) => {
+    const { _id, title } = item;
+    const isConfirm = confirm(`Удалить администратора "${title}" ?`);
+    if (isConfirm) {
+      dispatch(removeUser(_id));
+    }
   };
 
   let renderUser = null;

@@ -28,8 +28,12 @@ const SectionContacts = () => {
   const handlerCreateContacts = () => {
     dispatch(createContacts(newContact));
   };
-  const handlerDeleteContacts = (id) => {
-    dispatch(removeContacts(id));
+  const handlerDeleteContacts = (item) => {
+    const { _id, title } = item;
+    const isConfirm = confirm(`Удалить контакт "${title}" ?`);
+    if (isConfirm) {
+      dispatch(removeContacts(_id));
+    }
   };
 
   let renderContacts = null;

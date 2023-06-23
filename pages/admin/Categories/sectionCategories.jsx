@@ -35,8 +35,12 @@ const SectionCategories = () => {
     dispatch(fatchAllCategories());
   }, []);
 
-  const handlerDeleteCategory = (id) => {
-    dispatch(removeCategory(id));
+  const handlerDeleteCategory = (item) => {
+    const { _id, title } = item;
+    const isConfirm = confirm(`Удалить категорию "${title}" ?`);
+    if (isConfirm) {
+      dispatch(removeCategory(_id));
+    }
   };
 
   const handlerCreateCategory = () => {

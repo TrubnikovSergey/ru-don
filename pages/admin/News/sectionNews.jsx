@@ -29,8 +29,12 @@ const SectionNews = () => {
   const handlerCreateNews = () => {
     dispatch(createNews(newNews));
   };
-  const handlerDeleteNews = (id) => {
-    dispatch(removeNews(id));
+  const handlerDeleteNews = (item) => {
+    const { _id, title } = item;
+    const isConfirm = confirm(`Удалить новость "${title}" ?`);
+    if (isConfirm) {
+      dispatch(removeNews(_id));
+    }
   };
 
   let renderNews = null;

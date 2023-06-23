@@ -64,14 +64,16 @@ const Index = ({ news }) => {
                   atDate = atDate && new Date(atDate).toLocaleDateString();
 
                   return (
-                    <li className={style["news-item"]} key={item._id}>
+                    <li itemScope="" itemType="https://schema.org/NewsArticle" className={style["news-item"]} key={item._id}>
                       <div className={style["item-title"]}>
-                        <p>{title}</p>
-                        <div className={style["item-atDate"]}>
+                        <p itemProp="name">{title}</p>
+                        <div itemProp="datePublished" className={style["item-atDate"]}>
                           <p>{atDate}</p>
                         </div>
                       </div>
-                      <div className={style["item-description"]}>{item.description}</div>
+                      <div itemProp="description" className={style["item-description"]}>
+                        {item.description}
+                      </div>
                     </li>
                   );
                 })}

@@ -14,7 +14,6 @@ handler.post(async (req, res) => {
 
     if (action === "signIn") {
       const isExistUser = await req.db.collection("users").findOne({ email });
-
       if (!isExistUser) {
         return res.status(400).json({ error: { code: 400, message: `User with this email not found` } });
       }
@@ -24,7 +23,6 @@ handler.post(async (req, res) => {
       if (!isPasswordEqvl) {
         return res.status(400).json({ error: { code: 400, message: `Wrong password` } });
       }
-
       return res.status(200).json({ _id: isExistUser._id, title: isExistUser.title, email: isExistUser.email });
     }
   } catch (error) {
