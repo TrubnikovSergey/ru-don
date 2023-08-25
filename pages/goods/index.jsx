@@ -20,6 +20,7 @@ import { getKindSort, setUpKindSort } from "@/store/sortSlice";
 import NavLink from "@/components/navLink";
 import { setUpGoods } from "@/store/goodsSlice";
 import { setUpCategories } from "@/store/categoriesSlice";
+import Head from "next/head";
 
 const getSortSplit = (str) => {
   const arraySort = str.split("-");
@@ -42,7 +43,7 @@ const searchAndSortForCategory = async (db, query, skip, pageSize) => {
     .toArray();
   const totalCount = await db
     .collection("goods")
-    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }], categoryId: query.categoryId })
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }], categoryId: query.categoryId }, { projection: { title: 1 } })
     .count();
 
   return { dataGoods, totalCount };
@@ -58,7 +59,7 @@ const searchForCategory = async (db, query, skip, pageSize) => {
     .toArray();
   const totalCount = await db
     .collection("goods")
-    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }], categoryId: query.categoryId })
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }], categoryId: query.categoryId }, { projection: { title: 1 } })
     .count();
 
   return { dataGoods, totalCount };
@@ -73,7 +74,10 @@ const sortForCategory = async (db, query, skip, pageSize) => {
     .limit(pageSize)
     .sort({ [field]: sort })
     .toArray();
-  const totalCount = await db.collection("goods").find({ categoryId: query.categoryId }).count();
+  const totalCount = await db
+    .collection("goods")
+    .find({ categoryId: query.categoryId }, { projection: { title: 1 } })
+    .count();
 
   return { dataGoods, totalCount };
 };
@@ -91,7 +95,7 @@ const searchAndSortForGoods = async (db, query, skip, pageSize) => {
     .toArray();
   const totalCount = await db
     .collection("goods")
-    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }] })
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }] }, { projection: { title: 1 } })
     .count();
 
   return { dataGoods, totalCount };
@@ -107,7 +111,7 @@ const searchForGoods = async (db, query, skip, pageSize) => {
     .toArray();
   const totalCount = await db
     .collection("goods")
-    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }] })
+    .find({ $or: [{ title: regExpSearch }, { description: regExpSearch }] }, { projection: { title: 1 } })
     .count();
 
   return { dataGoods, totalCount };
@@ -122,7 +126,10 @@ const sortForGoods = async (db, query, skip, pageSize) => {
     .limit(Number(pageSize))
     .sort({ [field]: sort })
     .toArray();
-  const totalCount = await db.collection("goods").find({}).count();
+  const totalCount = await db
+    .collection("goods")
+    .find({}, { projection: { title: 1 } })
+    .count();
 
   return { dataGoods, totalCount };
 };
@@ -145,7 +152,10 @@ const getDataForGoods = async (db, query, skip, pageSize) => {
     totalCount = result.totalCount;
   } else {
     dataGoods = await db.collection("goods").find({}).skip(skip).limit(Number(pageSize)).toArray();
-    totalCount = await db.collection("goods").find({}).count();
+    totalCount = await db
+      .collection("goods")
+      .find({}, { projection: { title: 1 } })
+      .count();
   }
 
   return { dataGoods, totalCount };
@@ -169,17 +179,46 @@ const getDataForCategory = async (db, query, skip, pageSize) => {
     totalCount = result.totalCount;
   } else {
     dataGoods = await db.collection("goods").find({ categoryId: query.categoryId }).skip(skip).limit(pageSize).toArray();
-    totalCount = await db.collection("goods").find({ categoryId: query.categoryId }).count();
+    totalCount = await db
+      .collection("goods")
+      .find({ categoryId: query.categoryId }, { projection: { title: 1 } })
+      .count();
   }
 
   return { dataGoods, totalCount };
 };
+
+function addCategoriesChainInGoods(goods, categoriesList) {
+  const item = { ...goods };
+  item.chainCategories = [];
+
+  if (item.categoryId) {
+    const itemCategory = categoriesList.find((el) => String(el._id) === item.categoryId);
+
+    let chain = [{ _id: item.categoryId, title: itemCategory.title }];
+    let parentId = itemCategory.parent;
+
+    while (parentId) {
+      const parentCategory = categoriesList.find((el) => String(el._id) === parentId);
+      chain.push({ _id: parentCategory._id, title: parentCategory.title });
+
+      parentId = parentCategory.parent;
+    }
+
+    item.chainCategories = chain.reverse();
+    return item;
+  }
+
+  return item;
+}
+
 export const getServerSideProps = async (context) => {
   const mongoURL = process.env.MONGO_URL;
   const dbName = process.env.DBName;
   const ObjectId = require("mongodb").ObjectId;
   const pageSize = Number(process.env.pageSize);
   let dataGoods = [];
+  let dataCategoriesWithoutParent = [];
   let dataCategories = [];
   let totalCount = 0;
   let page = 1;
@@ -191,7 +230,8 @@ export const getServerSideProps = async (context) => {
   });
 
   const db = client.db(dbName);
-  dataCategories = await db.collection("categories").find({ parent: null }).toArray();
+  dataCategoriesWithoutParent = await db.collection("categories").find({ parent: null }).toArray();
+  dataCategories = await db.collection("categories").find({}).toArray();
 
   const { resolvedUrl, query } = context;
 
@@ -204,6 +244,9 @@ export const getServerSideProps = async (context) => {
     totalCount = result.totalCount;
   } else if ("goodsId" in query) {
     dataGoods = await db.collection("goods").findOne({ _id: new ObjectId(context.query.goodsId) });
+    if (dataGoods) {
+      dataGoods = addCategoriesChainInGoods(dataGoods, dataCategories);
+    }
   } else {
     page = Number(query.page);
     skip = (page - 1) * pageSize;
@@ -215,13 +258,13 @@ export const getServerSideProps = async (context) => {
 
   client.close();
 
-  if (dataCategories.name === "Error" && dataGoods.name === "Error") {
+  if (dataCategoriesWithoutParent.name === "Error" && dataGoods.name === "Error") {
     return { notFound: true };
   }
 
   return {
     props: {
-      categories: JSON.parse(JSON.stringify(dataCategories)),
+      categories: JSON.parse(JSON.stringify(dataCategoriesWithoutParent)),
       goods: JSON.parse(JSON.stringify(dataGoods)),
       baseUrl: resolvedUrl,
       totalCount,
@@ -292,41 +335,48 @@ const MainPage = ({ goods, categories, baseUrl, totalCount, pageSize }) => {
   }
 
   return (
-    <main className={style.main}>
-      <Card moreStyle={style.categories}>
-        <section>
-          <div className={style.container}>
-            <h1 className={style.categories__title}>Категории</h1>
-            <div className={style["link-all-goods"]}>
-              <NavLink href={`/goods?page=1`}>Все товары</NavLink>
+    <>
+      <Head>
+        <title>Товары и услуги</title>
+      </Head>
+      <main className={style.main}>
+        <Card moreStyle={style.categories}>
+          <section>
+            <div className={style.container}>
+              <h1 className={style.categories__title}>Категории</h1>
+              <div className={style["link-all-goods"]}>
+                <NavLink href={`/goods?page=1`}>Все товары</NavLink>
+              </div>
+              <Tree treeData={categories} />
             </div>
-            <Tree treeData={categories} />
-          </div>
-        </section>
-      </Card>
-      <section className={style.goods}>
-        <Card>
-          <div className={style["tools-bar"]}>
-            <Search moreStyle={style["tools-search"]} value={searchValue} />
-            <Sort onChange={handleChangeSort} value={kindSort} />
-          </div>
-
-          <div className={style["wrapper-pagination"]}>
-            <PaginationWithLink baseUrl={createBaseUrl(baseUrl)} searchValue={searchValue} totalCount={totalCount} sizePage={pageSize} />
-          </div>
+          </section>
         </Card>
-        {loading ? (
-          <div className={style.loadingGoodsContent}>
-            <Loading />
-          </div>
-        ) : (
-          <>
-            {goodsItem && <GoodsPage item={goodsItem} />}
-            {goodsList.length > 0 && <GoodsList list={goodsList} />}
-          </>
-        )}
-      </section>
-    </main>
+        <section className={style.goods}>
+          <Card>
+            <div className={style["tools-bar"]}>
+              <Search moreStyle={style["tools-search"]} value={searchValue} />
+              <Sort onChange={handleChangeSort} value={kindSort} />
+            </div>
+
+            {!goodsId && (
+              <div className={style["wrapper-pagination"]}>
+                <PaginationWithLink baseUrl={createBaseUrl(baseUrl)} searchValue={searchValue} totalCount={totalCount} sizePage={pageSize} />
+              </div>
+            )}
+          </Card>
+          {loading ? (
+            <div className={style.loadingGoodsContent}>
+              <Loading />
+            </div>
+          ) : (
+            <>
+              {goodsItem && <GoodsPage item={goodsItem} />}
+              {goodsList.length > 0 && <GoodsList list={goodsList} />}
+            </>
+          )}
+        </section>
+      </main>
+    </>
   );
 };
 

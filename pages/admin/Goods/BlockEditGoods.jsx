@@ -45,13 +45,12 @@ const BlockEditGoods = ({ item }) => {
       const base64Images = [];
 
       for (let el of files) {
-        if (el.size <= 350000) {
+        if (el.size <= 300000) {
           const imageBase64 = await fileToBase64(el);
           const img = { name: el.name, size: el.size, type: el.type, imageBase64, _id: uuidv4() };
           base64Images.push(img);
         }
       }
-
       value = base64Images;
     }
 
@@ -116,7 +115,7 @@ const BlockEditGoods = ({ item }) => {
             {data.images.length > 0 ? <BlockUploadedImages imagesList={data.images} handleDelete={handleDelete} /> : null}
 
             <input className={style["btn-upload"]} type="file" name="images" accept=".jpg, .jpeg" onChange={handlerChange} multiple />
-            <p>(размер изображения не более 200 кб)</p>
+            <p>(размер изображения не более 250 кб)</p>
           </div>
         </div>
         <ButtonSave isSaving={isSaving} />

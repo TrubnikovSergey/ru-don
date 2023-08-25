@@ -23,7 +23,6 @@ const PaginationWithdiv = ({ baseUrl, totalCount, sizePage, searchValue }) => {
     if (searchValue) {
       url += `&search=${searchValue}`;
     }
-
     router.push(url);
   }, [currentPage, searchValue]);
 

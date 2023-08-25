@@ -1,6 +1,7 @@
 import { MongoClient } from "mongodb";
 import style from "./about.module.scss";
 import Card from "@/components/card";
+import Head from "next/head";
 
 export const getServerSideProps = async () => {
   const mongoURL = process.env.MONGO_URL;
@@ -30,12 +31,17 @@ const SectionAbout = ({ about }) => {
   const data = about.length > 0 ? about[0] : {};
 
   return (
-    <Card moreStyle={style.about}>
-      <main>
-        <h1 className={style.title}>{data.title}</h1>
-        <div className={style.description}>{data.description}</div>
-      </main>
-    </Card>
+    <>
+      <Head>
+        <title>О нас</title>
+      </Head>
+      <Card moreStyle={style.about}>
+        <main>
+          <h1 className={style.title}>{data.title}</h1>
+          <div className={style.description}>{data.description}</div>
+        </main>
+      </Card>
+    </>
   );
 };
 

@@ -15,7 +15,7 @@ handler.get(async (req, res) => {
       return res.status(200).json(data);
     }
   } catch (error) {
-    return res.status(500).json({ error: { code: 500, message: `Error contacts API (get metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error contacts API (get metod) - ${JSON.stringify(error.message)}` } });
   }
 });
 
@@ -43,7 +43,7 @@ handler.post(async (req, res) => {
       return res.status(200).json(data);
     }
   } catch (error) {
-    return res.status(500).json({ error: { code: 500, message: `Error contacts API (post metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error contacts API (post metod) - ${JSON.stringify(error.message)}` } });
   }
 });
 

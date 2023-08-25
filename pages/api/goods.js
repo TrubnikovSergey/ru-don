@@ -2,9 +2,11 @@ import nextConnect from "next-connect";
 import middleware from "../../middleware/database";
 import { Binary, ObjectId } from "mongodb";
 import * as fs from "fs";
+import * as path from "path";
+import { createNameImageWithID } from "@/utils/images";
 
 const handler = nextConnect();
-
+const staticFolder = process.env.staticFolder;
 handler.use(middleware);
 
 handler.get(async (req, res) => {
@@ -52,7 +54,7 @@ handler.get(async (req, res) => {
       return res.status(200).json({ dataPaginate, totalCount });
     }
   } catch (error) {
-    return res.status(500).json({ error: { code: 500, message: `Error goods API (get metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error goods API (get metod) - ${JSON.stringify(error.message)}` } });
   }
 });
 
@@ -79,12 +81,36 @@ handler.post(async (req, res) => {
     if (action === "removeGoodsById") {
       const { goodsId } = req.body;
 
+      const removeGoods = await req.db.collection("goods").findOne({ _id: new ObjectId(goodsId) });
+
+      removeGoods.images.forEach((item) => {
+        try {
+          fs.unlinkSync(`${staticFolder}/images/${createNameImageWithID(item)}`);
+        } catch (error) {
+          throw new Error(`Something wrong with remove news images`);
+        }
+      });
+
       const data = await req.db.collection("goods").deleteOne({ _id: new ObjectId(goodsId) });
       return res.status(200).json(data);
     }
     if (action === "saveGoods") {
       const { goods } = req.body;
       let data = null;
+
+      goods.images.forEach((img) => {
+        if ("imageBase64" in img) {
+          const extention = img.name.split(".")[1];
+          fs.writeFileSync(`${staticFolder}/images/${img._id}.${extention}`, img.imageBase64.split("base64,")[1], "base64");
+        }
+      });
+
+      goods.images = goods.images.map((item) => {
+        let newImg = { ...item };
+        delete newImg.imageBase64;
+
+        return newImg;
+      });
 
       if (goods._id) {
         const dataForUpdate = { ...goods };
@@ -132,7 +158,7 @@ handler.post(async (req, res) => {
       return res.status(200).json(data);
     }
   } catch (error) {
-    return res.status(500).json({ error: { code: 500, message: `Error goods API (post metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error goods API (post metod) - ${JSON.stringify(error.message)}` } });
   }
 });
 

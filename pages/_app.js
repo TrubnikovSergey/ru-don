@@ -10,8 +10,9 @@ const App = ({ Component, pageProps }) => {
   return (
     <div className="wrapper">
       <Head>
-        <title>Ру-Дон - оборудование</title>
+        <title>Ру-Дон - поставки оборудования</title>
         <meta name="description" content="Комплексные поставки промышленного и электротехнического оборудования, расходных и сопутствующих товаров." />
+        <meta name="keywords" content="Комплексные поставки промышленного и электротехнического оборудования, расходных и сопутствующих товаров." />
       </Head>
       <Provider store={store}>
         <Layout>

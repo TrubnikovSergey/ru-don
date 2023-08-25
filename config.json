@@ -1,13 +1,15 @@
 {
-    "HOST":"https://localhost",
-    "API_HOST":"https://localhost/api",
-    "MONGO_URL":"mongodb://127.0.0.1:707/rudon",
-    "ssl":"localhost",
-
-    "HOST_":"https://ru-don.ru",
-    "API_HOST_":"https://ru-don.ru/api",
-    "MONGO_URL_":"mongodb://rudon:bG2oOt9B7lYRx5EKmxG9F0LPmTB9AcbdAYKOsXwwZ6t5fWEJoX@127.0.0.1:707/rudon",
-    "ssl_":"ru-don.ru",
+    "HOST_":"https://localhost",
+    "API_HOST_":"https://localhost/api",
+    "MONGO_URL_":"mongodb://127.0.0.1:707/rudon",
+    "ssl_":"localhost",
+    "staticFolder_":"C:/nginx-1.25.1/www/localhost",
+    
+    "HOST":"https://ru-don.ru",
+    "API_HOST":"https://ru-don.ru/api",
+    "MONGO_URL":"mongodb://rudon:bG2oOt9B7lYRx5EKmxG9F0LPmTB9AcbdAYKOsXwwZ6t5fWEJoX@127.0.0.1:707/rudon",
+    "ssl":"ru-don.ru",
+    "staticFolder":"/var/www/ru-don.ru/public",
 
     "pageSize":12,
     "paginationSize":5,

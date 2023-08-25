@@ -11,7 +11,7 @@ const GoodsItem = ({ item = {} }) => {
   const { title, _id } = item;
   const dispatch = useDispatch();
 
-  const handlerEdit = (id) => {
+  const handlerEdit = () => {
     setIsEdit(!isEdit);
   };
 

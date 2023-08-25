@@ -11,7 +11,7 @@ const GoodsList = ({ list = [] }) => {
         <Card key={item._id}>
           <li className={style.goods__item}>
             <NavLink className={style.goods__link} href={`/goods?goodsId=${item._id}`}>
-              <AutoSlider title={item.title} imagesList={item.images.map((item) => ({ imageBase64: item.imageBase64 }))} />
+              <AutoSlider title={item.title} imagesList={item.images} />
             </NavLink>
             <div className={style["wrapper-price"]}>
               <p className={style.price}>{Number(item.price).toFixed(2)} р.</p>

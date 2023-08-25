@@ -2,6 +2,7 @@ import { useState } from "react";
 import style from "../styles/autoSlider.module.scss";
 import { useEffect } from "react";
 import { useRef } from "react";
+import { createNameImageWithID } from "@/utils/images";
 
 const AutoSlider = ({ imagesList, moreStyle, title }) => {
   const [toggle, setToggle] = useState(true);
@@ -30,7 +31,9 @@ const AutoSlider = ({ imagesList, moreStyle, title }) => {
 
   return (
     <div className={style.wrapper} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <div className={style.goods__wrapperImage}>{imagesList.length > 0 && <img className={style.image} src={imagesList[idxImageRef.current].imageBase64} alt="Изображение товара"></img>}</div>
+      <div className={style.goods__wrapperImage}>
+        {imagesList.length > 0 && <img className={style.image} src={`images/${createNameImageWithID(imagesList[idxImageRef.current])}`} alt="Изображение товара"></img>}
+      </div>
       <div className={style.goods__wrapperTitle}>
         <p className={style.goods__title}>{title}</p>
       </div>

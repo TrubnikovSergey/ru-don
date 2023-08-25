@@ -49,7 +49,7 @@ const BlockEditNews = ({ item, isEdit }) => {
       const base64Images = [];
 
       for (let el of files) {
-        if (el.size <= 200000) {
+        if (el.size <= 300000) {
           const imageBase64 = await fileToBase64(el);
           const img = { name: el.name, size: el.size, type: el.type, imageBase64, _id: uuidv4() };
           base64Images.push(img);

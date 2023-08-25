@@ -26,7 +26,16 @@ body{
   font-family: 'Roboto Bold';
   color: $color_gray;
   background: $color_foxy;
+
+  background-position: center;
+
+  background-size: contain;
+
   overflow-y: auto;
+
+  background: url('/bg.png'),
+  linear-gradient( to bottom right,#D6DAB9, 15%, #6FA687, #D0D68C);
+
 }
 
 body::-webkit-scrollbar-thumb {

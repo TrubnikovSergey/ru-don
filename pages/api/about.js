@@ -15,11 +15,11 @@ handler.get(async (req, res) => {
         let data = await req.db.collection("about").find({}).toArray();
         return res.status(200).json(data);
       } catch (error) {
-        return res.status(500).json({ error: { code: 500, message: `Server error - ${JSON.stringify(error)}` } });
+        return res.status(500).json({ error: { code: 500, message: `Server error - ${JSON.stringify(error.message)}` } });
       }
     }
   } catch (error) {
-    return res.status(500).json({ error: { code: 500, message: `Error about API (get metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error about API (get metod) - ${JSON.stringify(error.message)}` } });
   }
 });
 
@@ -42,7 +42,7 @@ handler.post(async (req, res) => {
       return res.status(200).json(data);
     }
   } catch (error) {
-    return res.status(500).json({ error: { code: 500, message: `Error about API (post metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error about API (post metod) - ${JSON.stringify(error.message)}` } });
   }
 });
 

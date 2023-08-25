@@ -2,25 +2,28 @@ import { useState } from "react";
 import style from "../styles/slider.module.scss";
 import { useEffect } from "react";
 import { useRef } from "react";
+import { createNameImageWithID } from "@/utils/images";
 
 const Slider = ({ imagesList = [], autoslide = false }) => {
   const [idxImage, setIdxImage] = useState(0);
   const idxImageRef = useRef(idxImage);
 
   useEffect(() => {
-    const autoSlide = setInterval(() => {
-      if (idxImageRef.current + 1 < imagesList.length) {
-        setIdxImage((prev) => {
-          idxImageRef.current = prev + 1;
-          return prev + 1;
-        });
-      } else {
-        setIdxImage(0);
-        idxImageRef.current = 0;
-      }
-    }, 1000);
+    if (autoslide) {
+      const intervalAutoSlide = setInterval(() => {
+        if (idxImageRef.current + 1 < imagesList.length) {
+          setIdxImage((prev) => {
+            idxImageRef.current = prev + 1;
+            return prev + 1;
+          });
+        } else {
+          setIdxImage(0);
+          idxImageRef.current = 0;
+        }
+      }, 2000);
 
-    return () => clearInterval(autoSlide);
+      return () => clearInterval(intervalAutoSlide);
+    }
   }, []);
 
   const getClassNameDot = (idx) => {
@@ -67,7 +70,11 @@ const Slider = ({ imagesList = [], autoslide = false }) => {
             </div>
             {imagesList.length > 0 && (
               <div className={style["image-block"]}>
-                <img className={style["image"]} src={idxImage < imagesList.length ? imagesList[idxImage].imageBase64 : imagesList[0].imageBase64} alt="Изображение товара" />
+                <img
+                  className={style["image"]}
+                  src={idxImage < imagesList.length ? `images/${createNameImageWithID(imagesList[idxImage])}` : `${createNameImageWithID(imagesList[0])}`}
+                  alt="Изображение товара"
+                />
               </div>
             )}
 

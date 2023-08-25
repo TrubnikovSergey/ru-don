@@ -49,7 +49,7 @@ const Index = ({ news }) => {
           <section className={style["slider-wrapper"]}>
             <div className={style.slider}>
               <div className={style["slider-content"]}>
-                <Slider imagesList={imagesForSlider.map((item) => ({ imageBase64: item.imageBase64 }))} />
+                <Slider imagesList={imagesForSlider} autoslide={true} />
               </div>
             </div>
           </section>
@@ -64,7 +64,7 @@ const Index = ({ news }) => {
                   atDate = atDate && new Date(atDate).toLocaleDateString();
 
                   return (
-                    <li itemScope="" itemType="https://schema.org/NewsArticle" className={style["news-item"]} key={item._id}>
+                    <li itemScope itemType="https://schema.org/NewsArticle" className={style["news-item"]} key={item._id}>
                       <div className={style["item-title"]}>
                         <p itemProp="name">{title}</p>
                         <div itemProp="datePublished" className={style["item-atDate"]}>

@@ -10,6 +10,7 @@ import style from "./auth.module.scss";
 import Loading from "@/components/loading";
 import { getErrors } from "@/store/authSlice";
 import { useEffect } from "react";
+import Head from "next/head";
 
 const Login = () => {
   const [data, setData] = useState({ login: "", password: "" });
@@ -39,20 +40,27 @@ const Login = () => {
     dispatch(signIn(data));
   };
 
-  return !isLoading && !isLogin ? (
-    <div className={style.auth}>
-      <form onSubmit={handlerSubmit}>
-        <Card moreStyle={style.container}>
-          <InputField moreStyle={style.input} label="login" type="text" name="email" value={data.email} onChange={handlerChange} />
-          <InputField moreStyle={style.input} label="password" type="password" name="password" value={data.password} onChange={handlerChange} />
-          <button className={style["submit-auth__button"]} type="submit">
-            Login
-          </button>
-        </Card>
-      </form>
-    </div>
-  ) : (
-    <Loading />
+  return (
+    <>
+      <Head>
+        <title>Страница входа</title>
+      </Head>
+      {!isLoading && !isLogin ? (
+        <div className={style.auth}>
+          <form onSubmit={handlerSubmit}>
+            <Card moreStyle={style.container}>
+              <InputField moreStyle={style.input} label="login" type="text" name="email" value={data.email} onChange={handlerChange} />
+              <InputField moreStyle={style.input} label="password" type="password" name="password" value={data.password} onChange={handlerChange} />
+              <button className={style["submit-auth__button"]} type="submit">
+                Login
+              </button>
+            </Card>
+          </form>
+        </div>
+      ) : (
+        <Loading />
+      )}
+    </>
   );
 };
 

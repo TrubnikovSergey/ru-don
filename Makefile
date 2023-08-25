@@ -17,3 +17,7 @@ run docker mongo auth:
 	docker run -d -p 707:27017 --name mongodb -v mongo-data:/data/db mongo –-auth
 
 	mongo mongodb://82.148.29.252:707
+
+
+	scp -r ./public/images/* root@37.228.117.222:/var/www/ru-don.ru/public/pictures/
+	/var/www/ru-don.ru/public/pictures

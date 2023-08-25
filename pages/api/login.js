@@ -26,7 +26,7 @@ handler.post(async (req, res) => {
       return res.status(200).json({ _id: isExistUser._id, title: isExistUser.title, email: isExistUser.email });
     }
   } catch (error) {
-    return res.status(500).json({ error: { code: 500, message: `Error login API (post metod) - ${JSON.stringify(error)}` } });
+    return res.status(500).json({ error: { code: 500, message: `Error login API (post metod) - ${JSON.stringify(error.message)}` } });
   }
 });
 
