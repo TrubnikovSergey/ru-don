@@ -72,6 +72,7 @@ const GoodsPage = ({ item }) => {
               <meta itemProp="price" content={Number(item?.price).toFixed(2)} />
               <meta itemProp="priceCurrency" content="RUB" />
               <h1>{Number(item?.price).toFixed(2)} р.</h1>
+              <h4 className={style["current-price"]}>( актуальность цен просим уточнять у менеджера )</h4>
             </div>
 
             <div itemProp="description" className={style["description"]}>

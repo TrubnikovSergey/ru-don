@@ -8,7 +8,6 @@ const UploadedImage = ({ item, handleDelete }) => {
   const classNameItem = delImage ? `${style["delete-image"]}` : "";
   const classNameContent = delImage ? `${style["opacity-content"]}` : "";
   let isBase64 = Boolean(item?.imageBase64);
-  console.log("-----------");
   const handleMouseEnter = () => {
     setDelImage(true);
   };
